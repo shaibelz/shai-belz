@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi Currency BM — State Permutations</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: #f8f7f4;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+  padding: 3rem 2rem;
+}
+.page { max-width: 1100px; margin: 0 auto; }
+
+h1 {
+  font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em;
+  margin-bottom: 0.3rem;
+}
+.subtitle {
+  font-size: 0.9rem; color: #666; margin-bottom: 2.5rem; line-height: 1.5;
+}
+
+/* ── Flow diagram ── */
+.flow-section {
+  margin-bottom: 3rem;
+}
+.flow-title {
+  font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.15em; color: #999; margin-bottom: 1rem;
+}
+
+/* ── Swimlane diagram ── */
+.swimlane {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.lane {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #e5e3de;
+}
+.lane:last-child { border-bottom: none; }
+
+.lane-label {
+  width: 160px;
+  flex-shrink: 0;
+  padding: 1rem 1rem 1rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.lane-label-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+.lane-label-desc {
+  font-size: 0.68rem;
+  color: #888;
+  line-height: 1.4;
+}
+
+.lane-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  flex-wrap: wrap;
+}
+
+/* State boxes */
+.state {
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  border: 1px solid;
+  position: relative;
+  min-width: 140px;
+}
+.state-title {
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+  font-size: 0.75rem;
+}
+.state-detail {
+  color: #666;
+  font-size: 0.68rem;
+}
+
+.state-green {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+.state-blue {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+.state-amber {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+.state-gray {
+  background: #f5f5f5;
+  border-color: #e0e0e0;
+}
+.state-purple {
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+.state-teal {
+  background: #f0fdfa;
+  border-color: #99f6e4;
+}
+
+/* Arrow */
+.arrow {
+  font-size: 1rem;
+  color: #bbb;
+  flex-shrink: 0;
+}
+
+/* ── Permutation table ── */
+.perm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  margin-top: 1rem;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.perm-table th {
+  background: #1a1a1a;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.7rem;
+  padding: 0.7rem 0.75rem;
+  text-align: left;
+  letter-spacing: 0.02em;
+}
+.perm-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.perm-table tr:last-child td { border-bottom: none; }
+.perm-table tr:hover td { background: #fafafa; }
+
+.tag {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tag-on { background: #dcfce7; color: #166534; }
+.tag-off { background: #f3f4f6; color: #6b7280; }
+.tag-optional { background: #fef3c7; color: #92400e; }
+.tag-auto { background: #dbeafe; color: #1e40af; }
+.tag-na { background: #f3f4f6; color: #9ca3af; }
+
+.note {
+  font-size: 0.72rem;
+  color: #888;
+  font-style: italic;
+  margin-top: 0.3rem;
+}
+
+/* Key insight boxes */
+.insight-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.insight {
+  flex: 1;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  border-left: 3px solid;
+}
+.insight-teal { border-left-color: #0d9488; }
+.insight-blue { border-left-color: #2563eb; }
+.insight-amber { border-left-color: #d97706; }
+.insight-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.insight-body {
+  font-size: 0.78rem;
+  color: #555;
+  line-height: 1.55;
+}
+
+/* Timeline section */
+.timeline-header {
+  display: grid;
+  grid-template-columns: 160px repeat(5, 1fr);
+  gap: 0;
+  margin-bottom: 0;
+}
+.timeline-phase {
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 3px solid;
+}
+.tp-before { color: #999; border-color: #ddd; }
+.tp-prenotice { color: #2563eb; border-color: #2563eb; }
+.tp-flip { color: #0d9488; border-color: #0d9488; }
+.tp-after { color: #059669; border-color: #059669; }
+.tp-label { border-bottom: none; }
+
+/* State matrix */
+.matrix {
+  display: grid;
+  grid-template-columns: 160px repeat(4, 1fr);
+  gap: 0;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.matrix-row-label {
+  padding: 0.85rem 0.75rem;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.matrix-row-label-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.matrix-row-label-desc {
+  font-size: 0.65rem;
+  color: #999;
+  margin-top: 0.1rem;
+}
+.matrix-cell {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+.matrix-cell:last-child { border-right: none; }
+.matrix-cell .tag { display: block; width: fit-content; margin-bottom: 0.25rem; }
+.cell-note {
+  font-size: 0.65rem;
+  color: #999;
+  margin-top: 0.2rem;
+}
+
+.section-divider {
+  height: 1px;
+  background: #e5e3de;
+  margin: 2.5rem 0;
+}
+
+.converter-note {
+  background: #fff;
+  border: 1px dashed #d97706;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.converter-note-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.converter-note-text {
+  font-size: 0.78rem;
+  color: #555;
+  line-height: 1.55;
+}
+.converter-note-text strong {
+  color: #1a1a1a;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h1>Multi Currency BM — State Permutations</h1>
+  <p class="subtitle">All possible merchant states and how the BM experience changes across the Default ON journey. Currency Converter is always independent and optional.</p>
+
+  <!-- ═══════ SECTION 1: Timeline Matrix ═══════ -->
+  <div class="flow-section">
+    <div class="flow-title">How each merchant type moves through time</div>
+
+    <div class="timeline-header">
+      <div class="tp-label"></div>
+      <div class="timeline-phase tp-before">Today</div>
+      <div class="timeline-phase tp-prenotice">Pre-notice email</div>
+      <div class="timeline-phase tp-flip">Flip day</div>
+      <div class="timeline-phase tp-after">Steady state</div>
+    </div>
+
+    <div class="matrix">
+      <!-- Row 1: New merchant (wizard) -->
+      <div class="matrix-row-label">
+        <div class="matrix-row-label-title">New merchant</div>
+        <div class="matrix-row-label-desc">Value prop / wizard flow</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-off">MC off</span>
+        <div class="cell-note">Sees value prop. Must have supported provider to proceed.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-off">MC off</span>
+        <div class="cell-note">No email (no MC yet). Wizard flow unchanged.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-auto">MC + Auto Display ON</span>
+        <div class="cell-note">If eligible, auto-enabled on flip day. Otherwise enters via wizard as before.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-on">MC + Auto Display ON</span>
+        <div class="cell-note">Converter optional add-on.</div>
+      </div>
+
+      <!-- Row 2: Eligible merchant (has CB, has provider, no MC) -->
+      <div class="matrix-row-label">
+        <div class="matrix-row-label-title">Eligible merchant</div>
+        <div class="matrix-row-label-desc">CB volume + supported provider, no MC</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-off">MC off</span>
+        <div class="cell-note">Has cross-border volume but never enabled MC.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-off">MC off</span>
+        <span class="tag tag-auto">Email received</span>
+        <div class="cell-note">Can opt-in early or opt-out. BM unchanged until action.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-auto">MC + Auto Display ON</span>
+        <div class="cell-note">Auto-enabled unless opted out. BM shows new MC state.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-on">MC + Auto Display ON</span>
+        <div class="cell-note">Can turn off auto display or MC entirely. Converter optional.</div>
+      </div>
+
+      <!-- Row 3: Opted-out merchant -->
+      <div class="matrix-row-label">
+        <div class="matrix-row-label-title">Opted-out merchant</div>
+        <div class="matrix-row-label-desc">Received email, chose to opt out</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-off">MC off</span>
+        <div class="cell-note">—</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-off">MC off</span>
+        <div class="cell-note">Opted out via email link. BM unchanged.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-off">MC off</span>
+        <div class="cell-note">Not flipped. Respected opt-out.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-off">MC off</span>
+        <div class="cell-note">Can still enable manually via BM anytime.</div>
+      </div>
+
+      <!-- Row 4: Early opt-in merchant -->
+      <div class="matrix-row-label">
+        <div class="matrix-row-label-title">Early opt-in</div>
+        <div class="matrix-row-label-desc">Received email, opted in before flip</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-off">MC off</span>
+        <div class="cell-note">—</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-auto">MC + Auto Display ON</span>
+        <div class="cell-note">Clicked "Enable now" in email. Activated immediately.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-on">MC + Auto Display ON</span>
+        <div class="cell-note">Already on. No change.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-on">MC + Auto Display ON</span>
+        <div class="cell-note">Same as any active merchant. Converter optional.</div>
+      </div>
+
+      <!-- Row 5: Existing MC user (with converter) -->
+      <div class="matrix-row-label">
+        <div class="matrix-row-label-title">Existing MC user</div>
+        <div class="matrix-row-label-desc">Already has MC + converter</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-on">MC ON</span>
+        <span class="tag tag-on">Converter ON</span>
+        <div class="cell-note">Current experience. Auto display toggle available.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-on">MC ON</span>
+        <span class="tag tag-on">Converter ON</span>
+        <div class="cell-note">No email needed. Already has MC.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-on">MC ON</span>
+        <span class="tag tag-on">Converter ON</span>
+        <div class="cell-note">Nothing changes. Already active.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-on">MC ON</span>
+        <span class="tag tag-on">Converter ON</span>
+        <div class="cell-note">Can add auto display. Can remove converter via Editor.</div>
+      </div>
+
+      <!-- Row 6: Not eligible -->
+      <div class="matrix-row-label">
+        <div class="matrix-row-label-title">Not eligible</div>
+        <div class="matrix-row-label-desc">No supported provider or no CB volume</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-na">N/A</span>
+        <div class="cell-note">Cannot enable MC.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-na">N/A</span>
+        <div class="cell-note">No email sent.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-na">N/A</span>
+        <div class="cell-note">Not flipped.</div>
+      </div>
+      <div class="matrix-cell">
+        <span class="tag tag-na">N/A</span>
+        <div class="cell-note">Becomes eligible if they add a supported provider.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ Key rules ═══════ -->
+  <div class="insight-row">
+    <div class="insight insight-teal">
+      <div class="insight-title">MC requires either Auto Display or Converter</div>
+      <div class="insight-body">You cannot enable Multi Currency without at least one display method. For Default ON merchants, auto display is the default. For existing merchants, the converter already fulfills this.</div>
+    </div>
+    <div class="insight insight-blue">
+      <div class="insight-title">Auto Display and Converter are independent</div>
+      <div class="insight-body">A merchant can have both, either, or (if MC is off) neither. Adding or removing the converter does not affect auto display. They live side by side.</div>
+    </div>
+    <div class="insight insight-amber">
+      <div class="insight-title">Supported provider is a prerequisite</div>
+      <div class="insight-body">MC only works with Stripe, PayPal, or Wix Payments. Merchants without a supported provider cannot be flipped on and don't receive the pre-notice email.</div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ═══════ SECTION 2: BM Screen mapping ═══════ -->
+  <div class="flow-section">
+    <div class="flow-title">Which BM screen does each state map to?</div>
+
+    <table class="perm-table">
+      <thead>
+        <tr>
+          <th>Merchant state</th>
+          <th>MC</th>
+          <th>Auto Display</th>
+          <th>Converter</th>
+          <th>BM screen</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Default ON (post-flip)</strong></td>
+          <td><span class="tag tag-on">ON</span></td>
+          <td><span class="tag tag-on">ON</span></td>
+          <td><span class="tag tag-off">Not installed</span></td>
+          <td><strong>Screen 1</strong><br>Auto Display ON</td>
+          <td>Primary new state. Converter shown as optional add-on.</td>
+        </tr>
+        <tr>
+          <td><strong>Early opt-in (pre-flip)</strong></td>
+          <td><span class="tag tag-on">ON</span></td>
+          <td><span class="tag tag-on">ON</span></td>
+          <td><span class="tag tag-off">Not installed</span></td>
+          <td><strong>Screen 1</strong><br>Auto Display ON</td>
+          <td>Same screen as post-flip. Activated early via email.</td>
+        </tr>
+        <tr>
+          <td><strong>Existing MC + wants auto display</strong></td>
+          <td><span class="tag tag-on">ON</span></td>
+          <td><span class="tag tag-off">Available</span></td>
+          <td><span class="tag tag-on">Installed</span></td>
+          <td><strong>Screen 2</strong><br>Auto Display available</td>
+          <td>Has converter already. Can opt into auto display.</td>
+        </tr>
+        <tr>
+          <td><strong>Both active</strong></td>
+          <td><span class="tag tag-on">ON</span></td>
+          <td><span class="tag tag-on">ON</span></td>
+          <td><span class="tag tag-on">Installed</span></td>
+          <td><strong>Screen 3</strong><br>Both ON</td>
+          <td>Auto display + converter side by side.</td>
+        </tr>
+        <tr>
+          <td><strong>Existing MC (no auto display)</strong></td>
+          <td><span class="tag tag-on">ON</span></td>
+          <td><span class="tag tag-off">OFF</span></td>
+          <td><span class="tag tag-on">Installed</span></td>
+          <td><strong>Current screen</strong><br>No change</td>
+          <td>Today's experience. Unchanged unless they opt into auto display.</td>
+        </tr>
+        <tr>
+          <td><strong>Opted out / MC off</strong></td>
+          <td><span class="tag tag-off">OFF</span></td>
+          <td><span class="tag tag-na">N/A</span></td>
+          <td><span class="tag tag-na">N/A</span></td>
+          <td><strong>Current screen</strong><br>Value prop / wizard</td>
+          <td>Same as today. Can enable manually.</td>
+        </tr>
+        <tr>
+          <td><strong>Turned off auto display</strong></td>
+          <td><span class="tag tag-on">ON</span></td>
+          <td><span class="tag tag-off">OFF</span></td>
+          <td><span class="tag tag-off">Not installed</span></td>
+          <td><strong>⚠️ Edge case</strong></td>
+          <td>MC on but no display method. Must either re-enable auto display or install converter. BM should prompt.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="converter-note">
+    <div class="converter-note-icon">↕</div>
+    <div class="converter-note-text">
+      <strong>Currency Converter is always independent.</strong> It can be added or removed at any time via the Editor, regardless of auto display state. Adding the converter doesn't turn off auto display. Removing the converter doesn't turn off auto display. They are separate features that both serve Multi Currency.
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ═══════ SECTION 3: Quick visual of the 3 screens ═══════ -->
+  <div class="flow-section">
+    <div class="flow-title">The 3 new BM screens needed</div>
+
+    <div style="display:flex; gap:1rem;">
+      <a href="https://shaibelz.github.io/shai-belz/auto-display-bm-mockups.html" target="_blank" style="flex:1; text-decoration:none; color:inherit;">
+        <div style="background:#fff; border-radius:10px; padding:1.25rem; box-shadow:0 1px 4px rgba(0,0,0,0.04); border-top:3px solid #0d9488; cursor:pointer; transition:transform 0.15s;">
+          <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#0d9488; margin-bottom:0.4rem;">Screen 1</div>
+          <div style="font-size:0.95rem; font-weight:700; margin-bottom:0.35rem;">Auto Display ON</div>
+          <div style="font-size:0.75rem; color:#666; line-height:1.5;">Default ON state. MC active, auto display active, converter optional. This is what most merchants will see after flip day.</div>
+        </div>
+      </a>
+      <a href="https://shaibelz.github.io/shai-belz/auto-display-bm-mockups.html" target="_blank" style="flex:1; text-decoration:none; color:inherit;">
+        <div style="background:#fff; border-radius:10px; padding:1.25rem; box-shadow:0 1px 4px rgba(0,0,0,0.04); border-top:3px solid #2563eb; cursor:pointer;">
+          <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#2563eb; margin-bottom:0.4rem;">Screen 2</div>
+          <div style="font-size:0.95rem; font-weight:700; margin-bottom:0.35rem;">Auto Display Available</div>
+          <div style="font-size:0.75rem; color:#666; line-height:1.5;">Existing MC users who can opt into auto display. They already have MC via converter. Auto display shown as new feature to enable.</div>
+        </div>
+      </a>
+      <a href="https://shaibelz.github.io/shai-belz/auto-display-bm-mockups.html" target="_blank" style="flex:1; text-decoration:none; color:inherit;">
+        <div style="background:#fff; border-radius:10px; padding:1.25rem; box-shadow:0 1px 4px rgba(0,0,0,0.04); border-top:3px solid #7c3aed; cursor:pointer;">
+          <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#7c3aed; margin-bottom:0.4rem;">Screen 3</div>
+          <div style="font-size:0.95rem; font-weight:700; margin-bottom:0.35rem;">Both ON</div>
+          <div style="font-size:0.75rem; color:#666; line-height:1.5;">Auto display active + converter installed. Both features work together. Converter managed in Editor.</div>
+        </div>
+      </a>
+    </div>
+    <div style="text-align:center; margin-top:0.75rem;">
+      <a href="https://shaibelz.github.io/shai-belz/auto-display-bm-mockups.html" target="_blank" style="font-size:0.78rem; color:#0d9488; font-weight:600; text-decoration:none;">▶ See all BM mockups →</a>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
