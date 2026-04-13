@@ -409,30 +409,27 @@ h1 {
         <div class="cell-note">Same as any active merchant. Converter optional.</div>
       </div>
 
-      <!-- Row 5: Existing MC user (with converter) -->
+      <!-- Row 5: Existing MC user -->
       <div class="matrix-row-label">
         <div class="matrix-row-label-title">Existing MC user</div>
-        <div class="matrix-row-label-desc">Already has MC + converter</div>
+        <div class="matrix-row-label-desc">Already has MC (with or without converter)</div>
       </div>
       <div class="matrix-cell">
         <span class="tag tag-on">MC ON</span>
-        <span class="tag tag-on">Converter ON</span>
-        <div class="cell-note">Current experience. Auto display toggle available.</div>
+        <span class="tag tag-optional">Converter ±</span>
+        <div class="cell-note">Has MC with at least converter or auto display. Auto display toggle available.</div>
       </div>
       <div class="matrix-cell">
         <span class="tag tag-on">MC ON</span>
-        <span class="tag tag-on">Converter ON</span>
-        <div class="cell-note">No email needed. Already has MC.</div>
+        <div class="cell-note">No email needed. Already has MC. Can opt into auto display if not already on.</div>
       </div>
       <div class="matrix-cell">
         <span class="tag tag-on">MC ON</span>
-        <span class="tag tag-on">Converter ON</span>
         <div class="cell-note">Nothing changes. Already active.</div>
       </div>
       <div class="matrix-cell">
         <span class="tag tag-on">MC ON</span>
-        <span class="tag tag-on">Converter ON</span>
-        <div class="cell-note">Can add auto display. Can remove converter via Editor.</div>
+        <div class="cell-note">Can enable/disable auto display. Can add/remove converter via Editor. Must keep at least one.</div>
       </div>
 
       <!-- Row 6: Not eligible -->
@@ -510,12 +507,12 @@ h1 {
           <td>Same screen as post-flip. Activated early via email.</td>
         </tr>
         <tr>
-          <td><strong>Existing MC + wants auto display</strong></td>
+          <td><strong>Existing MC, no auto display yet</strong></td>
           <td><span class="tag tag-on">ON</span></td>
           <td><span class="tag tag-off">Available</span></td>
-          <td><span class="tag tag-on">Installed</span></td>
+          <td><span class="tag tag-optional">± (has at least one)</span></td>
           <td><strong>Screen 2</strong><br>Auto Display available</td>
-          <td>Has converter already. Can opt into auto display.</td>
+          <td>Has MC via converter or other. Can opt into auto display as new feature.</td>
         </tr>
         <tr>
           <td><strong>Both active</strong></td>
@@ -529,7 +526,7 @@ h1 {
           <td><strong>Existing MC (no auto display)</strong></td>
           <td><span class="tag tag-on">ON</span></td>
           <td><span class="tag tag-off">OFF</span></td>
-          <td><span class="tag tag-on">Installed</span></td>
+          <td><span class="tag tag-optional">± (must have converter if no AD)</span></td>
           <td><strong>Current screen</strong><br>No change</td>
           <td>Today's experience. Unchanged unless they opt into auto display.</td>
         </tr>
@@ -578,7 +575,7 @@ h1 {
         <div style="background:#fff; border-radius:10px; padding:1.25rem; box-shadow:0 1px 4px rgba(0,0,0,0.04); border-top:3px solid #2563eb; cursor:pointer;">
           <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#2563eb; margin-bottom:0.4rem;">Screen 2</div>
           <div style="font-size:0.95rem; font-weight:700; margin-bottom:0.35rem;">Auto Display Available</div>
-          <div style="font-size:0.75rem; color:#666; line-height:1.5;">Existing MC users who can opt into auto display. They already have MC via converter. Auto display shown as new feature to enable.</div>
+          <div style="font-size:0.75rem; color:#666; line-height:1.5;">Existing MC users who can opt into auto display. They already have MC (with or without converter). Auto display shown as new feature to enable.</div>
         </div>
       </a>
       <a href="https://shaibelz.github.io/shai-belz/auto-display-bm-mockups.html" target="_blank" style="flex:1; text-decoration:none; color:inherit;">
