@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto Display Currency — Design Context</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #fafafa; --white: #fff; --ink: #1a1a1a; --ink2: #555; --ink3: #999;
+  --rule: #e5e5e5; --red: #dc2626; --green: #059669; --blue: #2563eb;
+  --amber: #d97706; --teal: #0d9488;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+.slide {
+  min-height: 85vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 3rem 3rem; max-width: 900px; margin: 0 auto;
+  opacity: 0; transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.slide.vis { opacity: 1; transform: none; }
+
+.eyebrow {
+  font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--ink3); margin-bottom: 1.25rem;
+}
+.slide h2 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800;
+  letter-spacing: -0.03em; line-height: 1.1; text-align: center;
+  margin-bottom: 1rem;
+}
+.slide h2 em { font-style: normal; color: var(--red); }
+.slide h2 .g { color: var(--green); }
+.slide h2 .b { color: var(--blue); }
+.slide h2 .o { color: var(--amber); }
+.slide p.lead {
+  font-size: 1rem; color: var(--ink2); text-align: center;
+  max-width: 560px; line-height: 1.65; margin-bottom: 2rem;
+}
+
+.mock-store {
+  width: 100%; max-width: 700px; background: var(--white);
+  border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  overflow: hidden; border: 1px solid var(--rule); position: relative;
+}
+.mock-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 1.5rem; border-bottom: 1px solid var(--rule);
+  font-size: 0.8rem;
+}
+.mock-logo { font-weight: 800; font-size: 1rem; letter-spacing: -0.02em; }
+.mock-nav-links { display: flex; gap: 1.25rem; color: var(--ink2); font-weight: 500; }
+.mock-nav-cart { font-size: 0.85rem; }
+
+.mock-products { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.mock-product {
+  padding: 1.5rem; border-bottom: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+.mock-product:nth-child(2n) { border-right: none; }
+.mock-img {
+  width: 100%; aspect-ratio: 1; border-radius: 10px; margin-bottom: 0.75rem;
+}
+.mock-img.bag { background: linear-gradient(135deg, #f0e6d3 0%, #d4c4a8 100%); }
+.mock-img.shoe { background: linear-gradient(135deg, #e8e0f0 0%, #c8b8e0 100%); }
+.mock-img.watch { background: linear-gradient(135deg, #d6eaf0 0%, #a8ccd8 100%); }
+.mock-img.hat { background: linear-gradient(135deg, #f0d6d6 0%, #d8a8a8 100%); }
+.mock-product-name { font-size: 0.82rem; font-weight: 600; margin-bottom: 0.2rem; }
+.mock-price { font-size: 0.95rem; font-weight: 800; transition: all 0.3s; }
+
+.converter-widget {
+  position: absolute; bottom: 12px; right: 12px;
+  background: rgba(240,240,240,0.85); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 0.35rem 0.5rem;
+  display: flex; align-items: center; gap: 0.35rem;
+  font-size: 0.65rem; color: var(--ink3); cursor: pointer;
+  transition: all 0.2s; z-index: 2;
+}
+.converter-widget:hover { background: rgba(230,230,230,0.95); color: var(--ink2); }
+.converter-widget select {
+  border: none; background: transparent; font-size: 0.65rem;
+  color: var(--ink3); font-family: inherit; cursor: pointer;
+  outline: none; -webkit-appearance: none; appearance: none;
+  padding-right: 0.3rem;
+}
+
+.quote {
+  background: var(--white); border-left: 3px solid var(--red);
+  border-radius: 0 10px 10px 0; padding: 1rem 1.25rem;
+  margin-top: 1.5rem; max-width: 560px; width: 100%;
+  font-size: 0.88rem; font-style: italic; color: var(--ink2); line-height: 1.6;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.quote-attr { font-style: normal; font-size: 0.72rem; color: var(--ink3); margin-top: 0.4rem; font-weight: 600; }
+
+.stat-row {
+  display: flex; gap: 2rem; justify-content: center; margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+.stat { text-align: center; }
+.stat-val { font-size: 1.6rem; font-weight: 800; }
+.stat-label { font-size: 0.7rem; color: var(--ink3); margin-top: 0.1rem; }
+
+.seo-box {
+  background: var(--white); border: 1px solid var(--rule); border-radius: 12px;
+  padding: 2rem; max-width: 560px; width: 100%; text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.seo-box p { font-size: 0.92rem; color: var(--ink2); line-height: 1.7; }
+.seo-box strong { color: var(--ink); }
+
+.cta-box {
+  background: var(--white); border: 2px solid var(--ink);
+  border-radius: 16px; padding: 2.5rem; text-align: center;
+  max-width: 500px; width: 100%;
+}
+.cta-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; }
+.cta-box p { font-size: 0.9rem; color: var(--ink2); line-height: 1.6; margin-bottom: 1.25rem; }
+.cta-link {
+  display: inline-block; background: var(--ink); color: #fff;
+  padding: 0.7rem 1.5rem; border-radius: 10px; text-decoration: none;
+  font-weight: 700; font-size: 0.88rem; transition: opacity 0.2s;
+}
+.cta-link:hover { opacity: 0.85; }
+
+.two-col-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+  max-width: 560px; width: 100%; margin-top: 1.5rem;
+}
+.stat-group { text-align: center; }
+.stat-group-label {
+  font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; margin-bottom: 0.75rem; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ SLIDE 1: Without Multi Currency ═══════ -->
+<section class="slide" id="s0">
+  <div class="eyebrow">Multi Currency &mdash; The Problem</div>
+  <h2>A US buyer on an Israeli site.<br><em>Without Multi Currency.</em></h2>
+  <p class="lead">A US buyer lands on an Israeli merchant's store. Prices in ₪. No context. No way to understand how much things actually cost. Trust breaks immediately.</p>
+
+  <div class="mock-store">
+    <div class="mock-nav">
+      <div class="mock-logo">ARTISAN</div>
+      <div class="mock-nav-links"><span>Shop</span><span>About</span><span>Contact</span></div>
+      <div class="mock-nav-cart">Cart (0)</div>
+    </div>
+    <div class="mock-products">
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price">₪ 1,249.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price">₪ 689.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price">₪ 459.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price">₪ 219.00</div></div>
+    </div>
+  </div>
+
+  <div class="quote">
+    "Client sees my shop currency… for a customer from USA, for example, <strong style="color:var(--red);">it looks like a scam</strong>. They are afraid to buy, and we are losing…"
+    <div class="quote-attr">&mdash; Merchant interview, June 2024</div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><div class="stat-val">11%</div><div class="stat-label">of Wix GPV<br>is cross-border</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--red);">20-40%</div><div class="stat-label">checkout drop when<br>buyers see foreign currency</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--amber);">Top 10</div><div class="stat-label">merchant feature request<br>19K votes</div></div>
+  </div>
+</section>
+
+<!-- ═══════ SLIDE 2: The Converter ═══════ -->
+<section class="slide" id="s1">
+  <div class="eyebrow">Current Solution &mdash; Currency Converter</div>
+  <h2>We built Multi Currency with a converter widget.<br><span class="o">Merchants must install it. Buyers must find it.</span></h2>
+  <p class="lead">The merchant installs a currency converter widget on their site. It works &mdash; but it requires merchant setup, and most buyers never notice it. Try switching to USD below.</p>
+
+  <div class="mock-store" id="store-converter">
+    <div class="mock-nav">
+      <div class="mock-logo">ARTISAN</div>
+      <div class="mock-nav-links"><span>Shop</span><span>About</span><span>Contact</span></div>
+      <div class="mock-nav-cart">Cart (0)</div>
+    </div>
+    <div class="mock-products">
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" data-ils="₪ 1,249.00" data-usd="$339.00">₪ 1,249.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" data-ils="₪ 689.00" data-usd="$187.00">₪ 689.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" data-ils="₪ 459.00" data-usd="$125.00">₪ 459.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" data-ils="₪ 219.00" data-usd="$59.00">₪ 219.00</div></div>
+    </div>
+
+    <div class="converter-widget">
+      <span style="font-size:0.7rem;">🌐</span>
+      <select id="converter-select">
+        <option value="ils" selected>₪ ILS</option>
+        <option value="usd">$ USD</option>
+        <option value="eur">€ EUR</option>
+        <option value="gbp">£ GBP</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><div class="stat-val" style="color:var(--red);">5%</div><div class="stat-label">of merchants with CB volume<br>install the converter</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--red);">~20%</div><div class="stat-label">of cross-border buyers<br>actually use it</div></div>
+  </div>
+</section>
+
+<!-- ═══════ SLIDE 3: Auto Display ═══════ -->
+<section class="slide" id="s2">
+  <h2>The Solution &mdash; Auto Display for the buyer.<br><span class="g">Zero setup for the merchant.</span></h2>
+  <p class="lead">Detect the buyer's location, display their local currency automatically. No merchant configuration needed &mdash; which means we can turn this on for everyone. Auto display is the standard on Shopify, WooCommerce, and many others.</p>
+
+  <div class="mock-store">
+    <div class="mock-nav">
+      <div class="mock-logo">ARTISAN</div>
+      <div class="mock-nav-links"><span>Shop</span><span>About</span><span>Contact</span></div>
+      <div class="mock-nav-cart">Cart (0)</div>
+    </div>
+    <div class="mock-products">
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" style="color:var(--green);">$339.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" style="color:var(--green);">$187.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" style="color:var(--green);">$125.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" style="color:var(--green);">$59.00</div></div>
+    </div>
+  </div>
+
+  <div class="eyebrow" style="margin-top:1.5rem; margin-bottom:0.5rem;">Initial test results</div>
+  <div class="stat-row" style="margin-top:0;">
+    <div class="stat"><div class="stat-val" style="color:var(--green);">+9.2%</div><div class="stat-label">order paid<br>uplift</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--green);">1.18%</div><div class="stat-label">of buyers chose to<br>switch back to site currency</div></div>
+  </div>
+</section>
+
+<!-- ═══════ SLIDE 4: SEO Constraint ═══════ -->
+<section class="slide" id="s3">
+  <div class="eyebrow">The Constraint</div>
+  <h2>SEO won't allow <span class="o">silent auto-display</span></h2>
+  <p class="lead">We can't switch the currency instantly on page load &mdash; Google would see different content per location, which is a cloaking risk.</p>
+
+  <div class="seo-box">
+    <p>SEO requires a <strong>notification-based approach</strong>: the page loads in the merchant's currency, then after ~5 seconds, a notification informs the buyer and switches to their local currency. The buyer can keep or revert.</p>
+  </div>
+
+</section>
+
+<!-- ═══════ SLIDE 5: The Ask ═══════ -->
+<section class="slide" id="s4">
+  <div class="eyebrow">Your Input</div>
+  <h2>This is the experience.<br>What do you <span class="b">think</span>?</h2>
+  <p class="lead">Kostia designed the notification experience. We'd love your perspective on whether this pattern is right.</p>
+
+  <div class="cta-box">
+    <h3>See the live demo</h3>
+    <p></p>
+    <a class="cta-link" href="https://kostiaantnko.github.io/sole-demo/index.html" target="_blank">Open Demo &rarr;</a>
+  </div>
+
+</section>
+
+<script>
+const select = document.getElementById('converter-select');
+const store = document.getElementById('store-converter');
+select.addEventListener('change', function() {
+  const prices = store.querySelectorAll('.mock-price');
+  const currency = this.value;
+  prices.forEach(p => {
+    if (currency === 'usd') {
+      p.textContent = p.dataset.usd;
+      p.style.color = 'var(--green)';
+    } else {
+      p.textContent = p.dataset.ils;
+      p.style.color = '';
+    }
+  });
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.2 });
+document.querySelectorAll('.slide').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
