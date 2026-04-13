@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto Display — BM Settings Mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=Madefor+Display:wght@400;500;600;700&family=Helvetica+Neue:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f0f4f7;
+  --white: #ffffff;
+  --ink: #162d3d;
+  --ink-light: #577083;
+  --ink-lighter: #7a92a5;
+  --border: #dfe5eb;
+  --border-light: #e5e5ea;
+  --blue: #3899ec;
+  --blue-dark: #2b81cb;
+  --blue-light: #eaf7ff;
+  --blue-bg: #daeffe;
+  --green: #44823b;
+  --green-tag-bg: #e0f5e0;
+  --green-tag-text: #2b5a2b;
+  --purple: #8e21e0;
+  --purple-light: #f3e8fd;
+  --sidebar-bg: #131720;
+  --sidebar-text: #b6c1cd;
+  --sidebar-active: #ffffff;
+  --sidebar-active-bg: rgba(255,255,255,0.08);
+  --section-helper-bg: #eaf7ff;
+  --amber-bg: #fef4e5;
+  --amber-text: #a95e00;
+  --amber-border: #fdb44b;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: #e8ecf0;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.scenario-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.scenario-label {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.scenario-label h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+.scenario-label p {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+}
+
+.scenario-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.scenario-nav button {
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--white);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.scenario-nav button.active {
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
+}
+.scenario-nav button:hover:not(.active) {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.bm-frame {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+  overflow: hidden;
+  display: none;
+}
+.bm-frame.active { display: block; }
+
+/* Top nav bar */
+.bm-topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  height: 48px;
+  background: var(--sidebar-bg);
+  color: var(--white);
+  font-size: 0.82rem;
+}
+.bm-topnav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.bm-topnav-logo {
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+.bm-topnav-logo span { color: var(--blue); }
+.bm-topnav-site {
+  font-size: 0.78rem;
+  color: var(--sidebar-text);
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.bm-topnav-right {
+  display: flex; align-items: center; gap: 1rem;
+  font-size: 0.78rem; color: var(--sidebar-text);
+}
+
+.bm-body {
+  display: flex;
+  min-height: 600px;
+}
+
+/* Sidebar */
+.bm-sidebar {
+  width: 200px;
+  background: var(--sidebar-bg);
+  padding: 0.75rem 0;
+  flex-shrink: 0;
+}
+.bm-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  color: var(--sidebar-text);
+  cursor: default;
+}
+.bm-sidebar-item.active {
+  color: var(--sidebar-active);
+  background: var(--sidebar-active-bg);
+  border-left: 2px solid var(--blue);
+}
+.bm-sidebar-item svg { width: 18px; height: 18px; fill: currentColor; }
+
+/* Main content */
+.bm-main {
+  flex: 1;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+/* Page header (breadcrumb + title) */
+.page-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem 1.25rem;
+}
+.breadcrumb {
+  font-size: 0.72rem;
+  color: var(--ink-lighter);
+  margin-bottom: 0.5rem;
+  display: flex;
+  gap: 0.3rem;
+}
+.breadcrumb a {
+  color: var(--ink-lighter);
+  text-decoration: none;
+}
+.breadcrumb a:hover { text-decoration: underline; }
+.page-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.back-arrow {
+  font-size: 1rem;
+  color: var(--blue);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Content area */
+.page-content {
+  padding: 1.5rem 2rem;
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Card */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+.card-header-text { flex: 1; }
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.card-subtitle {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  line-height: 1.45;
+}
+.card-subtitle a {
+  color: var(--blue);
+  text-decoration: none;
+  font-size: 0.82rem;
+}
+.card-subtitle a:hover { text-decoration: underline; }
+.card-suffix {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+.card-divider {
+  height: 1px;
+  background: var(--border);
+}
+.card-content {
+  padding: 0 1.5rem 1rem;
+}
+
+/* Tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.55rem;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tag-success {
+  background: var(--green-tag-bg);
+  color: var(--green-tag-text);
+}
+.tag-neutral {
+  background: #edf1f5;
+  color: var(--ink-light);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  border: none;
+  font-family: inherit;
+}
+.btn-primary {
+  background: var(--blue);
+  color: var(--white);
+  padding: 0.35rem 1rem;
+  font-size: 0.78rem;
+}
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-secondary {
+  background: transparent;
+  color: var(--blue);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  border: 1px solid var(--blue);
+}
+.btn-secondary:hover { background: var(--blue-light); }
+
+.text-btn {
+  background: none;
+  border: none;
+  color: var(--blue);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+}
+.text-btn:hover { text-decoration: underline; }
+.text-btn-sm { font-size: 0.78rem; }
+
+/* Toggle (switch) */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.toggle-row-text { flex: 1; }
+.toggle-row-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.15rem;
+}
+.toggle-row-subtitle {
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  line-height: 1.4;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #b6c1cd;
+  border-radius: 20px;
+  transition: 0.2s;
+}
+.toggle-slider:before {
+  content: "";
+  position: absolute;
+  height: 16px; width: 16px;
+  left: 2px; bottom: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider {
+  background: var(--blue);
+}
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(16px);
+}
+
+/* Section helper (info banner) */
+.section-helper {
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.section-helper-info {
+  background: var(--section-helper-bg);
+  border: 1px solid #b6d4fe;
+}
+.section-helper-warning {
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+}
+.section-helper-icon {
+  flex-shrink: 0;
+  width: 20px; height: 20px;
+  margin-top: 1px;
+}
+.section-helper-content { flex: 1; }
+.section-helper-content strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.82rem;
+}
+.section-helper-action {
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Step rows */
+.step-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+.step-row:last-child { margin-bottom: 0; }
+.step-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.step-dot-done { background: var(--green); }
+.step-dot-pending { background: var(--blue); }
+.step-text { font-size: 0.82rem; color: var(--ink); }
+.step-text-done {
+  text-decoration: line-through;
+  color: var(--ink-lighter);
+}
+.step-check {
+  color: var(--green);
+  font-size: 1rem;
+}
+
+/* New badge */
+.new-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  background: var(--purple-light);
+  color: var(--purple);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Scenario descriptions below the frame */
+.scenario-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 0 2rem;
+}
+.scenario-footer p {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  line-height: 1.6;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.suffix-value {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  white-space: nowrap;
+}
+</style>
+</head>
+<body>
+
+<div class="scenario-container">
+  <div class="scenario-label">
+    <h1>Multi-Currency BM Settings — Auto Display</h1>
+    <p>Three scenarios for the new experience where auto display replaces the converter as the primary setup</p>
+  </div>
+
+  <div class="scenario-nav">
+    <button class="active" onclick="showScenario(1)">1 — Auto Display ON (default)</button>
+    <button onclick="showScenario(2)">2 — Auto Display Available (opt-in)</button>
+    <button onclick="showScenario(3)">3 — Both ON (auto display + converter)</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SCENARIO 1: Auto Display is toggled ON (default)       -->
+  <!-- Converter is optional                                   -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="bm-frame active" id="scenario-1">
+    <div class="bm-topnav">
+      <div class="bm-topnav-left">
+        <div class="bm-topnav-logo">WIX <span>STUDIO</span></div>
+        <div class="bm-topnav-site">Supreme Inc ▾</div>
+      </div>
+      <div class="bm-topnav-right">
+        <span>Resources ▾</span>
+        <span>Community ▾</span>
+        <span>Help ▾</span>
+      </div>
+    </div>
+    <div class="bm-body">
+      <div class="bm-sidebar">
+        <div class="bm-sidebar-item">Setup</div>
+        <div class="bm-sidebar-item">Home</div>
+        <div class="bm-sidebar-item">Getting Paid</div>
+        <div class="bm-sidebar-item">All Payments</div>
+        <div class="bm-sidebar-item">Apps</div>
+        <div class="bm-sidebar-item">Site & Mobile App</div>
+        <div class="bm-sidebar-item">Inbox</div>
+        <div class="bm-sidebar-item">Customers & Leads</div>
+        <div class="bm-sidebar-item">Marketing</div>
+        <div class="bm-sidebar-item">Analytics</div>
+        <div class="bm-sidebar-item">Automations</div>
+        <div class="bm-sidebar-item active">Settings</div>
+        <div class="bm-sidebar-item">CMS</div>
+        <div class="bm-sidebar-item">Developer Tools</div>
+      </div>
+      <div class="bm-main">
+        <div class="page-header">
+          <div class="breadcrumb">
+            <a href="#">Settings</a> › <a href="#">Accept Payments</a> › Multi-Currency
+          </div>
+          <div class="page-title">
+            <a class="back-arrow">‹</a>
+            Multi-Currency
+          </div>
+        </div>
+        <div class="page-content">
+
+          <!-- Accept multiple currencies card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Accept multiple currencies</div>
+                <div class="card-subtitle">Let your customers view prices and pay with their local currency at checkout. <a href="#">Learn more</a></div>
+              </div>
+              <div class="card-suffix">
+                <span class="tag tag-success">Active</span>
+                <button class="text-btn text-btn-sm">Deactivate</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Auto Display card — ON by default -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">
+                  Auto display customer currency
+                  <span class="new-badge">New</span>
+                </div>
+                <div class="card-subtitle">Automatically display prices in your buyer's local currency based on their location. No setup needed — works for all cross-border visitors.</div>
+              </div>
+              <div class="card-suffix">
+                <span class="tag tag-success">Active</span>
+                <button class="text-btn text-btn-sm">Turn off</button>
+              </div>
+            </div>
+            <div class="card-content">
+              <div class="section-helper section-helper-info">
+                <svg class="section-helper-icon" viewBox="0 0 24 24" fill="#3899ec"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                <div class="section-helper-content">
+                  <span>Buyers see a notification when their currency is auto-displayed, and can switch back to your site currency at any time.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main currency -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Main currency</div>
+                <div class="card-subtitle">This is the currency customers see by default on your site.</div>
+              </div>
+              <div class="card-suffix">
+                <span class="suffix-value">US Dollar · USD ($)</span>
+                <button class="text-btn text-btn-sm">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional currencies -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Additional currencies · 45</div>
+                <div class="card-subtitle">These are the currencies displayed to your cross-border customers. Prices are converted automatically using current market exchange rates. <a href="#">Learn more about supported currencies</a></div>
+              </div>
+              <div class="card-suffix">
+                <button class="text-btn text-btn-sm">Manage Currencies ↗</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Converter (optional, not installed) -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Currency converter widget</div>
+                <div class="card-subtitle">Optional. Add a converter widget so buyers can manually browse currencies on your site. <a href="#">Learn more</a></div>
+              </div>
+              <div class="card-suffix">
+                <span class="tag tag-neutral">Not installed</span>
+                <button class="btn btn-secondary" style="font-size:0.72rem; padding: 0.25rem 0.75rem;">Add Currency Converter ↗</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SCENARIO 2: Auto Display Available — user can opt in   -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="bm-frame" id="scenario-2">
+    <div class="bm-topnav">
+      <div class="bm-topnav-left">
+        <div class="bm-topnav-logo">WIX <span>STUDIO</span></div>
+        <div class="bm-topnav-site">Supreme Inc ▾</div>
+      </div>
+      <div class="bm-topnav-right">
+        <span>Resources ▾</span>
+        <span>Community ▾</span>
+        <span>Help ▾</span>
+      </div>
+    </div>
+    <div class="bm-body">
+      <div class="bm-sidebar">
+        <div class="bm-sidebar-item">Setup</div>
+        <div class="bm-sidebar-item">Home</div>
+        <div class="bm-sidebar-item">Getting Paid</div>
+        <div class="bm-sidebar-item">All Payments</div>
+        <div class="bm-sidebar-item">Apps</div>
+        <div class="bm-sidebar-item">Site & Mobile App</div>
+        <div class="bm-sidebar-item">Inbox</div>
+        <div class="bm-sidebar-item">Customers & Leads</div>
+        <div class="bm-sidebar-item">Marketing</div>
+        <div class="bm-sidebar-item">Analytics</div>
+        <div class="bm-sidebar-item">Automations</div>
+        <div class="bm-sidebar-item active">Settings</div>
+        <div class="bm-sidebar-item">CMS</div>
+        <div class="bm-sidebar-item">Developer Tools</div>
+      </div>
+      <div class="bm-main">
+        <div class="page-header">
+          <div class="breadcrumb">
+            <a href="#">Settings</a> › <a href="#">Accept Payments</a> › Multi-Currency
+          </div>
+          <div class="page-title">
+            <a class="back-arrow">‹</a>
+            Multi-Currency
+          </div>
+        </div>
+        <div class="page-content">
+
+          <!-- Accept multiple currencies card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Accept multiple currencies</div>
+                <div class="card-subtitle">Let your customers view prices and pay with their local currency at checkout. <a href="#">Learn more</a></div>
+              </div>
+              <div class="card-suffix">
+                <span class="tag tag-success">Active</span>
+                <button class="text-btn text-btn-sm">Deactivate</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Auto Display card — Available to opt in -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">
+                  Auto display customer currency
+                  <span class="new-badge">New</span>
+                </div>
+                <div class="card-subtitle">Automatically display prices in your buyer's local currency based on their location. No setup needed — works for all cross-border visitors.</div>
+              </div>
+              <div class="card-suffix">
+                <span class="tag tag-neutral">Not active</span>
+                <button class="btn btn-primary" style="font-size:0.72rem; padding: 0.3rem 0.9rem;">Turn on</button>
+              </div>
+            </div>
+            <div class="card-content">
+              <div class="section-helper section-helper-info">
+                <svg class="section-helper-icon" viewBox="0 0 24 24" fill="#3899ec"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                <div class="section-helper-content">
+                  <span>Boost cross-border conversion by up to 9%. Buyers see a notification when their currency changes and can switch back at any time.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main currency -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Main currency</div>
+                <div class="card-subtitle">This is the currency customers see by default on your site.</div>
+              </div>
+              <div class="card-suffix">
+                <span class="suffix-value">US Dollar · USD ($)</span>
+                <button class="text-btn text-btn-sm">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional currencies -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Additional currencies · 45</div>
+                <div class="card-subtitle">These are the currencies displayed in your site's currency converter. Your customers can pay in these currencies if they are supported by your provider. <a href="#">Learn more about supported currencies</a></div>
+              </div>
+              <div class="card-suffix">
+                <button class="text-btn text-btn-sm">Manage Currencies ↗</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Get ready steps (converter as remaining step) -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Currency converter widget</div>
+                <div class="card-subtitle">Optional. Add a converter widget so buyers can manually browse currencies on your site.</div>
+              </div>
+              <div class="card-suffix">
+                <span class="tag tag-neutral">Not installed</span>
+                <button class="btn btn-secondary" style="font-size:0.72rem; padding: 0.25rem 0.75rem;">Add Currency Converter ↗</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SCENARIO 3: Both auto display AND converter are ON     -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="bm-frame" id="scenario-3">
+    <div class="bm-topnav">
+      <div class="bm-topnav-left">
+        <div class="bm-topnav-logo">WIX <span>STUDIO</span></div>
+        <div class="bm-topnav-site">Supreme Inc ▾</div>
+      </div>
+      <div class="bm-topnav-right">
+        <span>Resources ▾</span>
+        <span>Community ▾</span>
+        <span>Help ▾</span>
+      </div>
+    </div>
+    <div class="bm-body">
+      <div class="bm-sidebar">
+        <div class="bm-sidebar-item">Setup</div>
+        <div class="bm-sidebar-item">Home</div>
+        <div class="bm-sidebar-item">Getting Paid</div>
+        <div class="bm-sidebar-item">All Payments</div>
+        <div class="bm-sidebar-item">Apps</div>
+        <div class="bm-sidebar-item">Site & Mobile App</div>
+        <div class="bm-sidebar-item">Inbox</div>
+        <div class="bm-sidebar-item">Customers & Leads</div>
+        <div class="bm-sidebar-item">Marketing</div>
+        <div class="bm-sidebar-item">Analytics</div>
+        <div class="bm-sidebar-item">Automations</div>
+        <div class="bm-sidebar-item active">Settings</div>
+        <div class="bm-sidebar-item">CMS</div>
+        <div class="bm-sidebar-item">Developer Tools</div>
+      </div>
+      <div class="bm-main">
+        <div class="page-header">
+          <div class="breadcrumb">
+            <a href="#">Settings</a> › <a href="#">Accept Payments</a> › Multi-Currency
+          </div>
+          <div class="page-title">
+            <a class="back-arrow">‹</a>
+            Multi-Currency
+          </div>
+        </div>
+        <div class="page-content">
+
+          <!-- Accept multiple currencies card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Accept multiple currencies</div>
+                <div class="card-subtitle">Let your customers view prices and pay with their local currency at checkout. <a href="#">Learn more</a></div>
+              </div>
+              <div class="card-suffix">
+                <span class="tag tag-success">Active</span>
+                <button class="text-btn text-btn-sm">Deactivate</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Auto Display card — ON -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">
+                  Auto display customer currency
+                  <span class="new-badge">New</span>
+                </div>
+                <div class="card-subtitle">Automatically display prices in your buyer's local currency based on their location. No setup needed — works for all cross-border visitors.</div>
+              </div>
+              <div class="card-suffix">
+                <span class="tag tag-success">Active</span>
+                <button class="text-btn text-btn-sm">Turn off</button>
+              </div>
+            </div>
+            <div class="card-content">
+              <div class="section-helper section-helper-info">
+                <svg class="section-helper-icon" viewBox="0 0 24 24" fill="#3899ec"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                <div class="section-helper-content">
+                  <span>Buyers see a notification when their currency is auto-displayed, and can switch back to your site currency at any time.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main currency -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Main currency</div>
+                <div class="card-subtitle">This is the currency customers see by default on your site.</div>
+              </div>
+              <div class="card-suffix">
+                <span class="suffix-value">US Dollar · USD ($)</span>
+                <button class="text-btn text-btn-sm">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional currencies -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Additional currencies · 45</div>
+                <div class="card-subtitle">These are the currencies displayed to your cross-border customers. Prices are converted automatically using current market exchange rates. <a href="#">Learn more about supported currencies</a></div>
+              </div>
+              <div class="card-suffix">
+                <button class="text-btn text-btn-sm">Manage Currencies ↗</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Converter — installed and active -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-text">
+                <div class="card-title">Currency converter widget</div>
+                <div class="card-subtitle">Buyers can also manually browse and switch currencies using the converter on your site. To remove the converter, go to the Editor.</div>
+              </div>
+              <div class="card-suffix">
+                <span class="tag tag-success">Installed</span>
+                <button class="text-btn text-btn-sm">Go to Editor ↗</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario-footer" id="footer-1">
+    <p><strong>Scenario 1 — Auto Display ON (default)</strong><br>
+    This is the default experience for merchants who get Multi Currency turned on via the Default ON rollout. Auto display is active out of the box. The converter is shown as an optional add-on they can install if they want. No required steps.</p>
+  </div>
+  <div class="scenario-footer" id="footer-2" style="display:none;">
+    <p><strong>Scenario 2 — Auto Display Available (opt-in)</strong><br>
+    For merchants who already have Multi Currency but haven't been defaulted into auto display. They see it as a new feature they can turn on. The converter widget remains as a separate optional item.</p>
+  </div>
+  <div class="scenario-footer" id="footer-3" style="display:none;">
+    <p><strong>Scenario 3 — Both Auto Display + Converter ON</strong><br>
+    For merchants who have both auto display active and the converter widget installed. Both features work together. To remove the converter, the merchant goes to the Editor — it's a site widget, not a BM toggle.</p>
+  </div>
+</div>
+
+<script>
+function showScenario(n) {
+  document.querySelectorAll('.bm-frame').forEach(f => f.classList.remove('active'));
+  document.querySelectorAll('.scenario-nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.scenario-footer').forEach(f => f.style.display = 'none');
+
+  document.getElementById('scenario-' + n).classList.add('active');
+  document.querySelectorAll('.scenario-nav button')[n - 1].classList.add('active');
+  document.getElementById('footer-' + n).style.display = 'block';
+}
+</script>
+
+</body>
+</html>
