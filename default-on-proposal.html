@@ -408,7 +408,37 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   </ul>
 </div>
 
+<!-- Password gate -->
+<div id="pw-gate" style="position:fixed;inset:0;z-index:9999;background:#f8f7f4;display:flex;align-items:center;justify-content:center;">
+  <div style="text-align:center;max-width:340px;">
+    <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#999;margin-bottom:1rem;">Multi Currency — Default ON</div>
+    <div style="font-size:1.4rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.5rem;">Enter password</div>
+    <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem;">This presentation is password-protected.</div>
+    <input id="pw-input" type="password" placeholder="Password" autofocus
+      style="width:100%;padding:0.65rem 1rem;border:1px solid #e5e3de;border-radius:8px;font-size:0.9rem;font-family:inherit;outline:none;text-align:center;transition:border-color 0.2s;"
+      onfocus="this.style.borderColor='#0d9488'" onblur="this.style.borderColor='#e5e3de'">
+    <div id="pw-error" style="color:#dc2626;font-size:0.78rem;margin-top:0.5rem;display:none;">Incorrect password</div>
+    <button id="pw-btn" onclick="checkPw()"
+      style="margin-top:1rem;width:100%;padding:0.6rem;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity 0.15s;"
+      onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Continue</button>
+  </div>
+</div>
+
 <script>
+function checkPw() {
+  if (document.getElementById('pw-input').value === 'Auto-Display') {
+    document.getElementById('pw-gate').style.display = 'none';
+    document.body.style.overflow = '';
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').style.borderColor = '#dc2626';
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkPw();
+});
+document.body.style.overflow = 'hidden';
+
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
 }, { threshold: 0.15 });
