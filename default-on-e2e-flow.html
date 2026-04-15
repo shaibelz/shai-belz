@@ -435,251 +435,116 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       </div>
     </div>
 
-    <!-- ═══════ STEP 2: BM Settings (tabbed) ═══════ -->
+    <!-- ═══════ STEP 2: BM Settings (interactive) ═══════ -->
     <div class="step">
       <div class="step-dot" style="background:var(--teal);">2</div>
-      <div class="step-label" style="color:var(--teal);">Step 2 — BM Settings Experience</div>
+      <div class="step-label" style="color:var(--teal);">Step 2 — BM Settings Experience (Interactive)</div>
       <div class="step-title">Multi-Currency settings page</div>
-      <div class="step-desc">The BM settings page adapts to the merchant's state. Use the tabs below to see each scenario.</div>
+      <div class="step-desc">This is a working demo — click the toggles and buttons to see how the page behaves. Use the presets to jump to a specific state.</div>
 
-      <!-- Tabs -->
+      <!-- Preset tabs -->
       <div class="bm-tabs">
-        <button class="bm-tab active" onclick="showBmTab(0)">Before flip (pre-notice)</button>
-        <button class="bm-tab" onclick="showBmTab(1)">After flip — ON</button>
-        <button class="bm-tab" onclick="showBmTab(2)">Toggled OFF</button>
+        <button class="bm-tab active" onclick="applyPreset('prenotice')">Before flip (pre-notice)</button>
+        <button class="bm-tab" onclick="applyPreset('on')">After flip — ON</button>
+        <button class="bm-tab" onclick="applyPreset('off-converter')">AD off + Converter</button>
+        <button class="bm-tab" onclick="applyPreset('off-no-converter')">AD off + No Converter</button>
       </div>
 
-      <!-- ── TAB 0: Before flip day (pre-notice received) ── -->
-      <div class="bm-tab-panel active" id="bm-panel-0">
-        <div class="visual-block bm-mock">
-          <div class="bm-topbar">
-            <div class="bm-topbar-logo">WIX <span>STUDIO</span></div>
-            <div>Supreme Inc</div>
-          </div>
-          <div class="bm-content">
-            <div class="bm-breadcrumb">Settings › Accept Payments › Multi-Currency</div>
-            <div class="bm-page-title">‹ Multi-Currency</div>
-
-            <!-- Opt-out banner -->
-            <div class="bm-banner bm-banner-info">
-              <div class="bm-banner-text">
-                <strong>Multi Currency with auto display will be enabled on [date].</strong>
-                Your cross-border visitors will automatically see prices in their local currency.
-              </div>
-              <div class="bm-banner-actions">
-                <button class="bm-banner-btn bm-banner-btn-primary">Enable now</button>
-                <button class="bm-banner-btn bm-banner-btn-secondary">Opt out</button>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Accept multiple currencies</div>
-                  <div class="bm-card-sub">Let your customers view prices and pay with their local currency.</div>
-                </div>
-                <div class="bm-toggle-area">
-                  <label class="bm-toggle"><input type="checkbox" disabled><span class="bm-toggle-slider"></span></label>
-                </div>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Auto display customer currency <span class="bm-new-badge">New</span></div>
-                  <div class="bm-card-sub">Automatically display prices in your buyer's local currency based on their location.</div>
-                </div>
-                <div class="bm-toggle-area">
-                  <label class="bm-toggle"><input type="checkbox" disabled><span class="bm-toggle-slider"></span></label>
-                </div>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Main currency</div>
-                  <div class="bm-card-sub">This is the currency customers see by default on your site.</div>
-                </div>
-                <div style="font-size:0.72rem;color:#577083;">US Dollar · USD ($) &nbsp;<span style="color:#3899ec;cursor:pointer;font-size:0.7rem;">Edit</span></div>
-              </div>
-            </div>
-
-            <div class="bm-card" style="opacity:0.5;">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Currency converter widget</div>
-                  <div class="bm-card-sub">Optional — add a converter so buyers can manually browse currencies.</div>
-                </div>
-                <div>
-                  <span class="bm-tag bm-tag-gray">Not installed</span>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="visual-block bm-mock" style="max-width:640px;" id="interactive-bm">
+        <div class="bm-topbar">
+          <div class="bm-topbar-logo">WIX <span>STUDIO</span></div>
+          <div>Supreme Inc</div>
         </div>
-        <div class="anno">
-          <div class="anno-arrow">↑</div>
-          <div class="anno-text"><strong>Before flip day.</strong> Merchant received the pre-notice email. Banner shows upcoming activation with options to enable now or opt out. Toggles are off but visible.</div>
-        </div>
-      </div>
+        <div class="bm-content">
+          <div class="bm-breadcrumb">Settings › Accept Payments › Multi-Currency</div>
+          <div class="bm-page-title">‹ Multi-Currency</div>
 
-      <!-- ── TAB 1: After flip — Toggled ON ── -->
-      <div class="bm-tab-panel" id="bm-panel-1">
-        <div class="visual-block bm-mock">
-          <div class="bm-topbar">
-            <div class="bm-topbar-logo">WIX <span>STUDIO</span></div>
-            <div>Supreme Inc</div>
+          <!-- Pre-notice banner -->
+          <div class="bm-banner bm-banner-info" id="prenotice-banner">
+            <div class="bm-banner-text">
+              <strong>Multi Currency with auto display will be enabled on [date].</strong>
+              Your cross-border visitors will automatically see prices in their local currency.
+            </div>
+            <div class="bm-banner-actions">
+              <button class="bm-banner-btn bm-banner-btn-primary" onclick="bannerEnableNow()">Enable now</button>
+              <button class="bm-banner-btn bm-banner-btn-secondary" onclick="bannerOptOut()">Opt out</button>
+            </div>
           </div>
-          <div class="bm-content">
-            <div class="bm-breadcrumb">Settings › Accept Payments › Multi-Currency</div>
-            <div class="bm-page-title">‹ Multi-Currency</div>
 
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Accept multiple currencies</div>
-                  <div class="bm-card-sub">Let your customers view prices and pay with their local currency.</div>
-                </div>
-                <div class="bm-toggle-area">
-                  <label class="bm-toggle"><input type="checkbox" checked disabled><span class="bm-toggle-slider"></span></label>
-                </div>
+          <!-- MC toggle -->
+          <div class="bm-card" id="card-mc">
+            <div class="bm-card-row">
+              <div>
+                <div class="bm-card-title">Accept multiple currencies</div>
+                <div class="bm-card-sub">Let your customers view prices and pay with their local currency.</div>
               </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Auto display customer currency <span class="bm-new-badge">New</span></div>
-                  <div class="bm-card-sub">Automatically display prices in your buyer's local currency based on their location.</div>
-                </div>
-                <div class="bm-toggle-area">
-                  <label class="bm-toggle"><input type="checkbox" checked disabled><span class="bm-toggle-slider"></span></label>
-                </div>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Main currency</div>
-                  <div class="bm-card-sub">This is the currency customers see by default on your site.</div>
-                </div>
-                <div style="font-size:0.72rem;color:#577083;">US Dollar · USD ($) &nbsp;<span style="color:#3899ec;cursor:pointer;font-size:0.7rem;">Edit</span></div>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Additional currencies · 45</div>
-                  <div class="bm-card-sub">Currencies displayed to your cross-border customers. <span style="color:#3899ec;cursor:pointer;">Learn more</span></div>
-                </div>
-                <div style="font-size:0.7rem;color:#3899ec;cursor:pointer;">Manage Currencies ↗</div>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Currency converter widget</div>
-                  <div class="bm-card-sub">Optional — add a converter so buyers can manually browse currencies.</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:0.5rem;">
-                  <span class="bm-tag bm-tag-gray">Not installed</span>
-                  <button class="bm-cta-btn">Add Converter ↗</button>
-                </div>
+              <div class="bm-toggle-area">
+                <label class="bm-toggle"><input type="checkbox" id="toggle-mc" onchange="onMcToggle()"><span class="bm-toggle-slider" style="cursor:pointer;"></span></label>
               </div>
             </div>
           </div>
-        </div>
-        <div class="anno">
-          <div class="anno-arrow">↑</div>
-          <div class="anno-text"><strong>After flip day — both toggles ON.</strong> Auto display is the default display method. Converter is optional with a CTA to configure it. Merchant can toggle either off.</div>
+
+          <!-- Auto display toggle -->
+          <div class="bm-card" id="card-ad">
+            <div class="bm-card-row">
+              <div>
+                <div class="bm-card-title">Auto display customer currency <span class="bm-new-badge">New</span></div>
+                <div class="bm-card-sub">Automatically display prices in your buyer's local currency based on their location.</div>
+              </div>
+              <div class="bm-toggle-area">
+                <label class="bm-toggle"><input type="checkbox" id="toggle-ad" onchange="onAdToggle()"><span class="bm-toggle-slider" style="cursor:pointer;"></span></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main currency (always visible) -->
+          <div class="bm-card">
+            <div class="bm-card-row">
+              <div>
+                <div class="bm-card-title">Main currency</div>
+                <div class="bm-card-sub">This is the currency customers see by default on your site.</div>
+              </div>
+              <div style="font-size:0.72rem;color:#577083;">US Dollar · USD ($) &nbsp;<span style="color:#3899ec;cursor:pointer;font-size:0.7rem;">Edit</span></div>
+            </div>
+          </div>
+
+          <!-- Additional currencies (visible when MC is on) -->
+          <div class="bm-card" id="card-currencies" style="display:none;">
+            <div class="bm-card-row">
+              <div>
+                <div class="bm-card-title">Additional currencies · 45</div>
+                <div class="bm-card-sub">Currencies displayed to your cross-border customers. <span style="color:#3899ec;cursor:pointer;">Learn more</span></div>
+              </div>
+              <div style="font-size:0.7rem;color:#3899ec;cursor:pointer;">Manage Currencies ↗</div>
+            </div>
+          </div>
+
+          <!-- Converter widget -->
+          <div class="bm-card" id="card-converter">
+            <div class="bm-card-row">
+              <div>
+                <div class="bm-card-title">Currency converter widget</div>
+                <div class="bm-card-sub" id="converter-sub">Optional — add a converter so buyers can manually browse currencies.</div>
+              </div>
+              <div id="converter-suffix" style="display:flex;align-items:center;gap:0.5rem;">
+                <span class="bm-tag bm-tag-gray" id="converter-tag">Not installed</span>
+                <button class="bm-cta-btn" id="converter-cta" onclick="toggleConverter()">Add Converter ↗</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Warning: no display method -->
+          <div class="bm-banner bm-banner-warning" id="warning-banner" style="display:none;">
+            <div class="bm-banner-text">
+              <strong>No display method active.</strong> Without auto display or a converter widget, your cross-border buyers won't see local currency prices. Enable auto display or add the converter.
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- ── TAB 2: Toggled OFF (with/without converter) ── -->
-      <div class="bm-tab-panel" id="bm-panel-2">
-        <div class="visual-block bm-mock">
-          <div class="bm-topbar">
-            <div class="bm-topbar-logo">WIX <span>STUDIO</span></div>
-            <div>Supreme Inc</div>
-          </div>
-          <div class="bm-content">
-            <div class="bm-breadcrumb">Settings › Accept Payments › Multi-Currency</div>
-            <div class="bm-page-title">‹ Multi-Currency</div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Accept multiple currencies</div>
-                  <div class="bm-card-sub">Let your customers view prices and pay with their local currency.</div>
-                </div>
-                <div class="bm-toggle-area">
-                  <label class="bm-toggle"><input type="checkbox" checked disabled><span class="bm-toggle-slider"></span></label>
-                </div>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Auto display customer currency <span class="bm-new-badge">New</span></div>
-                  <div class="bm-card-sub">Automatically display prices in your buyer's local currency based on their location.</div>
-                </div>
-                <div class="bm-toggle-area">
-                  <label class="bm-toggle"><input type="checkbox" disabled><span class="bm-toggle-slider"></span></label>
-                </div>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Main currency</div>
-                  <div class="bm-card-sub">This is the currency customers see by default on your site.</div>
-                </div>
-                <div style="font-size:0.72rem;color:#577083;">US Dollar · USD ($) &nbsp;<span style="color:#3899ec;cursor:pointer;font-size:0.7rem;">Edit</span></div>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Additional currencies · 45</div>
-                  <div class="bm-card-sub">Currencies displayed to your cross-border customers. <span style="color:#3899ec;cursor:pointer;">Learn more</span></div>
-                </div>
-                <div style="font-size:0.7rem;color:#3899ec;cursor:pointer;">Manage Currencies ↗</div>
-              </div>
-            </div>
-
-            <div class="bm-card">
-              <div class="bm-card-row">
-                <div>
-                  <div class="bm-card-title">Currency converter widget</div>
-                  <div class="bm-card-sub">Buyers can manually browse and switch currencies on your site.</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:0.5rem;">
-                  <span class="bm-tag bm-tag-green">Installed</span>
-                  <span style="font-size:0.7rem;color:#3899ec;cursor:pointer;">Go to Editor ↗</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Warning if no display method -->
-            <div class="bm-banner bm-banner-warning" id="no-display-warning">
-              <div class="bm-banner-text">
-                <strong>No display method active.</strong> Without auto display or a converter widget, your cross-border buyers won't see local currency prices. Enable auto display or add the converter.
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="anno">
-          <div class="anno-arrow">↑</div>
-          <div class="anno-text"><strong>Auto display toggled OFF.</strong> MC is still on. Converter is installed in this example — it's the active display method. If neither is active, a warning banner appears. Merchant can re-enable auto display at any time.</div>
-        </div>
+      <!-- State readout -->
+      <div id="state-readout" style="margin-top:0.75rem; padding:0.65rem 0.85rem; background:var(--white); border:1px solid var(--rule); border-radius:8px; max-width:640px; font-size:0.72rem; color:var(--ink2); line-height:1.6;">
+        <strong style="color:var(--ink);">Current state:</strong> <span id="state-text">Pre-notice — MC off, Auto Display off, Converter not installed</span>
       </div>
 
     </div>
@@ -751,10 +616,119 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 </div>
 
 <script>
-function showBmTab(idx) {
-  document.querySelectorAll('.bm-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-  document.querySelectorAll('.bm-tab-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+const $ = id => document.getElementById(id);
+
+let state = { mc: false, ad: false, converter: false, prenotice: true };
+
+function render() {
+  $('toggle-mc').checked = state.mc;
+  $('toggle-ad').checked = state.ad;
+
+  $('prenotice-banner').style.display = state.prenotice ? 'flex' : 'none';
+  $('card-currencies').style.display = state.mc ? 'block' : 'none';
+  $('card-converter').style.opacity = '1';
+
+  if (state.converter) {
+    $('converter-tag').textContent = 'Installed';
+    $('converter-tag').className = 'bm-tag bm-tag-green';
+    $('converter-cta').textContent = 'Remove Converter';
+    $('converter-cta').className = 'bm-cta-btn';
+    $('converter-sub').textContent = 'Buyers can manually browse and switch currencies on your site.';
+  } else {
+    $('converter-tag').textContent = 'Not installed';
+    $('converter-tag').className = 'bm-tag bm-tag-gray';
+    $('converter-cta').textContent = 'Add Converter ↗';
+    $('converter-cta').className = 'bm-cta-btn';
+    $('converter-sub').textContent = 'Optional — add a converter so buyers can manually browse currencies.';
+  }
+
+  const noDisplayMethod = state.mc && !state.ad && !state.converter;
+  $('warning-banner').style.display = noDisplayMethod ? 'flex' : 'none';
+
+  let desc = '';
+  if (state.prenotice && !state.mc) {
+    desc = 'Pre-notice — MC off, Auto Display off, Converter ' + (state.converter ? 'installed' : 'not installed');
+  } else if (state.mc && state.ad && state.converter) {
+    desc = 'MC on, Auto Display on, Converter installed — full setup';
+  } else if (state.mc && state.ad && !state.converter) {
+    desc = 'MC on, Auto Display on, Converter not installed — default ON state';
+  } else if (state.mc && !state.ad && state.converter) {
+    desc = 'MC on, Auto Display off, Converter installed — converter is the display method';
+  } else if (state.mc && !state.ad && !state.converter) {
+    desc = '⚠️ MC on but no display method — buyer won\'t see local currency';
+  } else if (!state.mc && state.converter) {
+    desc = 'MC off, Converter installed — converter in display-only mode (no checkout conversion)';
+  } else {
+    desc = 'MC off, Auto Display off, Converter not installed';
+  }
+  $('state-text').textContent = desc;
 }
+
+function bannerEnableNow() {
+  state.prenotice = false;
+  state.mc = true;
+  state.ad = true;
+  render();
+}
+
+function bannerOptOut() {
+  state.prenotice = false;
+  render();
+}
+
+function onAdToggle() {
+  state.ad = $('toggle-ad').checked;
+  if (state.ad) {
+    state.mc = true;
+    state.prenotice = false;
+  } else {
+    if (!state.converter) {
+      state.mc = false;
+    }
+  }
+  render();
+}
+
+function onMcToggle() {
+  state.mc = $('toggle-mc').checked;
+  if (!state.mc) {
+    state.ad = false;
+  }
+  render();
+}
+
+function toggleConverter() {
+  state.converter = !state.converter;
+  if (state.converter) {
+    state.mc = true;
+    state.prenotice = false;
+  } else {
+    if (!state.ad) {
+      state.mc = false;
+    }
+  }
+  render();
+}
+
+function applyPreset(preset) {
+  document.querySelectorAll('.bm-tab').forEach(t => t.classList.remove('active'));
+  if (preset === 'prenotice') {
+    state = { mc: false, ad: false, converter: false, prenotice: true };
+    document.querySelectorAll('.bm-tab')[0].classList.add('active');
+  } else if (preset === 'on') {
+    state = { mc: true, ad: true, converter: false, prenotice: false };
+    document.querySelectorAll('.bm-tab')[1].classList.add('active');
+  } else if (preset === 'off-converter') {
+    state = { mc: true, ad: false, converter: true, prenotice: false };
+    document.querySelectorAll('.bm-tab')[2].classList.add('active');
+  } else if (preset === 'off-no-converter') {
+    state = { mc: true, ad: false, converter: false, prenotice: false };
+    document.querySelectorAll('.bm-tab')[3].classList.add('active');
+  }
+  render();
+}
+
+render();
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
