@@ -532,10 +532,10 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
             </div>
           </div>
 
-          <!-- Warning: no display method -->
+          <!-- Warning: MC on but no display method -->
           <div class="bm-banner bm-banner-warning" id="warning-banner" style="display:none;">
             <div class="bm-banner-text">
-              <strong>No display method active.</strong> Buyers will see local currency prices on the site, but it won't carry through to checkout — they'll pay in your site currency. Enable auto display or add the converter for a full end-to-end experience.
+              <strong>No display method active.</strong> Multi Currency is on but buyers have no way to see local currency prices. Enable auto display or add the converter.
             </div>
           </div>
 
@@ -649,9 +649,9 @@ function render() {
   }
 
   const noDisplayMethod = state.mc && !state.ad && !state.converter;
-  $('warning-banner').style.display = noDisplayMethod ? 'flex' : 'none';
-
   const displayOnly = !state.mc && state.converter;
+
+  $('warning-banner').style.display = noDisplayMethod ? 'flex' : 'none';
   $('display-only-banner').style.display = displayOnly ? 'flex' : 'none';
 
   let desc = '';
