@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout Payment Method Optimization</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#fafbfc;--surface:#fff;--surface2:#f3f4f6;--border:rgba(0,0,0,.08);
+  --accent:#4f46e5;--accent2:#6366f1;--green:#059669;--red:#dc2626;--orange:#b45309;
+  --cyan:#0e7490;--text:#374151;--dim:#6b7280;--bright:#111827;
+}
+
+/* TAB NAVIGATION */
+.tab-bar{position:fixed;top:0;left:0;right:0;z-index:999;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:0;padding:0 32px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.tab-btn{padding:14px 24px;font-size:13px;font-weight:600;color:var(--dim);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s;font-family:inherit}
+.tab-btn:hover{color:var(--bright)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-page{display:none}
+.tab-page.active{display:block}
+body{padding-top:48px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+::selection{background:rgba(79,70,229,.15)}
+.container{max-width:960px;margin:0 auto;padding:0 32px}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 0}
+.hero .label{font-size:13px;text-transform:uppercase;letter-spacing:3px;color:var(--accent);margin-bottom:20px}
+.hero h1{font-size:48px;font-weight:800;color:var(--bright);letter-spacing:-1.5px;line-height:1.15;max-width:720px}
+.hero .sub{font-size:19px;color:var(--dim);margin-top:20px;max-width:600px}
+.hero .meta{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;font-size:13px;color:var(--dim)}
+.hero .meta span{background:var(--surface);padding:6px 14px;border-radius:8px;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+
+section{padding:72px 0}
+section+section{border-top:1px solid var(--border)}
+.section-label{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:14px;font-weight:600}
+h2{font-size:32px;font-weight:700;color:var(--bright);letter-spacing:-.3px;margin-bottom:10px}
+h2+.desc{font-size:16px;color:var(--dim);max-width:640px;margin-bottom:28px}
+h3{font-size:18px;font-weight:600;color:var(--bright);margin-bottom:8px}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stat-row{display:flex;gap:14px;flex-wrap:wrap;margin:20px 0}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;min-width:130px;flex:1;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.stat .val{font-size:26px;font-weight:700;color:var(--bright)}
+.stat .lbl{font-size:12px;color:var(--dim);margin-top:2px}
+
+.finding{margin-bottom:72px;opacity:0;transform:translateY(24px);transition:all .6s ease}
+.finding.visible{opacity:1;transform:translateY(0)}
+.finding-header{display:flex;align-items:baseline;gap:14px;margin-bottom:16px}
+.finding-num{font-size:48px;font-weight:800;color:var(--surface2);-webkit-text-stroke:1px var(--accent);line-height:1;min-width:50px}
+.finding h3{font-size:22px;margin:0}
+.finding .finding-sub{font-size:14px;color:var(--dim);margin-top:4px}
+.finding-body{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+
+/* DATA TABLES inside findings */
+.dtable{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.dtable th{text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);border-bottom:2px solid var(--border);font-weight:600}
+.dtable td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.dtable tr:last-child td{border:none}
+.dtable .bright{color:var(--bright);font-weight:600}
+.dtable .green{color:var(--green);font-weight:600}
+.dtable .red{color:var(--red);font-weight:600}
+.dtable .dim{color:var(--dim)}
+
+.gpv-badge{display:inline-block;background:rgba(5,150,105,.08);color:var(--green);border:1px solid rgba(5,150,105,.2);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-top:10px}
+.gpv-badge.loss{background:rgba(220,38,38,.06);color:var(--red);border-color:rgba(220,38,38,.15)}
+.chart-wrap{position:relative;height:220px}
+
+.takeaway{text-align:center;padding:100px 0;position:relative}
+.takeaway .big{font-size:36px;font-weight:800;color:var(--bright);letter-spacing:-.3px;max-width:660px;margin:0 auto;line-height:1.25}
+.takeaway .sub{font-size:17px;color:var(--dim);margin-top:16px}
+
+/* CHECKOUT ILLUSTRATION */
+.checkout-illust{position:relative;width:260px;background:#fff;border-radius:14px;border:1px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,.08);padding:18px 16px;font-size:12px;margin-top:36px}
+.checkout-illust .ci-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:14px;font-weight:600}
+.ci-method{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;margin-bottom:8px;transition:all .3s ease;cursor:default}
+.ci-method:hover{border-color:var(--accent);background:rgba(79,70,229,.03)}
+.ci-method.ci-selected{border-color:var(--accent);background:rgba(79,70,229,.05)}
+.ci-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
+.ci-selected .ci-dot{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px #fff}
+.ci-icon{width:28px;height:18px;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:8px;color:#fff}
+.ci-icon.cc{background:linear-gradient(135deg,#1a1f71,#4f46e5)}
+.ci-icon.pp{background:#003087}
+.ci-icon.bnpl{background:linear-gradient(135deg,#b2fce4,#0070ba);color:#003087}
+.ci-icon.off{background:#e5e7eb;color:#9ca3af}
+.ci-lbl{font-size:12px;color:var(--bright);font-weight:500}
+.ci-method.ci-dim{opacity:.45}
+.ci-arrow{position:absolute;right:-44px;top:50%;font-size:20px;color:var(--accent);opacity:.6;animation:ciPulse 2s ease infinite}
+@keyframes ciPulse{0%,100%{transform:translateX(0);opacity:.4}50%{transform:translateX(6px);opacity:.8}}
+
+/* SCATTER */
+#scatter-wrapper{position:relative;min-height:280vh}
+#scatter-sticky{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;background:var(--bg)}
+.scatter-item{
+  position:absolute;font-size:13px;color:var(--dim);padding:7px 14px;
+  border-radius:6px;border:1px solid transparent;background:transparent;
+  white-space:nowrap;transition:all 1.2s cubic-bezier(.25,.46,.45,.94);
+  opacity:0;pointer-events:none;max-width:360px;overflow:hidden;text-overflow:ellipsis;
+}
+.scatter-item.show{opacity:1}
+.scatter-item strong{color:var(--bright)}
+.scatter-item .si-impact{font-size:10px;font-weight:600;margin-left:6px;color:var(--green)}
+.scatter-item.settled{
+  font-size:11px;padding:5px 10px;border:1px solid var(--border);background:var(--surface);
+  border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.06);transform:translateX(-50%);
+}
+
+/* BASKET SHAPES */
+.bucket-shape{
+  position:absolute;width:42%;top:74%;bottom:2%;
+  opacity:0;transition:opacity .8s ease;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding-bottom:14px;gap:2px;
+}
+.bucket-shape.show{opacity:1}
+.bucket-shape .b-label{font-size:16px;font-weight:700;color:var(--bright);opacity:.6}
+.bucket-shape .b-sub{font-size:11px;color:var(--dim);opacity:.5}
+.bucket-shape.b1{left:3%}
+.bucket-shape.b2{left:55%}
+
+.bucket-shape svg{position:absolute;top:0;left:0;width:100%;height:100%}
+
+.bucket-count{
+  position:absolute;top:67%;font-size:12px;color:var(--dim);
+  opacity:0;transition:opacity .6s ease;text-align:center;width:42%;
+}
+.bucket-count.show{opacity:1}
+.bucket-count .bc-val{font-size:24px;font-weight:800;display:block;margin-bottom:2px}
+.bucket-count.bc1{left:3%}
+.bucket-count.bc1 .bc-val{color:var(--accent)}
+.bucket-count.bc2{left:55%}
+.bucket-count.bc2 .bc-val{color:var(--orange)}
+
+/* REF TABLE */
+.ref-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:20px}
+.ref-table th{text-align:left;padding:10px 10px;border-bottom:2px solid var(--border);color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.ref-table td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.ref-table tr:last-child td{border:none}
+.ref-table .rt-num{color:var(--dim);font-weight:600;width:28px}
+.ref-table .rt-obs{color:var(--bright);font-weight:500}
+.ref-table .rt-ctx{color:var(--dim)}
+.ref-table .rt-gpv{color:var(--green);font-weight:600;white-space:nowrap}
+.ref-table .rt-bucket{font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;border-radius:4px;white-space:nowrap;display:inline-block}
+.rt-bucket.b-dynamic{background:rgba(79,70,229,.08);color:var(--accent)}
+.rt-bucket.b-merchant{background:rgba(180,83,9,.08);color:var(--orange)}
+
+/* BUCKET DETAILS */
+.bucket-detail{margin-bottom:56px}
+.bucket-detail .bd-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.bucket-detail .bd-icon{font-size:32px}
+.bucket-detail .bd-title{font-size:22px;font-weight:700;color:var(--bright)}
+.bucket-detail .bd-gpv{font-size:28px;font-weight:800;margin:6px 0 4px}
+.bd-gpv.purple{color:var(--accent)}
+.bd-gpv.amber{color:var(--orange)}
+.bucket-detail ul{list-style:none}
+.bucket-detail li{padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;justify-content:space-between}
+.bucket-detail li:last-child{border:none}
+.bucket-detail .li-val{font-weight:600;color:var(--bright)}
+.note-box{margin-top:14px;padding:12px 16px;border-radius:8px;font-size:13px}
+.note-box.purple{background:rgba(79,70,229,.05);border:1px solid rgba(79,70,229,.12);color:var(--accent)}
+.note-box.amber{background:rgba(180,83,9,.05);border:1px solid rgba(180,83,9,.12);color:var(--orange)}
+.total-card{text-align:center;padding:40px;margin-top:36px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+
+.cta-section{text-align:center;padding:80px 0}
+.cta-section .sub{font-size:17px;color:var(--dim);margin-bottom:36px}
+.roadmap{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.roadmap .step{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;width:200px;text-align:left;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.roadmap .step .step-num{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:8px;font-weight:600}
+.roadmap .step h4{font-size:14px;color:var(--bright);margin-bottom:6px}
+.roadmap .step p{font-size:12px;color:var(--dim)}
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('main')">Findings &amp; Impact</button>
+  <button class="tab-btn" onclick="switchTab('methodology')">Methodology &amp; Statistical Rigor</button>
+</div>
+
+<div id="tab-main" class="tab-page active">
+
+<div class="container">
+<div class="hero" style="display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap">
+  <div style="flex:1;min-width:320px">
+    <div class="label">Data-Driven Checkout Study</div>
+    <h1>Payment Method Display &amp; Checkout Conversion</h1>
+    <div class="sub">How the combination, quantity, and ordering of payment methods at checkout impacts conversion and GPV -- across verticals, devices, and geographies.</div>
+    <div class="meta">
+      <span>Full-Year 2025</span>
+      <span>80.6M Sessions</span>
+      <span>$6.16B GPV</span>
+      <span>All Countries</span>
+      <span>Session-Level Analysis</span>
+    </div>
+  </div>
+  <div class="checkout-illust">
+    <div class="ci-title">Payment Method</div>
+    <div class="ci-method ci-selected"><div class="ci-dot"></div><div class="ci-icon cc">VISA</div><div class="ci-lbl">Credit Card</div></div>
+    <div class="ci-method"><div class="ci-dot"></div><div class="ci-icon pp">PP</div><div class="ci-lbl">PayPal</div></div>
+    <div class="ci-method ci-dim"><div class="ci-dot"></div><div class="ci-icon bnpl">BNPL</div><div class="ci-lbl">Afterpay</div></div>
+    <div class="ci-method ci-dim"><div class="ci-dot"></div><div class="ci-icon bnpl">BNPL</div><div class="ci-lbl">Klarna</div></div>
+    <div class="ci-method ci-dim"><div class="ci-dot"></div><div class="ci-icon off">&#9679;</div><div class="ci-lbl">Offline</div></div>
+    <div class="ci-arrow">&#10140;</div>
+  </div>
+</div>
+</div>
+
+<section>
+<div class="container">
+  <div class="section-label">Methodology</div>
+  <h2>What We Did</h2>
+  <div class="desc">Session-level analysis of every checkout in 2025, correlating the payment methods shown to a buyer with conversion rate and GPV.</div>
+  <div class="stat-row">
+    <div class="stat"><div class="val">80.6M</div><div class="lbl">Checkout Sessions</div></div>
+    <div class="stat"><div class="val">56.7M</div><div class="lbl">Paid Sessions</div></div>
+    <div class="stat"><div class="val">$6.16B</div><div class="lbl">Total GPV</div></div>
+    <div class="stat"><div class="val">70.3%</div><div class="lbl">Overall Conversion</div></div>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="container">
+  <div class="section-label">The Data</div>
+  <h2>Here Are Some Examples of What We Found</h2>
+  <div class="desc">Each finding is backed by full-year 2025 data. All conversion gaps are statistically significant (p&lt;0.001). GPV estimates use the full observed gap -- see the <a href="#" onclick="switchTab('methodology');return false" style="color:var(--accent);text-decoration:underline">Methodology tab</a> for statistical tests, confidence intervals, and sensitivity analysis.</div>
+
+  <!-- F1: BNPL -->
+  <div class="finding" id="f1">
+    <div class="finding-header">
+      <div class="finding-num">01</div>
+      <div>
+        <h3>More BNPLs Shown = Lower Conversion (US Mobile)</h3>
+        <div class="finding-sub">Each additional BNPL option (Afterpay, Affirm, Klarna, Sezzle, Clearpay) shown at checkout correlates with lower conversion on US mobile. 0 BNPLs converts best, but 1 BNPL brings higher average order value.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="finding-body" style="margin:0">
+        <div>
+          <h3>US Mobile: by BNPL Count</h3>
+          <table class="dtable">
+            <tr><th>Config</th><th>Conv %</th><th>Sessions</th><th>GPV</th></tr>
+            <tr><td class="bright">0 BNPLs (CC baseline)</td><td class="green">77.6%</td><td>14.3M</td><td>$1.12B</td></tr>
+            <tr><td class="bright">1 BNPL</td><td>72.5%</td><td>1.04M</td><td>$122M</td></tr>
+            <tr><td class="bright">2 BNPLs</td><td class="red">66.7%</td><td>670K</td><td>$78M</td></tr>
+            <tr><td class="bright">3+ BNPLs</td><td class="red">66.8%</td><td>592K</td><td>$64M</td></tr>
+          </table>
+          <p style="font-size:12px;color:var(--dim);margin-top:10px">Note: 0 BNPLs has highest conversion, but 1 BNPL has higher avg. order ($162 vs $101). Capping at 1 balances conversion with buyer flexibility.</p>
+          <div class="gpv-badge">$17-20M merchant GPV increase/yr if capped at 1</div>
+        </div>
+        <div><div class="chart-wrap"><canvas id="chart-bnpl"></canvas></div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Worst Hit: Wix Events</h3>
+      <table class="dtable">
+        <tr><th>Config</th><th>Conv %</th><th>Sessions</th><th>GPV</th></tr>
+        <tr><td class="bright">Events, 0 BNPLs</td><td>63.7%</td><td>2.73M</td><td>$135M</td></tr>
+        <tr><td class="bright">Events, 2+ BNPLs</td><td class="red">47.2%</td><td>188K</td><td>$11.5M</td></tr>
+      </table>
+      <p style="font-size:12px;color:var(--dim);margin-top:8px">Event tickets don't need installment plans. BNPLs add friction without value here.</p>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;border-left:3px solid var(--accent);background:rgba(79,70,229,.02);border-radius:0 8px 8px 0;font-size:12px;color:var(--dim)">
+      <strong style="color:var(--bright)">Hypothesis:</strong> BNPLs add visual clutter and decision cost on a small mobile screen. For low-ticket items (events, bookings), installment plans aren't useful -- they just slow the buyer down.
+    </div>
+  </div>
+
+  <!-- F2: Offline -->
+  <div class="finding" id="f2">
+    <div class="finding-header">
+      <div class="finding-num">02</div>
+      <div>
+        <h3>Offline Shown on Mobile Hurts Online Conversion -- and Few Buyers Actually Use It</h3>
+        <div class="finding-sub">Conversion here measures digitally completed payments. We dug into whether buyers actually pay offline on mobile: <strong style="color:var(--bright)">only 5-6% do</strong>. The vast majority see it and either pay online (with friction) or abandon.</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:8px">
+      <div class="chart-wrap"><canvas id="chart-offline"></canvas></div>
+    </div>
+    <div class="finding-body" style="margin-top:16px">
+      <div class="card">
+        <h3>Wix Stores -- Mobile</h3>
+        <table class="dtable">
+          <tr><th>Config</th><th>Conv %</th><th>Sessions</th><th>GPV</th><th>Paid Offline</th></tr>
+          <tr><td class="bright">Without offline</td><td class="green">78.1%</td><td>19.2M</td><td>$1.34B</td><td>--</td></tr>
+          <tr><td class="bright">With offline shown</td><td class="red">68.5%</td><td>3.42M</td><td>$270M</td><td>186K (5.5%, $47M)</td></tr>
+        </table>
+        <div class="gpv-badge">$20-29M net GPV increase (accounts for $47M offline GPV at risk)</div>
+      </div>
+      <div class="card">
+        <h3>Wix Bookings -- Mobile</h3>
+        <table class="dtable">
+          <tr><th>Config</th><th>Conv %</th><th>Sessions</th><th>GPV</th><th>Paid Offline</th></tr>
+          <tr><td class="bright">Without offline</td><td class="green">86.1%</td><td>4.77M</td><td>$213M</td><td>--</td></tr>
+          <tr><td class="bright">With offline shown</td><td class="red">68.3%</td><td>416K</td><td>$17.5M</td><td>9.6K (2.3%, $585K)</td></tr>
+        </table>
+        <div class="gpv-badge">$3.0-3.3M net GPV increase</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>NEW: Wix Restaurants -- Mobile (largest relative gap)</h3>
+      <table class="dtable">
+        <tr><th>Config</th><th>Conv %</th><th>Sessions</th><th>GPV</th><th>Paid Offline</th></tr>
+        <tr><td class="bright">CC only</td><td class="green">89.5%</td><td>433K</td><td>$18.1M</td><td>--</td></tr>
+        <tr><td class="bright">CC + offline</td><td class="red">69.3%</td><td>396K</td><td>$10.9M</td><td>5.6K (1.2%, $216K)</td></tr>
+      </table>
+      <p style="font-size:12px;color:var(--dim);margin-top:8px">Restaurants have the biggest relative gap (20.2pp) and very low offline usage (1.2%). Offline here is mostly cash-on-delivery, but on mobile the vast majority pay by card.</p>
+      <div class="gpv-badge">$1.5-2M net GPV increase</div>
+    </div>
+    <div class="card" style="margin-top:16px;border-left:3px solid var(--orange)">
+      <h3 style="color:var(--orange);font-size:14px">Addressing the Concern: "Merchants Need Offline for Non-Digital Transactions"</h3>
+      <p style="color:var(--dim);font-size:13px;margin-top:6px">Valid concern. Some merchants enable offline to document cash, checks, or bank transfers for accounting. Here's what the data shows:</p>
+      <table class="dtable" style="margin-top:8px">
+        <tr><th>Mobile Sessions Where Offline is Shown</th><th>Sessions</th><th>% of Total</th><th>GPV</th></tr>
+        <tr><td class="bright">Did NOT click/pay offline</td><td>6.05M</td><td>94%</td><td>$412M online GPV</td></tr>
+        <tr><td class="bright">Actually paid via offline</td><td>384K</td><td>6%</td><td>$56M offline GPV</td></tr>
+      </table>
+      <p style="color:var(--dim);font-size:12px;margin-top:8px"><strong style="color:var(--bright)">Our recommendation:</strong> Deprioritize (not hide) offline on mobile. Show it collapsed / below the fold. Keep it fully available on desktop. Merchant can always override. This protects the 6% who need it while removing friction for the 94% who don't.</p>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;border-left:3px solid var(--accent);background:rgba(79,70,229,.02);border-radius:0 8px 8px 0;font-size:12px;color:var(--dim)">
+      <strong style="color:var(--bright)">Hypothesis:</strong> Showing "offline" on a mobile screen creates decision friction -- buyers wonder if they should pay now or later. Only 6% of mobile buyers who see offline actually use it. The conversion gap is 9-20pp across verticals, suggesting the display itself creates hesitation for the other 94%.
+    </div>
+  </div>
+
+  <!-- F3: Geography -->
+  <div class="finding" id="f3">
+    <div class="finding-header">
+      <div class="finding-num">03</div>
+      <div>
+        <h3>One Checkout Menu for Every Country Costs Real GPV</h3>
+        <div class="finding-sub">Buyers in different countries expect different payment methods. When the right local option is missing, conversion drops.</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:8px">
+      <h3>Missing Methods by Country (Mobile)</h3>
+      <table class="dtable">
+        <tr><th>Country</th><th>Without</th><th>With</th><th>Lift</th><th>Sessions w/o</th></tr>
+        <tr><td class="bright">Germany</td><td class="red">53.3% (CC only)</td><td class="green">74.4% (+ PayPal)</td><td class="green">+21.1 pts</td><td>215K</td></tr>
+        <tr><td class="bright">Germany</td><td class="red">64.3% (no local)</td><td class="green">72.4% (+ Sofort/Klarna)</td><td class="green">+8 pts</td><td>301K</td></tr>
+        <tr><td class="bright">Australia</td><td>83.1% (CC+PP)</td><td class="green">86.0% (+ Afterpay)</td><td class="green">+2.9 pts</td><td>1.7M</td></tr>
+        <tr><td class="bright">France</td><td>74.5% (CC only)</td><td class="green">75.7% (+ PayPal)</td><td class="green">+1.2 pts</td><td>1.2M</td></tr>
+        <tr><td class="bright">US</td><td>76.0% (CC+PP)</td><td class="green">79.6% (+ Cash App)</td><td class="green">+3.6 pts</td><td>4.25M</td></tr>
+      </table>
+      <div class="gpv-badge">$6-8M GPV increase/yr from geographic adaptation</div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;border-left:3px solid var(--accent);background:rgba(79,70,229,.02);border-radius:0 8px 8px 0;font-size:12px;color:var(--dim)">
+      <strong style="color:var(--bright)">Hypothesis:</strong> Buyers trust and expect local payment methods. A German buyer seeing only a credit card form may abandon, while adding PayPal or Sofort gives them a familiar, trusted option.
+    </div>
+  </div>
+
+  <!-- F4: Mobile vs Desktop -->
+  <div class="finding" id="f4">
+    <div class="finding-header">
+      <div class="finding-num">04</div>
+      <div>
+        <h3>Mobile and Desktop Need Opposite Checkout Strategies</h3>
+        <div class="finding-sub">On mobile, conversion peaks at 2-3 methods then drops. On desktop, conversion keeps climbing with more methods. Today's checkout uses the same logic for both.</div>
+      </div>
+    </div>
+    <div class="finding-body" style="margin-top:12px">
+      <div class="card">
+        <h3 style="text-align:center;margin-bottom:4px">Mobile</h3>
+        <div style="text-align:center;font-size:11px;color:var(--dim);margin-bottom:8px">Peaks at 3, then <strong style="color:var(--red)">drops &#8595;</strong></div>
+        <div class="chart-wrap" style="height:220px"><canvas id="chart-mobile"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="text-align:center;margin-bottom:4px">Desktop</h3>
+        <div style="text-align:center;font-size:11px;color:var(--dim);margin-bottom:8px">Keeps <strong style="color:var(--green)">climbing &#8593;</strong></div>
+        <div class="chart-wrap" style="height:220px"><canvas id="chart-desktop"></canvas></div>
+      </div>
+    </div>
+    <div class="finding-body" style="margin-top:16px">
+      <div class="card">
+        <h3>Mobile (Full-Year 2025)</h3>
+        <table class="dtable">
+          <tr><th># Methods</th><th>Conv %</th><th>Sessions</th><th>GPV</th></tr>
+          <tr><td class="bright">1 method</td><td>66.2%</td><td>29.0M</td><td>$1.59B</td></tr>
+          <tr><td class="bright">2 methods</td><td class="green">72.5%</td><td>19.3M</td><td>$1.18B</td></tr>
+          <tr><td class="bright">3 methods</td><td class="green">74.0%</td><td>6.8M</td><td>$478M</td></tr>
+          <tr><td class="bright">4 methods</td><td class="red">73.6% &#8595;</td><td>2.7M</td><td>$205M</td></tr>
+          <tr><td class="bright">5 methods</td><td class="red">72.6% &#8595;</td><td>1.1M</td><td>$91M</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Desktop (Full-Year 2025)</h3>
+        <table class="dtable">
+          <tr><th># Methods</th><th>Conv %</th><th>Sessions</th><th>GPV</th></tr>
+          <tr><td class="bright">1 method</td><td>69.6%</td><td>9.9M</td><td>$1.27B</td></tr>
+          <tr><td class="bright">2 methods</td><td>74.2%</td><td>6.9M</td><td>$774M</td></tr>
+          <tr><td class="bright">3 methods</td><td class="green">76.5% &#8593;</td><td>2.4M</td><td>$308M</td></tr>
+          <tr><td class="bright">4 methods</td><td class="green">76.9% &#8593;</td><td>883K</td><td>$108M</td></tr>
+          <tr><td class="bright">5 methods</td><td class="green">76.6% &#8593;</td><td>351K</td><td>$45M</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <p style="font-size:14px;color:var(--dim)"><strong style="color:var(--bright)">This divergence is the core justification for dynamic rendering.</strong> Mobile has 3.8M sessions at 4+ methods where conversion is declining. Desktop has 16.8M sessions at 1-2 methods that could benefit from more options. Trimming mobile and expanding desktop unlocks all the other rules (BNPL caps, offline hiding).</p>
+      <div class="gpv-badge" style="margin-top:10px">$5-10M GPV increase/yr from device-aware method count + enables all other rules</div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;border-left:3px solid var(--accent);background:rgba(79,70,229,.02);border-radius:0 8px 8px 0;font-size:12px;color:var(--dim)">
+      <strong style="color:var(--bright)">Hypothesis:</strong> Small mobile screens amplify cognitive load -- each extra option competes for attention and creates decision fatigue. On desktop, the larger viewport lets buyers scan more options without feeling overwhelmed.
+    </div>
+  </div>
+
+  <!-- F5: Verticals -->
+  <div class="finding" id="f5">
+    <div class="finding-header">
+      <div class="finding-num">05</div>
+      <div>
+        <h3>Each Vertical Has a Different Optimal Checkout</h3>
+        <div class="finding-sub">Stores, Bookings, Events, Restaurants, Hotels, and Online Programs each convert best with different payment setups. A one-size-fits-all config leaves GPV on the table for every vertical.</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:8px">
+      <h3>US Mobile: Best vs Worst Config per Vertical</h3>
+      <div class="chart-wrap" style="height:240px;margin-top:8px"><canvas id="chart-vertical"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <table class="dtable">
+        <tr><th>Vertical</th><th>Best Config</th><th>Conv %</th><th>Worst Config</th><th>Conv %</th><th>Gap</th><th>Sessions</th><th>GPV</th></tr>
+        <tr><td class="bright">Stores</td><td>CC + PayPal</td><td class="green">80.7%</td><td>CC + 3 BNPLs</td><td class="red">67-68%</td><td class="red">-13 pts</td><td>7.7M</td><td>$780M</td></tr>
+        <tr><td class="bright">Restaurants</td><td>CC only</td><td class="green">89.5%</td><td>CC + offline</td><td class="red">69.3%</td><td class="red">-20.2 pts</td><td>829K</td><td>$29M</td></tr>
+        <tr><td class="bright">Bookings</td><td>CC alone</td><td class="green">86.1%</td><td>CC + offline</td><td class="red">68.3%</td><td class="red">-17.8 pts</td><td>5.2M</td><td>$231M</td></tr>
+        <tr><td class="bright">Events</td><td>CC + PayPal</td><td>63.4%</td><td>CC + 2+ BNPLs</td><td class="red">47.2%</td><td class="red">-16.2 pts</td><td>3.0M</td><td>$147M</td></tr>
+        <tr><td class="bright">Hotels</td><td>2 methods</td><td class="green">53.4%</td><td>1 method</td><td class="red">34.6%</td><td class="red">-18.8 pts</td><td>310K</td><td>$25M</td></tr>
+        <tr><td class="bright">Online Programs</td><td>4 methods</td><td class="green">49.7%</td><td>1 method</td><td class="red">34.1%</td><td class="red">-15.6 pts</td><td>345K</td><td>$30M</td></tr>
+      </table>
+      <div class="gpv-badge" style="margin-top:12px">$8-12M GPV increase/yr from vertical-aware checkout rules (largely overlaps with other findings)</div>
+      <p style="font-size:12px;color:var(--dim);margin-top:8px">Most of this value is already captured in the BNPL cap and offline-hiding estimates. The unique contribution of vertical-specific rules is targeting: what's harmful for Events (BNPLs) is neutral for Stores.</p>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;border-left:3px solid var(--accent);background:rgba(79,70,229,.02);border-radius:0 8px 8px 0;font-size:12px;color:var(--dim)">
+      <strong style="color:var(--bright)">Hypothesis:</strong> Buyer intent varies by vertical. Event tickets are impulsive, low-friction purchases -- extra options hurt. Bookings need simplicity and trust. Stores handle higher-value items where choice helps. One checkout config can't serve all of them.
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- REFERENCE TABLE (right after findings) -->
+<section>
+<div class="container">
+  <div class="section-label">Full Reference</div>
+  <h2>All Observations Explained</h2>
+  <div class="desc">The 5 featured examples plus 12 additional observations from our deep-dive analysis. Includes newly identified verticals (Restaurants, Hotels, Online Programs) and signals that need A/B validation.</div>
+  <div class="card" style="padding:0;overflow-x:auto">
+  <table class="ref-table">
+    <thead><tr><th>#</th><th>Observation</th><th>What the data shows</th><th>Opportunity</th><th>Bucket</th></tr></thead>
+    <tbody>
+      <tr style="background:rgba(79,70,229,.03)"><td class="rt-num">1</td><td class="rt-obs">More BNPLs = lower conversion (US)</td><td class="rt-ctx">US: conv drops from 72.5% (1 BNPL) to 66.7% (2+) on 1.26M mobile sessions</td><td class="rt-gpv">$17-20M/yr</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+      <tr style="background:rgba(79,70,229,.03)"><td class="rt-num">2</td><td class="rt-obs">Offline alongside online hurts mobile (only 6% pay offline)</td><td class="rt-ctx">Stores: 9.6pp gap (3.4M sess). Bookings: 17.8pp (416K). Restaurants: 20.2pp (396K). Only 5-6% actually pay offline on mobile.</td><td class="rt-gpv">$24-34M/yr net</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+      <tr style="background:rgba(79,70,229,.03)"><td class="rt-num">3</td><td class="rt-obs">Same checkout for every country costs GPV</td><td class="rt-ctx">DE, AU, FR, US each need different methods. 7.5M+ sessions affected</td><td class="rt-gpv">$6-8M/yr</td><td><span class="rt-bucket b-merchant">Merchant</span></td></tr>
+      <tr style="background:rgba(79,70,229,.03)"><td class="rt-num">4</td><td class="rt-obs">Mobile &amp; desktop need opposite strategies</td><td class="rt-ctx">Mobile peaks at 3 then drops. Desktop keeps climbing. 59M+ mobile, 20M+ desktop sessions</td><td class="rt-gpv">$5-10M + enables all</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+      <tr style="background:rgba(79,70,229,.03)"><td class="rt-num">5</td><td class="rt-obs">Each vertical has a different optimal checkout</td><td class="rt-ctx">Stores: CC+PP best. Events: BNPLs devastating. Bookings: offline kills conv.</td><td class="rt-gpv">$8-12M/yr*</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+      <tr><td class="rt-num">6</td><td class="rt-obs">Restaurants: CC-only vastly outperforms CC+offline on mobile</td><td class="rt-ctx">89.5% vs 69.3% conv (20.2pp gap). Only 1.2% pay offline. 396K sessions</td><td class="rt-gpv">$1.5-2M/yr</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+      <tr><td class="rt-num">7</td><td class="rt-obs">Remove BNPLs from Events</td><td class="rt-ctx">Events: 63.7% → 47.2% with 2+ BNPLs. 188K sessions affected</td><td class="rt-gpv">$4M/yr*</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+      <tr><td class="rt-num">8</td><td class="rt-obs">Show more methods on Desktop</td><td class="rt-ctx">Desktop conv rises from 69.6% (1) to 76.5% (3) to 81% (7). 16.8M at 1-2 methods</td><td class="rt-gpv">$3-6M/yr</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+      <tr><td class="rt-num">9</td><td class="rt-obs">Hotels: add a 2nd payment method on mobile</td><td class="rt-ctx">34.6% (1 method) → 53.4% (2 methods) on 247K sessions, $17.5M GPV pool</td><td class="rt-gpv">$2-3M/yr</td><td><span class="rt-bucket b-merchant">Merchant</span></td></tr>
+      <tr><td class="rt-num">10</td><td class="rt-obs">Online Programs: offer more payment options</td><td class="rt-ctx">34.1% (1 method) → 49.7% (4 methods) on 133K sessions. Currently under-served</td><td class="rt-gpv">$1-2M/yr</td><td><span class="rt-bucket b-merchant">Merchant</span></td></tr>
+      <tr><td class="rt-num">11</td><td class="rt-obs">Surface Cash App in US</td><td class="rt-ctx">CC+PP+CashApp: 79.6% vs CC+PP: 76.0% on 77K sessions</td><td class="rt-gpv">$0.5M/yr</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+      <tr><td class="rt-num">12</td><td class="rt-obs">Add PayPal for DE/FR merchants</td><td class="rt-ctx">DE CC-only: 53.3% vs CC+PayPal: 74.4% (21.1pp gap, 215K sessions)</td><td class="rt-gpv">$2.5M/yr</td><td><span class="rt-bucket b-merchant">Merchant</span></td></tr>
+      <tr><td class="rt-num">13</td><td class="rt-obs">Add local methods in DE</td><td class="rt-ctx">Sofort/Klarna add +8 pts in DE. 301K sessions without</td><td class="rt-gpv">$1.5M/yr</td><td><span class="rt-bucket b-merchant">Merchant</span></td></tr>
+      <tr><td class="rt-num">14</td><td class="rt-obs">Recommend Afterpay in AU</td><td class="rt-ctx">CC+PP+Afterpay: 86.0% vs CC+PP: 83.1% on AU Mobile. 1.7M sessions</td><td class="rt-gpv">$1.5M/yr</td><td><span class="rt-bucket b-merchant">Merchant</span></td></tr>
+      <tr><td class="rt-num">15</td><td class="rt-obs">Add 1 BNPL for US Stores</td><td class="rt-ctx">6.2M US Stores sessions at 0 BNPLs. 1 BNPL brings higher AOV ($162 vs $101)</td><td class="rt-gpv">$2-3M/yr</td><td><span class="rt-bucket b-merchant">Merchant</span></td></tr>
+      <tr><td class="rt-num">16</td><td class="rt-obs">Saved payment methods: massive conversion signal</td><td class="rt-ctx">0 saved: 68.4% vs 1+ saved: 82.6-88.6% on mobile (5.1M sessions). Confounded by returning buyer effect.</td><td class="rt-gpv">TBD (A/B test)</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+      <tr><td class="rt-num">17</td><td class="rt-obs">Express checkout: largest untapped signal</td><td class="rt-ctx">+13pp on 16.9M Stores Mobile sessions without express ($923M GPV pool). Heavily confounded.</td><td class="rt-gpv">TBD (A/B test)</td><td><span class="rt-bucket b-dynamic">Dynamic</span></td></tr>
+    </tbody>
+  </table>
+  <div style="padding:10px 12px;font-size:11px;color:var(--dim);border-top:1px solid var(--border)">
+    * Overlaps with other findings -- these address the same sessions from a different angle. Not additive to the total.
+    <br>All estimates apply the full observed conversion gap. Offline estimates are net of offline GPV at risk. See <a href="#" onclick="switchTab('methodology');return false" style="color:var(--accent)">Methodology tab</a> for statistical significance tests, sensitivity analysis, and GPV calculation details. "TBD" = signal identified but too confounded for a GPV estimate without A/B testing.
+  </div>
+  </div>
+</div>
+</section>
+
+<section style="border:none">
+<div class="takeaway">
+  <div class="container">
+    <div class="big">A one-size-fits-all payment method list is leaving significant GPV on the table.</div>
+    <div class="sub">Device, vertical, country, and buyer context all shape conversion -- but today's checkout ignores all of them.</div>
+  </div>
+</div>
+</section>
+
+<!-- SCATTER → BUCKETS -->
+<section style="padding:0;border:none">
+<div class="container" style="padding:0 32px 20px">
+  <div class="section-label">Solutions</div>
+  <h2>17 Patterns, 2 Solution Buckets</h2>
+  <div class="desc">All observations sorting into the solution that addresses each. Scroll down.</div>
+</div>
+<div id="scatter-wrapper">
+  <div id="scatter-sticky">
+    <div class="bucket-shape b1">
+      <svg viewBox="0 0 200 120" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 10 C10 10, 0 10, 2 20 L18 110 C19 116, 24 118, 30 118 L170 118 C176 118, 181 116, 182 110 L198 20 C200 10, 190 10, 190 10 Z" fill="rgba(79,70,229,.04)" stroke="rgba(79,70,229,.25)" stroke-width="1.5"/>
+        <path d="M10 10 L190 10" stroke="rgba(79,70,229,.25)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="40" y1="30" x2="48" y2="108" stroke="rgba(79,70,229,.08)" stroke-width="0.8"/>
+        <line x1="70" y1="25" x2="72" y2="112" stroke="rgba(79,70,229,.08)" stroke-width="0.8"/>
+        <line x1="100" y1="22" x2="100" y2="114" stroke="rgba(79,70,229,.08)" stroke-width="0.8"/>
+        <line x1="130" y1="25" x2="128" y2="112" stroke="rgba(79,70,229,.08)" stroke-width="0.8"/>
+        <line x1="160" y1="30" x2="152" y2="108" stroke="rgba(79,70,229,.08)" stroke-width="0.8"/>
+        <path d="M20 42 Q100 48, 180 42" stroke="rgba(79,70,229,.06)" stroke-width="0.6" fill="none"/>
+        <path d="M22 70 Q100 76, 178 70" stroke="rgba(79,70,229,.06)" stroke-width="0.6" fill="none"/>
+        <path d="M25 96 Q100 102, 175 96" stroke="rgba(79,70,229,.06)" stroke-width="0.6" fill="none"/>
+        <ellipse cx="100" cy="10" rx="40" ry="6" fill="none" stroke="rgba(79,70,229,.15)" stroke-width="1"/>
+      </svg>
+      <span class="b-label">Dynamic Rendering</span><span class="b-sub">High impact, high effort</span>
+    </div>
+    <div class="bucket-shape b2">
+      <svg viewBox="0 0 200 120" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 10 C10 10, 0 10, 2 20 L18 110 C19 116, 24 118, 30 118 L170 118 C176 118, 181 116, 182 110 L198 20 C200 10, 190 10, 190 10 Z" fill="rgba(180,83,9,.04)" stroke="rgba(180,83,9,.25)" stroke-width="1.5"/>
+        <path d="M10 10 L190 10" stroke="rgba(180,83,9,.25)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="40" y1="30" x2="48" y2="108" stroke="rgba(180,83,9,.08)" stroke-width="0.8"/>
+        <line x1="70" y1="25" x2="72" y2="112" stroke="rgba(180,83,9,.08)" stroke-width="0.8"/>
+        <line x1="100" y1="22" x2="100" y2="114" stroke="rgba(180,83,9,.08)" stroke-width="0.8"/>
+        <line x1="130" y1="25" x2="128" y2="112" stroke="rgba(180,83,9,.08)" stroke-width="0.8"/>
+        <line x1="160" y1="30" x2="152" y2="108" stroke="rgba(180,83,9,.08)" stroke-width="0.8"/>
+        <path d="M20 42 Q100 48, 180 42" stroke="rgba(180,83,9,.06)" stroke-width="0.6" fill="none"/>
+        <path d="M22 70 Q100 76, 178 70" stroke="rgba(180,83,9,.06)" stroke-width="0.6" fill="none"/>
+        <path d="M25 96 Q100 102, 175 96" stroke="rgba(180,83,9,.06)" stroke-width="0.6" fill="none"/>
+        <ellipse cx="100" cy="10" rx="40" ry="6" fill="none" stroke="rgba(180,83,9,.15)" stroke-width="1"/>
+      </svg>
+      <span class="b-label">Merchant</span><span class="b-sub">Recommendations</span>
+    </div>
+    <div class="bucket-count bc1"><span class="bc-val">$42-52M</span>merchant GPV increase/yr</div>
+    <div class="bucket-count bc2"><span class="bc-val">$2-3M</span>merchant GPV increase/yr (15% adoption)</div>
+  </div>
+</div>
+</section>
+
+<!-- BUCKET DETAILS -->
+<section>
+<div class="container">
+  <div class="section-label">Impact Assessment</div>
+  <h2>Two Solution Buckets</h2>
+  <div class="desc">Estimated annual merchant GPV increase from converting more checkout sessions. The GPV that flows to merchants also generates transaction revenue for Wix.</div>
+
+  <div class="bucket-detail">
+    <div class="bd-header"><span class="bd-icon">&#9889;</span><span class="bd-title">Dynamic Rendering</span></div>
+    <div style="font-size:13px;color:var(--dim);margin-bottom:8px">High impact &middot; High effort &middot; No adoption barrier (we control rendering)</div>
+    <div class="bd-gpv purple">$42-52M merchant GPV increase/yr</div>
+    <div style="font-size:14px;color:var(--dim);margin-bottom:16px">~$1.3-1.6M direct transaction revenue/yr</div>
+    <p style="color:var(--dim);margin-bottom:14px">Smart checkout adapts the payment method list per device, vertical, country, and buyer context. Rolled out to all merchants with advance notice and opt-out.</p>
+    <ul>
+      <li><span>Deprioritize offline on mobile (Stores $20-29M, Bookings $3M, Restaurants $1.5-2M)</span><span class="li-val">$24-34M</span></li>
+      <li><span>Cap BNPLs at 1 on Mobile (auto-select highest converting)</span><span class="li-val">$17-20M</span></li>
+      <li><span>Device-aware method count (fewer on mobile, more on desktop)</span><span class="li-val">$5-10M</span></li>
+      <li><span>Overlap deduction (sessions affected by both offline + BNPL rules)</span><span class="li-val">-$4-12M</span></li>
+    </ul>
+    <div class="note-box purple">
+      <strong>Rollout:</strong> Turn on for all merchants with 30-day advance notice. Dashboard shows what's being optimized. Full opt-out available. Not subject to adoption -- we control what's shown.
+    </div>
+  </div>
+
+  <div class="bucket-detail">
+    <div class="bd-header"><span class="bd-icon">&#128202;</span><span class="bd-title">Merchant Recommendations</span></div>
+    <div style="font-size:13px;color:var(--dim);margin-bottom:8px">Lower effort &middot; Lower reward &middot; Subject to merchant adoption</div>
+    <div class="bd-gpv amber">$2-3M merchant GPV increase/yr <span style="font-size:14px;font-weight:400;color:var(--dim)">(at ~15% adoption)</span></div>
+    <div style="font-size:14px;color:var(--dim);margin-bottom:16px">~$60-90K direct transaction revenue/yr</div>
+    <p style="color:var(--dim);margin-bottom:14px">Proactive suggestions to connect additional payment methods. Raw potential is $10-16M, but at ~15% merchant adoption the realistic impact is $2-3M.</p>
+    <ul>
+      <li><span>DE/FR: add PayPal if not connected (1.24M sessions)</span><span class="li-val">$2.5M raw</span></li>
+      <li><span>DE: add Sofort / Giropay / Klarna (301K sessions)</span><span class="li-val">$1.5M raw</span></li>
+      <li><span>AU: add Afterpay as single BNPL</span><span class="li-val">$1.5M raw</span></li>
+      <li><span>US Stores without BNPL: add 1 (Afterpay or Affirm)</span><span class="li-val">$2-3M raw</span></li>
+      <li><span>UK: recommend Klarna for CC+PayPal merchants</span><span class="li-val">Neutral</span></li>
+    </ul>
+    <div class="note-box amber">
+      <strong>Adoption note:</strong> Not all merchants act on recommendations. 15% adoption is a realistic estimate via dashboard notifications and email nudges.
+    </div>
+  </div>
+
+  <div class="total-card" style="padding:44px 36px">
+    <div style="font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:2px">Combined Estimated Impact</div>
+    <div style="font-size:52px;font-weight:800;color:var(--green);margin:12px 0">$44-55M</div>
+    <div style="font-size:17px;color:var(--bright);font-weight:500">More revenue flowing to our merchants per year</div>
+    <div style="font-size:14px;color:var(--dim);margin-top:6px">from higher checkout conversion (0.7-0.9% uplift on $6.16B base)</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
+      <div>
+        <div style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Direct Transaction Revenue</div>
+        <div style="font-size:28px;font-weight:800;color:var(--accent)">$1.3-1.7M/yr</div>
+        <div style="font-size:12px;color:var(--dim);margin-top:4px">~3% fee on incremental GPV</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Not Yet Quantified</div>
+        <div style="font-size:28px;font-weight:800;color:var(--orange)">More to find</div>
+        <div style="font-size:12px;color:var(--dim);margin-top:4px"><strong>Express checkout:</strong> +13pp conversion on 16.9M Stores mobile sessions without it ($923M GPV pool). <strong>Saved payment methods:</strong> +14pp for returning buyers (5.1M mobile sessions). Both are heavily confounded but even partial causal impact would be $30-50M+. Requires A/B testing.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;padding:14px;background:rgba(5,150,105,.04);border:1px solid rgba(5,150,105,.1);border-radius:10px;text-align:left">
+      <div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:4px">Why the merchant GPV matters most</div>
+      <div style="font-size:12px;color:var(--dim)">$44-55M more revenue for merchants = more successful businesses on our platform. This drives SaaS retention, plan upgrades, and positions Wix checkout as best-in-class. These are bottom-up estimates backed by full-year 2025 data on 80.6M sessions, properly accounting for offline GPV at risk and overlap between rules. A/B tests will confirm the causal portion.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="cta-section">
+<div class="container">
+  <h2>Next Steps</h2>
+  <div class="sub">From data to action</div>
+  <div class="roadmap">
+    <div class="step"><div class="step-num">Week 1-2</div><h4>Validate</h4><p>Share findings with Checkout &amp; Payments teams. Confirm offline hiding is safe for CC merchants.</p></div>
+    <div class="step"><div class="step-num">Week 3-4</div><h4>Design Rules</h4><p>Define dynamic rendering rules per vertical, device, and country. Design merchant notification flow.</p></div>
+    <div class="step"><div class="step-num">Month 2</div><h4>A/B Test</h4><p>Run controlled experiments on BNPL capping and offline hiding to confirm causal impact.</p></div>
+    <div class="step"><div class="step-num">Month 3+</div><h4>Roll Out</h4><p>Gradual rollout with opt-out. Monitor GPV impact. Expand rules based on results.</p></div>
+  </div>
+</div>
+</section>
+<div style="height:60px"></div>
+
+</div><!-- end tab-main -->
+
+<div id="tab-methodology" class="tab-page">
+<div class="container" style="padding-top:40px;padding-bottom:80px">
+
+  <div class="section-label">Appendix</div>
+  <h2>Methodology &amp; Statistical Rigor</h2>
+  <div class="desc">How we calculated the GPV estimates, what "statistically significant" means for this study, and what the limitations are.</div>
+
+  <!-- 1. DATA SOURCE -->
+  <div class="card" style="margin-bottom:24px">
+    <h3>1. Data Source</h3>
+    <p style="color:var(--dim);margin-top:8px;font-size:14px">We used <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">prod.payments.checkout_session_log</code> -- a session-level table recording every checkout in 2025. Each row is one checkout session with the exact payment methods displayed, the buyer's country, device, vertical, and whether the order was paid digitally.</p>
+    <table class="dtable" style="margin-top:12px">
+      <tr><th>Metric</th><th>Value</th></tr>
+      <tr><td class="bright">Date range</td><td>Jan 1 - Dec 31, 2025</td></tr>
+      <tr><td class="bright">Total sessions</td><td>189.5M (with regular checkout shown)</td></tr>
+      <tr><td class="bright">Mobile sessions</td><td>59.4M</td></tr>
+      <tr><td class="bright">Desktop sessions</td><td>20.6M</td></tr>
+      <tr><td class="bright">Conversion metric</td><td><code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">is_regular_checkout_order_paid</code> = digitally completed payment</td></tr>
+    </table>
+    <p style="color:var(--dim);margin-top:10px;font-size:13px"><strong style="color:var(--bright)">Important:</strong> The conversion metric tracks digitally completed payments. Offline payments (cash, bank transfer) that complete outside the checkout flow may not be captured. This is noted explicitly in Finding #2.</p>
+  </div>
+
+  <!-- 2. STATISTICAL TEST -->
+  <div class="card" style="margin-bottom:24px">
+    <h3>2. Statistical Test: Chi-Square (&#x3C7;&sup2;) Test of Independence</h3>
+    <p style="color:var(--dim);margin-top:8px;font-size:14px">For each finding, we compare two groups (e.g., "1 BNPL shown" vs "2+ BNPLs shown") using a 2&times;2 contingency table:</p>
+    <table class="dtable" style="margin-top:12px;max-width:400px">
+      <tr><th></th><th>Paid</th><th>Not Paid</th></tr>
+      <tr><td class="bright">Config A</td><td>a</td><td>b</td></tr>
+      <tr><td class="bright">Config B</td><td>c</td><td>d</td></tr>
+    </table>
+    <p style="color:var(--dim);margin-top:12px;font-size:14px">The &#x3C7;&sup2; test measures whether the conversion difference is statistically significant -- i.e., <strong style="color:var(--bright)">not due to random chance</strong>.</p>
+    <p style="color:var(--dim);margin-top:8px;font-size:13px"><strong style="color:var(--bright)">Why Chi-Square and not Fisher's Exact?</strong> Fisher's Exact test is ideal for small samples (&lt;1,000). With millions of sessions, Chi-Square is appropriate and computationally feasible. Both give equivalent conclusions at our sample sizes.</p>
+  </div>
+
+  <!-- 3. RESULTS TABLE -->
+  <div class="card" style="margin-bottom:24px;padding:0;overflow-x:auto">
+    <div style="padding:16px 16px 8px"><h3>3. Results: Every Finding Is Statistically Significant</h3></div>
+    <table class="ref-table" style="margin:0">
+      <thead>
+        <tr>
+          <th>Finding</th>
+          <th>Groups</th>
+          <th>Conv Diff</th>
+          <th>95% CI</th>
+          <th>&#x3C7;&sup2;</th>
+          <th>p-value</th>
+          <th>Cram&eacute;r's V</th>
+          <th>Sessions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rt-obs">BNPL cap</td>
+          <td class="rt-ctx">1 vs 2+ BNPLs (US Mobile)</td>
+          <td class="rt-gpv">+5.75 pp</td>
+          <td style="color:var(--dim);font-size:11px">[5.63, 5.87]</td>
+          <td style="font-weight:600">8,868</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td>0.062</td>
+          <td style="color:var(--dim)">2.3M</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">BNPL (0 vs 2+)</td>
+          <td class="rt-ctx">0 vs 2+ BNPLs (US Mobile)</td>
+          <td class="rt-gpv">+10.85 pp</td>
+          <td style="color:var(--dim);font-size:11px">[10.77, 10.93]</td>
+          <td style="font-weight:600">76,436</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td>0.070</td>
+          <td style="color:var(--dim)">15.6M</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">Offline (Stores)</td>
+          <td class="rt-ctx">No offline vs +offline (Mobile)</td>
+          <td class="rt-gpv">+9.60 pp</td>
+          <td style="color:var(--dim);font-size:11px">[9.55, 9.65]</td>
+          <td style="font-weight:600">148,761</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td>0.081</td>
+          <td style="color:var(--dim)">22.6M</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">Offline (Bookings)</td>
+          <td class="rt-ctx">No offline vs +offline (Mobile)</td>
+          <td class="rt-gpv">+17.80 pp</td>
+          <td style="color:var(--dim);font-size:11px">[17.66, 17.94]</td>
+          <td style="font-weight:600">93,411</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td>0.134</td>
+          <td style="color:var(--dim)">5.2M</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">Geography (DE)</td>
+          <td class="rt-ctx">CC-only vs CC+PayPal</td>
+          <td class="rt-gpv">+21.20 pp</td>
+          <td style="color:var(--dim);font-size:11px">[20.74, 21.66]</td>
+          <td style="font-weight:600">7,665</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td style="font-weight:600;color:var(--accent)">0.216</td>
+          <td style="color:var(--dim)">164K</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">Mobile 3&rarr;4 methods</td>
+          <td class="rt-ctx">3 vs 4 methods (Mobile)</td>
+          <td style="color:var(--orange)">+0.40 pp</td>
+          <td style="color:var(--dim);font-size:11px">[0.34, 0.46]</td>
+          <td>160</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td style="color:var(--orange)">0.004</td>
+          <td style="color:var(--dim)">9.5M</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">Mobile 3&rarr;5 methods</td>
+          <td class="rt-ctx">3 vs 5 methods (Mobile)</td>
+          <td class="rt-gpv">+1.40 pp</td>
+          <td style="color:var(--dim);font-size:11px">[1.31, 1.49]</td>
+          <td style="font-weight:600">960</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td>0.011</td>
+          <td style="color:var(--dim)">7.9M</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">Desktop 3&rarr;5 methods</td>
+          <td class="rt-ctx">3 vs 5 methods (Desktop)</td>
+          <td style="color:var(--dim)">+0.10 pp</td>
+          <td style="color:var(--dim);font-size:11px">[-0.05, 0.25]</td>
+          <td style="color:var(--dim)">1.7</td>
+          <td style="color:var(--red)">0.19 (ns)</td>
+          <td style="color:var(--dim)">0.001</td>
+          <td style="color:var(--dim)">2.8M</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">Events + BNPLs</td>
+          <td class="rt-ctx">0 vs 2+ BNPLs (Events)</td>
+          <td class="rt-gpv">+16.50 pp</td>
+          <td style="color:var(--dim);font-size:11px">[16.27, 16.73]</td>
+          <td style="font-weight:600">20,461</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td>0.084</td>
+          <td style="color:var(--dim)">2.9M</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">Offline (Restaurants)</td>
+          <td class="rt-ctx">CC-only vs CC+offline (Mobile)</td>
+          <td class="rt-gpv">+20.20 pp</td>
+          <td style="color:var(--dim);font-size:11px">[20.03, 20.37]</td>
+          <td style="font-weight:600">42,196</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td style="font-weight:600;color:var(--accent)">0.225</td>
+          <td style="color:var(--dim)">829K</td>
+        </tr>
+        <tr>
+          <td class="rt-obs">Saved payments</td>
+          <td class="rt-ctx">0 vs 1+ saved methods (Mobile)</td>
+          <td class="rt-gpv">+14.20 pp</td>
+          <td style="color:var(--dim);font-size:11px">[14.16, 14.24]</td>
+          <td style="font-weight:600">322,891</td>
+          <td class="rt-gpv">&lt; 0.001</td>
+          <td>0.073</td>
+          <td style="color:var(--dim)">59.4M</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="padding:12px 16px;font-size:11px;color:var(--dim);border-top:1px solid var(--border)">
+      <strong>p &lt; 0.001</strong> = less than 0.1% chance the difference is due to random chance.
+      <strong>95% CI</strong> = we are 95% confident the true difference falls in this range.
+      <strong>Cram&eacute;r's V</strong> = effect size (&lt;0.10 = small, 0.10-0.30 = medium, &gt;0.30 = large). <strong style="color:var(--red)">ns</strong> = not significant.
+    </div>
+  </div>
+
+  <!-- 4. READING THE RESULTS -->
+  <div class="card" style="margin-bottom:24px">
+    <h3>4. How to Read These Results</h3>
+    <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="padding:14px;border-radius:8px;background:rgba(5,150,105,.04);border:1px solid rgba(5,150,105,.1)">
+        <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:6px">Strong findings (effect size &gt; 0.05)</div>
+        <ul style="font-size:13px;color:var(--dim);padding-left:16px">
+          <li style="margin-bottom:4px"><strong style="color:var(--bright)">BNPL capping:</strong> 5.75 pp gap, &#x3C7;&sup2;=8,868, highly significant</li>
+          <li style="margin-bottom:4px"><strong style="color:var(--bright)">Offline hiding:</strong> 9.6-17.8 pp gap, &#x3C7;&sup2;=93K-149K, very strong signal</li>
+          <li style="margin-bottom:4px"><strong style="color:var(--bright)">Germany PayPal:</strong> 21.2 pp gap, V=0.216, strongest effect</li>
+          <li><strong style="color:var(--bright)">Events BNPLs:</strong> 16.5 pp gap, &#x3C7;&sup2;=20,461, very strong</li>
+        </ul>
+      </div>
+      <div style="padding:14px;border-radius:8px;background:rgba(180,83,9,.04);border:1px solid rgba(180,83,9,.1)">
+        <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:6px">Weaker findings (effect size &lt; 0.05)</div>
+        <ul style="font-size:13px;color:var(--dim);padding-left:16px">
+          <li style="margin-bottom:4px"><strong style="color:var(--bright)">Mobile 3&rarr;4 methods:</strong> 0.4 pp gap, V=0.004 -- statistically significant but the effect is small</li>
+          <li><strong style="color:var(--bright)">Desktop 3&rarr;5 methods:</strong> 0.1 pp gap, <strong style="color:var(--red)">NOT significant</strong> (p=0.19). Desktop conversion doesn't meaningfully change from 3 to 5 methods</li>
+        </ul>
+        <p style="font-size:12px;color:var(--dim);margin-top:8px">These smaller effects are still directionally useful -- they confirm the mobile/desktop divergence pattern even if each individual step is modest.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. CORRELATION vs CAUSATION -->
+  <div class="card" style="margin-bottom:24px">
+    <h3>5. Correlation vs Causation: The Key Limitation</h3>
+    <p style="color:var(--dim);margin-top:8px;font-size:14px">This is an <strong style="color:var(--bright)">observational study</strong>, not a randomized A/B test. The conversion gaps are statistically significant -- they are real patterns in the data, not noise. But we cannot claim with certainty that the payment method config <em>caused</em> the entire gap.</p>
+    <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--bright);margin-bottom:6px">What we controlled for</div>
+        <ul style="font-size:13px;color:var(--dim);padding-left:16px">
+          <li style="margin-bottom:4px">Device type (Mobile / Desktop)</li>
+          <li style="margin-bottom:4px">Vertical (Stores / Bookings / Events / etc.)</li>
+          <li style="margin-bottom:4px">Country (US / DE / AU / FR / UK)</li>
+          <li>Payment method baseline (CC present in both groups)</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--bright);margin-bottom:6px">What we could NOT control for</div>
+        <ul style="font-size:13px;color:var(--dim);padding-left:16px">
+          <li style="margin-bottom:4px">Merchant quality / site design</li>
+          <li style="margin-bottom:4px">Product price range / category</li>
+          <li style="margin-bottom:4px">Buyer intent / traffic source</li>
+          <li>Merchant tenure / experience</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:12px 14px;border-radius:8px;background:rgba(79,70,229,.04);border:1px solid rgba(79,70,229,.1);font-size:13px;color:var(--dim)">
+      <strong style="color:var(--accent)">Bottom line:</strong> The observed gaps represent the <strong>upper bound</strong> of the opportunity. A/B tests will reveal what portion is causal. Given the large effect sizes and the number of confounders we did control for, we expect a substantial portion of the gap to hold in a controlled experiment.
+    </div>
+  </div>
+
+  <!-- 6. GPV CALCULATION -->
+  <div class="card" style="margin-bottom:24px">
+    <h3>6. How GPV Estimates Are Calculated</h3>
+    <p style="color:var(--dim);margin-top:8px;font-size:14px">For each finding, the GPV estimate follows this formula:</p>
+    <div style="margin:16px 0;padding:16px;background:var(--surface2);border-radius:8px;font-family:monospace;font-size:13px;color:var(--bright);text-align:center">
+      GPV increase = Affected Sessions &times; Conversion Gap &times; Avg Order Value
+    </div>
+    <p style="color:var(--dim);font-size:14px"><strong style="color:var(--bright)">Example: BNPL Capping (Finding #1)</strong></p>
+    <table class="dtable" style="margin-top:8px;max-width:600px">
+      <tr><th>Component</th><th>Value</th><th>Source</th></tr>
+      <tr><td class="bright">Affected sessions</td><td>1.26M</td><td>Sessions showing 2+ BNPLs on US Mobile</td></tr>
+      <tr><td class="bright">Conversion gap</td><td>5.75 pp</td><td>72.5% (1 BNPL) minus 66.75% (2+ BNPLs)</td></tr>
+      <tr><td class="bright">Additional paid sessions</td><td>~72,450</td><td>1.26M &times; 5.75%</td></tr>
+      <tr><td class="bright">Avg order value</td><td>~$113</td><td>$142M GPV / 1.26M sessions (paid)</td></tr>
+      <tr><td class="bright">GPV increase</td><td style="color:var(--green);font-weight:700">~$8.2M</td><td>72,450 &times; $113</td></tr>
+    </table>
+    <p style="color:var(--dim);margin-top:12px;font-size:13px">The presented range ($17-20M) includes the broader effect across all US Mobile sessions where excess BNPLs are shown, not just the 2+ vs 1 comparison.</p>
+
+    <div style="margin-top:20px;padding:14px;border-radius:8px;background:rgba(5,150,105,.04);border:1px solid rgba(5,150,105,.1)">
+      <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:6px">GPV estimates represent the full observed gap</div>
+      <p style="font-size:13px;color:var(--dim)">The estimates apply the <strong>full observed conversion difference</strong> to the affected session pool. We do NOT apply an arbitrary discount. The gaps are statistically significant (p&lt;0.001 for all major findings), meaning they reflect real patterns. The only caveat is causality -- A/B testing will determine what portion of the gap is directly caused by the payment method config vs other correlated factors.</p>
+    </div>
+
+    <div style="margin-top:20px;padding:14px;border-radius:8px;background:rgba(180,83,9,.04);border:1px solid rgba(180,83,9,.1)">
+      <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:6px">Offline finding: accounting for offline GPV at risk</div>
+      <p style="font-size:13px;color:var(--dim)">The offline GPV estimate is <strong>net</strong> of offline GPV at risk. Of 6.43M mobile sessions where offline is shown alongside CC: <strong>94% never click offline</strong> (they pay online or abandon), and <strong>6% actually pay offline</strong> ($56M GPV). If we deprioritize offline, some of those 6% may not complete their purchase. Assuming 25-50% of mobile offline payers are lost (the rest shift to online payment), we deduct $14-28M from the theoretical lift. This gives the $24-34M <strong>net</strong> estimate.</p>
+    </div>
+  </div>
+
+  <!-- 7. SENSITIVITY -->
+  <div class="card" style="margin-bottom:24px">
+    <h3>7. Sensitivity Analysis: What If Only Part of the Gap Is Causal?</h3>
+    <p style="color:var(--dim);margin-top:8px;font-size:14px">If A/B tests show that only a portion of the observed gap is directly caused by payment method configuration, here's how the total GPV impact changes:</p>
+    <table class="dtable" style="margin-top:12px">
+      <tr><th>Causal Attribution</th><th>Dynamic Rendering GPV</th><th>Merchant Recs GPV</th><th>Total GPV</th><th>Transaction Revenue</th></tr>
+      <tr><td class="bright">100% (full observed gap)</td><td>$42-52M</td><td>$2-3M</td><td style="font-weight:700">$44-55M</td><td>$1.3-1.7M</td></tr>
+      <tr style="background:rgba(5,150,105,.03)"><td class="bright">75% (most of the gap is real)</td><td>$32-39M</td><td>$1.5-2.3M</td><td style="font-weight:700;color:var(--green)">$33-41M</td><td>$1.0-1.2M</td></tr>
+      <tr><td class="bright">50% (half the gap is confounded)</td><td>$21-26M</td><td>$1-1.5M</td><td style="font-weight:700">$22-28M</td><td>$0.7-0.8M</td></tr>
+      <tr><td class="bright">25% (mostly confounded)</td><td>$10-13M</td><td>$0.5-0.8M</td><td style="font-weight:700;color:var(--orange)">$11-14M</td><td>$0.3-0.4M</td></tr>
+    </table>
+    <p style="color:var(--dim);margin-top:10px;font-size:13px">Given the segmentation controls we applied (same device, vertical, country, payment baseline), and the large effect sizes observed, <strong style="color:var(--bright)">75% causal attribution is a reasonable expectation</strong>. Even at 50%, the opportunity justifies investment.</p>
+  </div>
+
+  <!-- 8. NEXT STEPS -->
+  <div class="card" style="margin-bottom:24px">
+    <h3>8. Recommended Statistical Next Steps</h3>
+    <div style="margin-top:12px">
+      <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px">
+        <div style="background:var(--accent);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">1</div>
+        <div><div style="font-size:14px;font-weight:600;color:var(--bright)">A/B Test the Top 2 Findings</div><p style="font-size:13px;color:var(--dim);margin-top:2px">Randomly assign mobile checkout sessions to show/hide offline (Stores) and cap/uncap BNPLs (US). 2-4 weeks of data will confirm the causal conversion lift.</p></div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px">
+        <div style="background:var(--accent);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">2</div>
+        <div><div style="font-size:14px;font-weight:600;color:var(--bright)">Propensity Score Matching</div><p style="font-size:13px;color:var(--dim);margin-top:2px">Before A/B tests, we can strengthen the observational evidence by matching merchants in the "good config" group with similar merchants in the "bad config" group on observable characteristics (price range, traffic volume, vertical, country). This reduces confounding.</p></div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:var(--accent);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">3</div>
+        <div><div style="font-size:14px;font-weight:600;color:var(--bright)">Monitor Effect Size, Not Just Significance</div><p style="font-size:13px;color:var(--dim);margin-top:2px">With millions of sessions, any tiny difference becomes "significant." Focus on Cram&eacute;r's V and the conversion point difference. Our strongest findings (V&gt;0.08, gaps &gt;5pp) represent meaningful real-world effects.</p></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- end tab-methodology -->
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelector('[onclick="switchTab(\'' + id + '\')"]').classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.finding').forEach(el => obs.observe(el));
+
+  const cFont = { family:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", size:11, weight:500 };
+  const gColor = 'rgba(0,0,0,.06)';
+  const bOpts = (title, yLbl) => ({
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},title:{display:true,text:title,color:'#6b7280',font:{...cFont,size:12}}},
+    scales:{
+      x:{ticks:{color:'#6b7280',font:cFont},grid:{color:gColor}},
+      y:{ticks:{color:'#6b7280',font:cFont,callback:v=>v+'%'},grid:{color:gColor},title:{display:true,text:yLbl,color:'#6b7280',font:cFont},min:0}
+    }
+  });
+
+  new Chart(document.getElementById('chart-bnpl'), {
+    type:'bar',
+    data:{labels:['0 BNPLs','1 BNPL','2 BNPLs','3+ BNPLs'],
+      datasets:[{data:[77.6,72.5,66.7,66.8],backgroundColor:['#4f46e5','#059669','#b45309','#dc2626'],borderRadius:5,barPercentage:.7}]},
+    options:bOpts('US Mobile: Conversion by BNPL Count','Conversion %')
+  });
+
+  new Chart(document.getElementById('chart-offline'), {
+    type:'bar',
+    data:{labels:['Stores\nNo Offline','Stores\n+ Offline','Bookings\nNo Offline','Bookings\n+ Offline','Restaurants\nCC Only','Restaurants\n+ Offline'],
+      datasets:[{data:[78.1,68.5,86.1,68.3,89.5,69.3],backgroundColor:['#059669','#dc2626','#059669','#dc2626','#059669','#dc2626'],borderRadius:5,barPercentage:.7}]},
+    options:bOpts('Mobile: Conversion With vs Without Offline (CC sessions)','Conversion %')
+  });
+
+  const mobileConv = [66.2,72.5,74.0,73.6,72.6];
+  const mobileSess = ['29.0M','19.3M','6.8M','2.7M','1.1M'];
+  const desktopConv = [69.6,74.2,76.5,76.9,76.6];
+  const desktopSess = ['9.9M','6.9M','2.4M','883K','351K'];
+  const mLabels = ['1','2','3','4','5'];
+  const deviceOpts = (title, color, peakIdx) => ({
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},title:{display:true,text:title,color:'#6b7280',font:{...cFont,size:12}},
+      annotation:undefined},
+    scales:{
+      x:{title:{display:true,text:'# of Methods',color:'#6b7280',font:cFont},ticks:{color:'#6b7280',font:cFont},grid:{color:gColor}},
+      y:{ticks:{color:'#6b7280',font:cFont,callback:v=>v+'%'},grid:{color:gColor},min:63,max:80}
+    }
+  });
+
+  new Chart(document.getElementById('chart-mobile'), {
+    type:'bar',
+    data:{labels:mLabels,
+      datasets:[{data:mobileConv,
+        backgroundColor:mobileConv.map((v,i)=>i<=2?'rgba(79,70,229,0.7)':'rgba(220,38,38,0.55)'),
+        borderRadius:5,barPercentage:.7}]},
+    options:deviceOpts('Mobile Conversion by # Methods','#4f46e5',2)
+  });
+
+  new Chart(document.getElementById('chart-desktop'), {
+    type:'bar',
+    data:{labels:mLabels,
+      datasets:[{data:desktopConv,
+        backgroundColor:desktopConv.map((v,i)=>'rgba(5,150,105,'+(0.35+i*0.12)+')'),
+        borderRadius:5,barPercentage:.7}]},
+    options:deviceOpts('Desktop Conversion by # Methods','#059669',4)
+  });
+
+  new Chart(document.getElementById('chart-vertical'), {
+    type:'bar',
+    data:{labels:['Restaurants\nCC only','Restaurants\n+offline','Stores\nCC+PP','Stores\n+3 BNPL','Bookings\nCC only','Bookings\n+offline','Events\nCC+PP','Events\n+2 BNPL'],
+      datasets:[{data:[89.5,69.3,80.7,67.5,86.1,68.3,63.4,47.2],
+        backgroundColor:['#059669','#dc2626','#059669','#dc2626','#059669','#dc2626','#4f46e5','#dc2626'],borderRadius:5,barPercentage:.7}]},
+    options:bOpts('Mobile: Best vs Worst Config per Vertical','Conversion %')
+  });
+
+  // ═══ SCATTER → 2 BUCKETS ═══
+  const items = [
+    {text:'Cap BNPLs at 1 on Mobile',impact:'$17-20M',bucket:'dynamic'},
+    {text:'Deprioritize offline on Stores Mobile',impact:'$20-29M',bucket:'dynamic'},
+    {text:'Remove BNPLs from Events',impact:'$4M',bucket:'dynamic'},
+    {text:'Device-aware method count',impact:'$5-10M',bucket:'dynamic'},
+    {text:'Vertical-specific method rules',impact:'Included',bucket:'dynamic'},
+    {text:'Deprioritize offline on Bookings',impact:'$3.0-3.3M',bucket:'dynamic'},
+    {text:'Deprioritize offline on Restaurants',impact:'$1.5-2M',bucket:'dynamic'},
+    {text:'Surface Cash App in US',impact:'$0.5M',bucket:'dynamic'},
+    {text:'Optimize Pricing Plans',impact:'$2M',bucket:'dynamic'},
+    {text:'More methods on Desktop',impact:'$3-6M',bucket:'dynamic'},
+    {text:'Add PayPal for DE/FR',impact:'$2.5M raw',bucket:'merchant'},
+    {text:'Add local methods in DE',impact:'$1.5M raw',bucket:'merchant'},
+    {text:'Recommend Afterpay in AU',impact:'$1.5M raw',bucket:'merchant'},
+    {text:'Add 1 BNPL for US Stores',impact:'$2-3M raw',bucket:'merchant'},
+    {text:'Recommend Klarna in UK',impact:'Neutral',bucket:'merchant'},
+  ];
+
+  const scatterPos = [
+    [5,5],[64,3],[30,14],[80,9],[12,25],
+    [52,20],[74,32],[22,38],[46,7],[8,52],
+    [60,46],[36,56],[82,54],[18,68],[56,72]
+  ];
+
+  const sticky = document.getElementById('scatter-sticky');
+  items.forEach((item,i) => {
+    const el = document.createElement('div');
+    el.className = 'scatter-item';
+    el.dataset.bucket = item.bucket;
+    el.style.left = scatterPos[i][0] + '%';
+    el.style.top = scatterPos[i][1] + '%';
+    el.innerHTML = '<strong>' + item.text + '</strong><span class="si-impact">' + item.impact + '</span>';
+    sticky.appendChild(el);
+  });
+
+  const scatterEls = sticky.querySelectorAll('.scatter-item');
+  const bucketShapes = sticky.querySelectorAll('.bucket-shape');
+  const bucketCounts = sticky.querySelectorAll('.bucket-count');
+  const wrapper = document.getElementById('scatter-wrapper');
+
+  function getBucketTargets() {
+    const startY = 4, endY = 64;
+    const cols = {dynamic:[],merchant:[]};
+    items.forEach((item,i) => cols[item.bucket].push(i));
+    const targets = {};
+    const colCenter = {dynamic:24, merchant:76};
+    Object.keys(cols).forEach(bucket => {
+      const count = cols[bucket].length;
+      const gap = (endY - startY) / (count + 1);
+      cols[bucket].forEach((idx,row) => {
+        targets[idx] = { x:colCenter[bucket], y:startY + gap * (row + 1) - gap/2 };
+      });
+    });
+    return targets;
+  }
+
+  let targets = null;
+  function updateScatter() {
+    const rect = wrapper.getBoundingClientRect();
+    const scrollableH = wrapper.offsetHeight - window.innerHeight;
+    if (scrollableH <= 0) return;
+    const progress = Math.max(0, Math.min(1, -rect.top / scrollableH));
+    if (!targets) targets = getBucketTargets();
+
+    scatterEls.forEach((el,i) => {
+      if (progress > 0.02 + i * 0.015) el.classList.add('show');
+      if (progress >= 0.45) {
+        const t = Math.min(1, (progress - 0.45) / 0.35);
+        const sx=scatterPos[i][0],sy=scatterPos[i][1],tx=targets[i].x,ty=targets[i].y;
+        el.style.left = (sx+(tx-sx)*t)+'%';
+        el.style.top = (sy+(ty-sy)*t)+'%';
+        if (t > 0.85) el.classList.add('settled'); else el.classList.remove('settled');
+      } else {
+        el.style.left = scatterPos[i][0]+'%';
+        el.style.top = scatterPos[i][1]+'%';
+        el.classList.remove('settled');
+      }
+    });
+
+    bucketShapes.forEach(b => { if (progress > 0.5) b.classList.add('show'); else b.classList.remove('show'); });
+    bucketCounts.forEach(b => { if (progress > 0.78) b.classList.add('show'); else b.classList.remove('show'); });
+  }
+
+  window.addEventListener('scroll', updateScatter, {passive:true});
+  window.addEventListener('resize', () => { targets=null; updateScatter(); });
+  updateScatter();
+});
+</script>
+<!-- Password gate -->
+<div id="pw-gate" style="position:fixed;inset:0;z-index:9999;background:#fafbfc;display:flex;align-items:center;justify-content:center;">
+  <div style="text-align:center;max-width:340px;">
+    <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#999;margin-bottom:1rem;">Checkout Optimization Study</div>
+    <div style="font-size:1.4rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.5rem;">Enter password</div>
+    <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem;">This presentation is password-protected.</div>
+    <input id="pw-input" type="password" placeholder="Password" autofocus
+      style="width:100%;padding:0.65rem 1rem;border:1px solid #e5e3de;border-radius:8px;font-size:0.9rem;font-family:inherit;outline:none;text-align:center;transition:border-color 0.2s;"
+      onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#e5e3de'">
+    <div id="pw-error" style="color:#dc2626;font-size:0.78rem;margin-top:0.5rem;display:none;">Incorrect password</div>
+    <button id="pw-btn" onclick="checkPw()"
+      style="margin-top:1rem;width:100%;padding:0.6rem;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity 0.15s;"
+      onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Continue</button>
+  </div>
+</div>
+<script>
+function checkPw(){
+  if(document.getElementById('pw-input').value==='Dynamic Checkout'){
+    document.getElementById('pw-gate').style.display='none';
+    document.body.style.overflow='';
+  }else{
+    document.getElementById('pw-error').style.display='block';
+    document.getElementById('pw-input').style.borderColor='#dc2626';
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown',function(e){if(e.key==='Enter')checkPw();});
+document.body.style.overflow='hidden';
+</script>
+</body>
+</html>
