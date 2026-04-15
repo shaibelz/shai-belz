@@ -538,6 +538,13 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
               <strong>No display method active.</strong> Buyers will see local currency prices on the site, but it won't carry through to checkout — they'll pay in your site currency. Enable auto display or add the converter for a full end-to-end experience.
             </div>
           </div>
+
+          <!-- Display-only mode banner -->
+          <div class="bm-banner" id="display-only-banner" style="display:none; background:#f5f3ff; border:1px solid #ddd6fe;">
+            <div class="bm-banner-text">
+              <strong>Display-only mode.</strong> The converter is showing local currency prices on your site, but Multi Currency is off — checkout will use your site currency. Turn on Multi Currency to let buyers pay in their local currency.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -643,6 +650,9 @@ function render() {
 
   const noDisplayMethod = state.mc && !state.ad && !state.converter;
   $('warning-banner').style.display = noDisplayMethod ? 'flex' : 'none';
+
+  const displayOnly = !state.mc && state.converter;
+  $('display-only-banner').style.display = displayOnly ? 'flex' : 'none';
 
   let desc = '';
   if (state.prenotice && !state.mc) {
