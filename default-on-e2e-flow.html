@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Default ON — E2E Merchant Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #fafafa; --white: #fff; --ink: #1a1a1a; --ink2: #555; --ink3: #999;
+  --rule: #e5e5e5; --blue: #2563eb; --blue-bg: #eff6ff; --blue-b: #bfdbfe;
+  --teal: #0d9488; --teal-bg: #f0fdfa; --teal-b: #99f6e4;
+  --green: #059669; --green-bg: #ecfdf5; --green-b: #a7f3d0;
+  --purple: #7c3aed; --purple-bg: #f5f3ff; --purple-b: #ddd6fe;
+  --amber: #d97706; --amber-bg: #fffbeb; --amber-b: #fde68a;
+  --red: #dc2626;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+.page { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 4rem 0 3rem;
+}
+.eyebrow {
+  font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--ink3); margin-bottom: 1rem;
+}
+.header h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900;
+  letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.75rem;
+}
+.header h1 em { font-style: normal; color: var(--teal); }
+.header p {
+  font-size: 0.95rem; color: var(--ink2); max-width: 560px;
+  margin: 0 auto; line-height: 1.65;
+}
+
+/* Flow steps */
+.flow { position: relative; }
+.flow::before {
+  content: '';
+  position: absolute;
+  left: 28px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--blue-b), var(--teal-b), var(--green-b), var(--purple-b));
+}
+
+.step {
+  position: relative;
+  padding-left: 76px;
+  padding-bottom: 3rem;
+  opacity: 0; transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.step.vis { opacity: 1; transform: none; }
+.step:last-child { padding-bottom: 0; }
+
+.step-dot {
+  position: absolute;
+  left: 12px;
+  top: 0;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.75rem; color: white;
+  z-index: 1;
+  box-shadow: 0 0 0 4px var(--bg);
+}
+
+.step-label {
+  font-size: 0.58rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.12em; margin-bottom: 0.35rem;
+}
+.step-title {
+  font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+.step-desc {
+  font-size: 0.88rem; color: var(--ink2); line-height: 1.65;
+  margin-bottom: 1rem; max-width: 600px;
+}
+
+/* Visual blocks within steps */
+.visual-block {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Email mockup */
+.email-mock {
+  max-width: 520px;
+}
+.email-header {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.72rem;
+  color: var(--ink3);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.email-header strong { color: var(--ink); font-size: 0.78rem; }
+.email-from { color: var(--ink2); }
+.email-body {
+  padding: 1.5rem 1.25rem;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--ink2);
+}
+.email-body h3 {
+  font-size: 1rem; font-weight: 700; color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+.email-body p { margin-bottom: 0.75rem; }
+.email-cta {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-right: 0.5rem;
+  margin-top: 0.25rem;
+}
+.email-cta-primary { background: var(--teal); color: white; }
+.email-cta-secondary { background: transparent; color: var(--ink3); border: 1px solid var(--rule); }
+.email-divider { height: 1px; background: var(--rule); margin: 1rem 0; }
+.email-small { font-size: 0.72rem; color: var(--ink3); }
+
+/* BM mockup (simplified) */
+.bm-mock {
+  max-width: 600px;
+}
+.bm-topbar {
+  background: #131720;
+  padding: 0.5rem 1rem;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 0.72rem; color: #b6c1cd;
+}
+.bm-topbar-logo { font-weight: 700; color: white; font-size: 0.8rem; }
+.bm-topbar-logo span { color: #3899ec; }
+.bm-content {
+  padding: 1rem 1.25rem;
+  background: #f0f4f7;
+}
+.bm-breadcrumb {
+  font-size: 0.65rem; color: #7a92a5; margin-bottom: 0.5rem;
+}
+.bm-page-title {
+  font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.bm-card {
+  background: white;
+  border: 1px solid #dfe5eb;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+.bm-card-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+}
+.bm-card-title { font-size: 0.78rem; font-weight: 600; }
+.bm-card-sub { font-size: 0.68rem; color: #577083; margin-top: 0.1rem; }
+.bm-tag {
+  display: inline-block; padding: 0.1rem 0.4rem; border-radius: 8px;
+  font-size: 0.6rem; font-weight: 600;
+}
+.bm-tag-green { background: #e0f5e0; color: #2b5a2b; }
+.bm-tag-gray { background: #edf1f5; color: #577083; }
+.bm-new-badge {
+  display: inline-block; padding: 0.08rem 0.35rem; border-radius: 3px;
+  background: #f3e8fd; color: #8e21e0;
+  font-size: 0.55rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.03em; margin-left: 0.3rem;
+}
+
+/* Buyer site mockup */
+.site-mock { max-width: 520px; }
+.site-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.75rem;
+}
+.site-logo { font-weight: 800; font-size: 0.85rem; }
+.site-nav-links { display: flex; gap: 0.85rem; color: var(--ink2); font-weight: 500; font-size: 0.72rem; }
+.site-products {
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.site-product {
+  padding: 1rem;
+  border-bottom: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+.site-product:nth-child(2n) { border-right: none; }
+.site-product-img {
+  width: 100%; aspect-ratio: 1;
+  border-radius: 8px; margin-bottom: 0.5rem;
+}
+.img-bag { background: linear-gradient(135deg, #f0e6d3, #d4c4a8); }
+.img-shoe { background: linear-gradient(135deg, #e8e0f0, #c8b8e0); }
+.img-watch { background: linear-gradient(135deg, #d6eaf0, #a8ccd8); }
+.img-hat { background: linear-gradient(135deg, #f0d6d6, #d8a8a8); }
+.site-product-name { font-size: 0.72rem; font-weight: 600; margin-bottom: 0.15rem; }
+.site-price { font-size: 0.82rem; font-weight: 800; }
+.site-price-green { color: var(--green); }
+
+/* Notification bar on site */
+.notification-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: #f0fdfa;
+  border-top: 1px solid #99f6e4;
+  font-size: 0.72rem;
+}
+.notification-text { color: var(--ink2); }
+.notification-text strong { color: var(--ink); }
+.notification-actions {
+  display: flex; gap: 0.5rem;
+}
+.notif-btn {
+  padding: 0.25rem 0.6rem; border-radius: 4px;
+  font-size: 0.65rem; font-weight: 600; border: none; cursor: pointer;
+  font-family: inherit;
+}
+.notif-btn-keep { background: var(--teal); color: white; }
+.notif-btn-undo { background: transparent; color: var(--ink3); border: 1px solid var(--rule); }
+
+/* Outcome cards */
+.outcomes {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0.75rem; max-width: 600px;
+}
+.outcome {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--rule);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.outcome-icon { font-size: 1.1rem; margin-bottom: 0.4rem; }
+.outcome-title { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.2rem; }
+.outcome-desc { font-size: 0.72rem; color: var(--ink2); line-height: 1.5; }
+
+/* Branch options */
+.branch {
+  display: flex; gap: 0.75rem; max-width: 600px;
+  margin-top: 0.5rem;
+}
+.branch-option {
+  flex: 1;
+  background: var(--white);
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid;
+  text-align: center;
+}
+.branch-option-title {
+  font-size: 0.82rem; font-weight: 700; margin-bottom: 0.25rem;
+}
+.branch-option-desc {
+  font-size: 0.72rem; color: var(--ink2); line-height: 1.45;
+}
+
+/* Arrow annotation */
+.anno {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  margin-top: 0.75rem; max-width: 520px;
+}
+.anno-arrow {
+  font-size: 0.85rem; color: var(--ink3); flex-shrink: 0; margin-top: 0.1rem;
+}
+.anno-text {
+  font-size: 0.78rem; color: var(--ink2); line-height: 1.55;
+}
+.anno-text strong { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header">
+    <div class="eyebrow">Default ON — E2E Flow</div>
+    <h1>From email to <em>live experience</em></h1>
+    <p>The complete merchant journey for a merchant who doesn't have Multi Currency today, through the Default ON activation.</p>
+  </div>
+
+  <div class="flow">
+
+    <!-- ═══════ STEP 0: Before ═══════ -->
+    <div class="step">
+      <div class="step-dot" style="background:#b6c1cd;">0</div>
+      <div class="step-label" style="color:var(--ink3);">Before — Today</div>
+      <div class="step-title">Merchant has no Multi Currency</div>
+      <div class="step-desc">An eligible merchant with cross-border volume and a supported provider (Stripe, PayPal, or Wix Payments). Their buyers see prices in the merchant's site currency only — no local currency, no converter.</div>
+
+      <div class="visual-block site-mock">
+        <div class="site-nav">
+          <div class="site-logo">ARTISAN</div>
+          <div class="site-nav-links"><span>Shop</span><span>About</span><span>Contact</span></div>
+          <div style="font-size:0.72rem; color:var(--ink3);">Cart (0)</div>
+        </div>
+        <div class="site-products">
+          <div class="site-product"><div class="site-product-img img-bag"></div><div class="site-product-name">Leather Weekender</div><div class="site-price">₪ 1,249.00</div></div>
+          <div class="site-product"><div class="site-product-img img-shoe"></div><div class="site-product-name">Classic Oxford</div><div class="site-price">₪ 689.00</div></div>
+        </div>
+      </div>
+      <div class="anno">
+        <div class="anno-arrow">↑</div>
+        <div class="anno-text">A US buyer on this Israeli store sees <strong>₪ prices</strong>. No way to understand the cost. No converter. Trust breaks immediately.</div>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 1: Pre-notice email ═══════ -->
+    <div class="step">
+      <div class="step-dot" style="background:var(--blue);">1</div>
+      <div class="step-label" style="color:var(--blue);">Step 1 — Pre-Notice Email</div>
+      <div class="step-title">Merchant receives advance notice</div>
+      <div class="step-desc">~2 weeks before activation, the merchant receives an email explaining that Multi Currency with auto display will be enabled on their site.</div>
+
+      <div class="visual-block email-mock">
+        <div class="email-header">
+          <strong>Multi Currency is coming to your site</strong>
+          <div class="email-from">From: Wix Payments &lt;noreply@wix.com&gt;</div>
+        </div>
+        <div class="email-body">
+          <h3>We're enabling Multi Currency on your site</h3>
+          <p>Starting <strong>[date]</strong>, your cross-border visitors will automatically see prices in their local currency. This has been shown to <strong>increase checkout conversion by up to 9%</strong>.</p>
+          <p>A currency conversion fee may apply on converted transactions, depending on your payment provider.</p>
+          <div class="email-divider"></div>
+          <a class="email-cta email-cta-primary" href="#">Enable now</a>
+          <a class="email-cta email-cta-secondary" href="#">Opt out</a>
+          <div style="margin-top:1rem;">
+            <div class="email-small">You can always change this in Settings → Accept Payments → Multi-Currency.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="branch" style="margin-top:1rem;">
+        <div class="branch-option" style="border-color:var(--teal-b); background:var(--teal-bg);">
+          <div class="branch-option-title" style="color:var(--teal);">Enable now →</div>
+          <div class="branch-option-desc">Activated immediately. Skip to step 3.</div>
+        </div>
+        <div class="branch-option" style="border-color:var(--rule);">
+          <div class="branch-option-title">Do nothing</div>
+          <div class="branch-option-desc">Wait for flip day. Auto-enabled on the date.</div>
+        </div>
+        <div class="branch-option" style="border-color:var(--amber-b); background:var(--amber-bg);">
+          <div class="branch-option-title" style="color:var(--amber);">Opt out</div>
+          <div class="branch-option-desc">Not activated. Can enable manually later.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 2: Flip day ═══════ -->
+    <div class="step">
+      <div class="step-dot" style="background:var(--teal);">2</div>
+      <div class="step-label" style="color:var(--teal);">Step 2 — Flip Day</div>
+      <div class="step-title">MC + Auto Display turned on automatically</div>
+      <div class="step-desc">On the announced date, Multi Currency is enabled with auto display as the default. No converter needed. The merchant's BM now shows the new MC settings.</div>
+
+      <div class="visual-block bm-mock">
+        <div class="bm-topbar">
+          <div class="bm-topbar-logo">WIX <span>STUDIO</span></div>
+          <div>Supreme Inc</div>
+        </div>
+        <div class="bm-content">
+          <div class="bm-breadcrumb">Settings › Accept Payments › Multi-Currency</div>
+          <div class="bm-page-title">‹ Multi-Currency</div>
+
+          <div class="bm-card">
+            <div class="bm-card-row">
+              <div>
+                <div class="bm-card-title">Accept multiple currencies</div>
+                <div class="bm-card-sub">Let your customers view prices and pay with their local currency.</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.4rem;">
+                <span class="bm-tag bm-tag-green">Active</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bm-card">
+            <div class="bm-card-row">
+              <div>
+                <div class="bm-card-title">Auto display customer currency <span class="bm-new-badge">New</span></div>
+                <div class="bm-card-sub">Automatically shows buyers their local currency based on location.</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.4rem;">
+                <span class="bm-tag bm-tag-green">Active</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bm-card">
+            <div class="bm-card-row">
+              <div>
+                <div class="bm-card-title">Main currency</div>
+                <div class="bm-card-sub">This is the currency customers see by default on your site.</div>
+              </div>
+              <div style="font-size:0.72rem;color:#577083;">US Dollar · USD ($)</div>
+            </div>
+          </div>
+
+          <div class="bm-card">
+            <div class="bm-card-row">
+              <div>
+                <div class="bm-card-title">Currency converter widget</div>
+                <div class="bm-card-sub">Optional — add a converter so buyers can manually switch.</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.4rem;">
+                <span class="bm-tag bm-tag-gray">Not installed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anno">
+        <div class="anno-arrow">↑</div>
+        <div class="anno-text"><strong>Auto display is ON by default.</strong> Converter shown as optional. Merchant can turn off auto display or deactivate MC entirely at any time.</div>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 3: Buyer experience ═══════ -->
+    <div class="step">
+      <div class="step-dot" style="background:var(--green);">3</div>
+      <div class="step-label" style="color:var(--green);">Step 3 — Buyer Experience (Live)</div>
+      <div class="step-title">Cross-border buyer sees local currency</div>
+      <div class="step-desc">A US buyer visits the same Israeli store. The page loads in ₪, then after ~5 seconds a notification appears and prices switch to $USD. The buyer can keep or revert.</div>
+
+      <div class="visual-block site-mock">
+        <div class="site-nav">
+          <div class="site-logo">ARTISAN</div>
+          <div class="site-nav-links"><span>Shop</span><span>About</span><span>Contact</span></div>
+          <div style="font-size:0.72rem; color:var(--ink3);">Cart (0)</div>
+        </div>
+        <div class="site-products">
+          <div class="site-product"><div class="site-product-img img-bag"></div><div class="site-product-name">Leather Weekender</div><div class="site-price site-price-green">$339.00</div></div>
+          <div class="site-product"><div class="site-product-img img-shoe"></div><div class="site-product-name">Classic Oxford</div><div class="site-price site-price-green">$187.00</div></div>
+        </div>
+        <div class="notification-bar">
+          <div class="notification-text">We detected your location is <strong>United States</strong>. Prices switched to <strong>USD</strong>.</div>
+          <div class="notification-actions">
+            <button class="notif-btn notif-btn-keep">Keep</button>
+            <button class="notif-btn notif-btn-undo">Undo</button>
+          </div>
+        </div>
+      </div>
+      <div class="anno">
+        <div class="anno-arrow">↑</div>
+        <div class="anno-text">Prices in <strong>$USD</strong> — the buyer's local currency. Notification gives transparency and control. <strong>Only 1.18% of buyers chose to switch back</strong> in our experiment.</div>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 4: Merchant controls ═══════ -->
+    <div class="step">
+      <div class="step-dot" style="background:var(--purple);">4</div>
+      <div class="step-label" style="color:var(--purple);">Ongoing — Merchant Controls</div>
+      <div class="step-title">Full control at all times</div>
+      <div class="step-desc">The merchant always has control over their Multi Currency experience. These actions are all available from the BM settings page.</div>
+
+      <div class="outcomes">
+        <div class="outcome">
+          <div class="outcome-icon">🔄</div>
+          <div class="outcome-title">Turn off auto display</div>
+          <div class="outcome-desc">Disable auto display from BM. Must keep at least auto display or converter for MC to work.</div>
+        </div>
+        <div class="outcome">
+          <div class="outcome-icon">➕</div>
+          <div class="outcome-title">Add converter widget</div>
+          <div class="outcome-desc">Optionally add the currency converter via the Editor. Works alongside or instead of auto display.</div>
+        </div>
+        <div class="outcome">
+          <div class="outcome-icon">⛔</div>
+          <div class="outcome-title">Deactivate MC entirely</div>
+          <div class="outcome-desc">Turn off Multi Currency completely. Buyers go back to seeing site currency only.</div>
+        </div>
+        <div class="outcome">
+          <div class="outcome-icon">💰</div>
+          <div class="outcome-title">Manage currencies</div>
+          <div class="outcome-desc">Choose which currencies to support. 45 currencies available by default.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /flow -->
+
+</div>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.step').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
