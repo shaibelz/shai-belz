@@ -22,7 +22,7 @@
 html { scroll-behavior: smooth; }
 body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
 
-.page { max-width: 960px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.page { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 6rem; }
 
 .header { text-align: center; padding: 4rem 0 3rem; }
 .eyebrow { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink3); margin-bottom: 1rem; }
@@ -45,11 +45,6 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 
 .visual-block { background: var(--white); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
 
-/* Population stats */
-.pop-stats { display: flex; gap: 1rem; max-width: 600px; margin-bottom: 0.5rem; }
-.pop-stat { flex: 1; background: var(--white); border-radius: 10px; padding: 0.85rem 1rem; border: 1px solid var(--rule); text-align: center; }
-.pop-stat-val { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; }
-.pop-stat-label { font-size: 0.65rem; color: var(--ink3); margin-top: 0.15rem; line-height: 1.35; }
 
 /* Email mockup */
 .email-mock { max-width: 520px; }
@@ -66,7 +61,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 .email-small { font-size: 0.72rem; color: var(--ink3); }
 
 /* ═══════ BM Mockup (Production Wix Studio) ═══════ */
-.bm-mock { max-width: 780px; font-family: 'Madefor', 'Inter', Helvetica, Arial, sans-serif; }
+.bm-mock { max-width: 100%; font-family: 'Madefor', 'Inter', Helvetica, Arial, sans-serif; }
 .bm-shell { display: flex; height: auto; min-height: 420px; }
 
 /* Sidebar */
@@ -231,27 +226,15 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
     <p>The complete merchant journey for a merchant who doesn't have Multi Currency today, through the Default ON activation.</p>
   </div>
 
-  <!-- Target audience -->
-  <div style="margin-bottom:2.5rem;">
-    <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink3); margin-bottom:0.75rem;">Target Audience — Phase I</div>
-    <div style="font-size:0.88rem; color:var(--ink2); line-height:1.65; margin-bottom:1rem; max-width:600px;">Existing <strong style="color:var(--ink);">Stripe Cashier</strong>, <strong style="color:var(--ink);">PayPal Cashier</strong>, and <strong style="color:var(--ink);">Wix Payments</strong> merchants — <strong style="color:var(--ink);">Stores vertical only</strong>.</div>
-    <div class="pop-stats">
-      <div class="pop-stat">
-        <div class="pop-stat-val" style="color:var(--purple);">$722M</div>
-        <div class="pop-stat-label">Cross-border GPV<br>11% of total PbW GPV</div>
-      </div>
-      <div class="pop-stat">
-        <div class="pop-stat-val" style="color:var(--teal);">190K</div>
-        <div class="pop-stat-label">Merchants with<br>cross-border volume</div>
-      </div>
-      <div class="pop-stat">
-        <div class="pop-stat-val" style="color:var(--blue);">~65K</div>
-        <div class="pop-stat-label">Phase I estimate<br>(Stores + Stripe/PP/WP)</div>
-      </div>
-    </div>
-  </div>
-
   <div class="flow">
+
+    <!-- ═══════ Target Audience ═══════ -->
+    <div class="step">
+      <div class="step-dot" style="background:var(--ink3);">—</div>
+      <div class="step-label" style="color:var(--ink3);">Target Audience — Phase I</div>
+      <div class="step-title">Who gets Default ON</div>
+      <div class="step-desc">Existing <strong>Stripe Cashier</strong>, <strong>PayPal Cashier</strong>, and <strong>Wix Payments</strong> merchants — <strong>Stores vertical only</strong>. All geographies, all business sectors.</div>
+    </div>
 
     <!-- ═══════ STEP 1: Pre-notice email ═══════ -->
     <div class="step">
