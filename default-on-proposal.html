@@ -320,19 +320,30 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   </div>
 </div>
 
-<!-- ═══════════ 05 E2E FLOW ═══════════ -->
+<!-- ═══════════ 05 SOLUTION PROPOSAL (Embedded E2E) ═══════════ -->
 <div class="sect" style="padding-top:2rem; padding-bottom:6rem;">
-  <div class="ch fi">05 &mdash; The E2E Default ON Flow</div>
+  <div class="ch fi">05 &mdash; Solution Proposal</div>
   <div class="sect-title fi fi-d1">From Email to Live Experience</div>
   <div class="sect-sub fi fi-d2">The complete merchant journey — target audience, pre-notice email, BM settings (interactive demo), and buyer experience.</div>
 
-  <div class="fi fi-d3" style="text-align:center; padding:2.5rem 0;">
-    <a href="https://shaibelz.github.io/shai-belz/default-on-e2e-flow.html" target="_blank"
-      style="display:inline-block; padding:0.85rem 2.5rem; background:var(--teal); color:white; border-radius:8px; font-size:0.95rem; font-weight:700; text-decoration:none; letter-spacing:-0.01em; transition:opacity 0.15s;"
-      onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
-      Open the E2E Flow Presentation &rarr;
-    </a>
-    <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--ink3);">Interactive demo with working BM toggles, email mockup, and buyer experience.</div>
+  <div class="fi fi-d3">
+  <iframe id="e2e-frame" src="default-on-e2e-flow.html" style="width:100%; border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.06); margin-top:1rem;" scrolling="no"></iframe>
+  <script>
+  (function() {
+    var iframe = document.getElementById('e2e-frame');
+    function resizeIframe() {
+      try {
+        iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
+      } catch(e) { iframe.style.height = '2400px'; }
+    }
+    iframe.onload = function() {
+      resizeIframe();
+      setTimeout(resizeIframe, 500);
+      setTimeout(resizeIframe, 2000);
+    };
+    iframe.style.height = '2400px';
+  })();
+  </script>
   </div>
 </div>
 
