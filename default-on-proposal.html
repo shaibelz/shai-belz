@@ -320,92 +320,20 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   </div>
 </div>
 
-<!-- ═══════════ 05 SCOPE ═══════════ -->
-<div class="sect" style="padding-top:2rem;">
-  <div class="ch fi">05 &mdash; Scope &amp; What We Build</div>
-  <div class="sect-title fi fi-d1">What Changes for Merchants &amp; Visitors</div>
-  <div class="sect-sub fi fi-d2">The full scope of the Default ON experience &mdash; what we need to implement by end of April.</div>
-
-  <div class="scope-grid fi fi-d3">
-    <div class="scope-item" style="border: 1px solid var(--tealb);">
-      <div class="scope-label" style="color:var(--teal);">Visitor Experience</div>
-      <div class="scope-val">Auto-Switch Based on Geo Location</div>
-      <div class="scope-desc">Visitor's currency is detected via GeoIP and displayed automatically from the first page load. No action needed from the visitor.<br><br><a href="https://kostiaantnko.github.io/sole-demo/index.html" target="_blank" style="color:var(--teal); font-weight:600; text-decoration:none; font-size:0.75rem;">&#9654; See the prototype experience &rarr;</a></div>
-    </div>
-    <div class="scope-item" style="border: 1px solid var(--tealb);">
-      <div class="scope-label" style="color:var(--teal);">Multi Currency Activation</div>
-      <div class="scope-val">Enable MC Without Requiring Converter</div>
-      <div class="scope-desc">Multi Currency is enabled <strong>without requiring the currency converter to be configured</strong>. Backend supports a "currency converter hidden" solution.</div>
-    </div>
-  </div>
-
-  <div class="scope-grid fi fi-d4">
-    <div class="scope-item">
-      <div class="scope-label">Merchant Control</div>
-      <div class="scope-val">Opt-Out Anytime</div>
-      <div class="scope-desc">Merchants can disable auto-display or MC entirely at any point. Pre-notice email includes an <strong>opt-in now</strong> link and an <strong>opt-out</strong> link.</div>
-    </div>
-    <div class="scope-item">
-      <div class="scope-label">UX Updates</div>
-      <div class="scope-val">Reflect the New Default</div>
-      <div class="scope-desc">Dashboard and settings UX updated to reflect MC-on state. Backend support for "converter hidden" mode so MC works independently.<br><br><a href="https://shaibelz.github.io/mc-auto-display-proposal/auto-display-bm-mockups.html" target="_blank" style="color:var(--teal); font-weight:600; text-decoration:none; font-size:0.75rem;">&#9654; See the BM settings mockups &rarr;</a></div>
-    </div>
-  </div>
-
-  <div class="scope-grid fi fi-d5">
-    <div class="scope-item" style="grid-column: span 2; border: 1px solid var(--purpleb);">
-      <div class="scope-label" style="color:var(--purple);">Target Audience — Phase I</div>
-      <div class="scope-val">Stripe Cashier, PayPal Cashier &amp; Wix Payments &mdash; Stores Vertical</div>
-      <div class="scope-desc">All geographies, all business sectors. Merchants with cross-border volume on Stripe, PayPal, or Wix Payments. Stores vertical in Phase I, other verticals to follow.</div>
-    </div>
-  </div>
-
-  <div class="callout fi" style="border-left-color:var(--ink3); max-width:none;">
-    <strong>Key implementation principle:</strong> No dependency on the eCom team. Everything built within Payments &mdash; so we can move fast.
-  </div>
-</div>
-
-<!-- ═══════════ 06 TIMELINE ═══════════ -->
-<div class="sect" style="padding-top:2rem;">
-  <div class="ch fi">06 &mdash; Timeline</div>
-  <div class="sect-title fi fi-d1">Path to Real Scale</div>
-
-  <div class="tl fi fi-d2">
-    <div class="tl-card now">
-      <div class="tl-phase">April 2026</div>
-      <div class="tl-title">Build &amp; Prepare</div>
-      <div class="tl-body">E2E implementation: UX for new default state, BED "converter hidden" support, opt-in/opt-out flows, merchant communication.</div>
-    </div>
-    <div class="tl-card next">
-      <div class="tl-phase">Early May</div>
-      <div class="tl-title">Pre-Notice Emails</div>
-      <div class="tl-body">Notify all eligible Stripe &amp; PayPal Cashier merchants. Early opt-in / opt-out window opens.</div>
-    </div>
-    <div class="tl-card then">
-      <div class="tl-phase">Mid-May</div>
-      <div class="tl-title">Flip Day</div>
-      <div class="tl-body">Enable MC + auto-display for all who haven't opted out. Start measuring at real scale.</div>
-    </div>
-    <div class="tl-card last">
-      <div class="tl-phase">July</div>
-      <div class="tl-title">Validate &amp; Decide</div>
-      <div class="tl-body">With millions of visitors, we have statistically significant results. Decide on permanent rollout and WP expansion.</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ BOTTOM LINE ═══════════ -->
+<!-- ═══════════ 05 E2E FLOW ═══════════ -->
 <div class="sect" style="padding-top:2rem; padding-bottom:6rem;">
-  <div class="ch fi">Summary</div>
-  <ul class="bottom-bullets fi fi-d1">
-    <li>Experiment shows early conversion uplift (+6.8% regular checkout, +44.1% PayPal) but sample is too small for overall significance</li>
-    <li>$722M cross-border GPV, 190K merchants &mdash; projected $9.5M/year at full scale</li>
-    <li>Proposal: pre-notice all eligible Stripe &amp; PayPal Cashier merchants, flip on a set date, opt-out available</li>
-    <li>MC on without converter dependency &mdash; "converter hidden" BED solution, UX reflects new default</li>
-    <li>Auto-switch visitors to local currency based on geo location</li>
-    <li>No eCom dependency &mdash; built entirely in Payments</li>
-    <li>April: build &rarr; Early May: notify &rarr; Mid-May: flip &rarr; July: validate</li>
-  </ul>
+  <div class="ch fi">05 &mdash; The E2E Default ON Flow</div>
+  <div class="sect-title fi fi-d1">From Email to Live Experience</div>
+  <div class="sect-sub fi fi-d2">The complete merchant journey — target audience, pre-notice email, BM settings (interactive demo), and buyer experience.</div>
+
+  <div class="fi fi-d3" style="text-align:center; padding:2.5rem 0;">
+    <a href="https://shaibelz.github.io/shai-belz/default-on-e2e-flow.html" target="_blank"
+      style="display:inline-block; padding:0.85rem 2.5rem; background:var(--teal); color:white; border-radius:8px; font-size:0.95rem; font-weight:700; text-decoration:none; letter-spacing:-0.01em; transition:opacity 0.15s;"
+      onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+      Open the E2E Flow Presentation &rarr;
+    </a>
+    <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--ink3);">Interactive demo with working BM toggles, email mockup, and buyer experience.</div>
+  </div>
 </div>
 
 <!-- Password gate -->
