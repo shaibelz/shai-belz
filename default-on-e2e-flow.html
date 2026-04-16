@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Default ON — E2E Merchant Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #fafafa; --white: #fff; --ink: #1a1a1a; --ink2: #555; --ink3: #999;
+  --rule: #e5e5e5; --blue: #2563eb; --blue-bg: #eff6ff; --blue-b: #bfdbfe;
+  --teal: #0d9488; --teal-bg: #f0fdfa; --teal-b: #99f6e4;
+  --green: #059669; --green-bg: #ecfdf5; --green-b: #a7f3d0;
+  --purple: #7c3aed; --purple-bg: #f5f3ff; --purple-b: #ddd6fe;
+  --amber: #d97706; --amber-bg: #fffbeb; --amber-b: #fde68a;
+  --red: #dc2626;
+  --wix-blue: #3899ec; --wix-blue-dark: #2b81cb;
+  --wix-bg: #f0f4f7; --wix-border: #dfe5eb; --wix-text: #162d3d;
+  --wix-text2: #577083; --wix-text3: #7a92a5; --wix-sidebar: #131720;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+.page { max-width: 960px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+.header { text-align: center; padding: 4rem 0 3rem; }
+.eyebrow { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink3); margin-bottom: 1rem; }
+.header h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.75rem; }
+.header h1 em { font-style: normal; color: var(--teal); }
+.header p { font-size: 0.95rem; color: var(--ink2); max-width: 560px; margin: 0 auto; line-height: 1.65; }
+
+/* Flow */
+.flow { position: relative; }
+.flow::before { content: ''; position: absolute; left: 28px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--blue-b), var(--teal-b), var(--green-b)); }
+
+.step { position: relative; padding-left: 76px; padding-bottom: 3rem; opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.16,1,0.3,1); }
+.step.vis { opacity: 1; transform: none; }
+.step:last-child { padding-bottom: 0; }
+
+.step-dot { position: absolute; left: 12px; top: 0; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; color: white; z-index: 1; box-shadow: 0 0 0 4px var(--bg); }
+.step-label { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.35rem; }
+.step-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+.step-desc { font-size: 0.88rem; color: var(--ink2); line-height: 1.65; margin-bottom: 1rem; max-width: 600px; }
+
+.visual-block { background: var(--white); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+
+/* Population stats */
+.pop-stats { display: flex; gap: 1rem; max-width: 600px; margin-bottom: 0.5rem; }
+.pop-stat { flex: 1; background: var(--white); border-radius: 10px; padding: 0.85rem 1rem; border: 1px solid var(--rule); text-align: center; }
+.pop-stat-val { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; }
+.pop-stat-label { font-size: 0.65rem; color: var(--ink3); margin-top: 0.15rem; line-height: 1.35; }
+
+/* Email mockup */
+.email-mock { max-width: 520px; }
+.email-header { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--rule); font-size: 0.72rem; color: var(--ink3); display: flex; flex-direction: column; gap: 0.25rem; }
+.email-header strong { color: var(--ink); font-size: 0.78rem; }
+.email-from { color: var(--ink2); }
+.email-body { padding: 1.5rem 1.25rem; font-size: 0.82rem; line-height: 1.7; color: var(--ink2); }
+.email-body h3 { font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 0.75rem; }
+.email-body p { margin-bottom: 0.75rem; }
+.email-cta { display: inline-block; padding: 0.5rem 1.25rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-decoration: none; margin-right: 0.5rem; margin-top: 0.25rem; cursor: pointer; }
+.email-cta-primary { background: var(--teal); color: white; }
+.email-cta-secondary { background: transparent; color: var(--ink3); border: 1px solid var(--rule); }
+.email-divider { height: 1px; background: var(--rule); margin: 1rem 0; }
+.email-small { font-size: 0.72rem; color: var(--ink3); }
+
+/* ═══════ BM Mockup (Production Wix Studio) ═══════ */
+.bm-mock { max-width: 780px; font-family: 'Madefor', 'Inter', Helvetica, Arial, sans-serif; }
+.bm-shell { display: flex; height: auto; min-height: 420px; }
+
+/* Sidebar */
+.bm-sidebar {
+  width: 140px; flex-shrink: 0;
+  background: var(--wix-sidebar); color: #b6c1cd;
+  padding: 0.5rem 0; font-size: 0.62rem; display: flex; flex-direction: column;
+}
+.bm-sidebar-top { padding: 0.35rem 0.65rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 0.25rem; }
+.bm-sidebar-setup { font-size: 0.6rem; color: #e8edf1; font-weight: 600; margin-bottom: 0.15rem; }
+.bm-sidebar-progress { font-size: 0.52rem; color: #7a92a5; }
+.bm-sidebar-item {
+  display: flex; align-items: center; gap: 0.45rem;
+  padding: 0.35rem 0.65rem; font-size: 0.62rem; color: #b6c1cd; cursor: default;
+  border-left: 2px solid transparent; transition: all 0.1s;
+}
+.bm-sidebar-item.active { color: #fff; background: rgba(56,153,236,0.12); border-left-color: var(--wix-blue); font-weight: 600; }
+.bm-sidebar-item svg { width: 13px; height: 13px; opacity: 0.55; }
+.bm-sidebar-item.active svg { opacity: 1; }
+.bm-sidebar-bottom { margin-top: auto; padding: 0.5rem 0.65rem; font-size: 0.58rem; color: #7a92a5; border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* Topbar */
+.bm-topbar {
+  background: var(--wix-sidebar); padding: 0 0.85rem; height: 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 0.65rem; color: #b6c1cd; border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.bm-topbar-left { display: flex; align-items: center; gap: 0.6rem; }
+.bm-topbar-logo { font-weight: 700; color: white; font-size: 0.72rem; letter-spacing: 0.3px; display: flex; align-items: center; gap: 0.3rem; }
+.bm-topbar-logo span { color: var(--wix-blue); }
+.bm-topbar-logo .wix-icon { width: 18px; height: 18px; background: #6c47ff; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+.bm-topbar-nav { display: flex; gap: 0.6rem; font-size: 0.6rem; color: #8fa4b8; }
+.bm-topbar-nav span { cursor: default; }
+.bm-topbar-right { display: flex; align-items: center; gap: 0.55rem; }
+.bm-topbar-search {
+  background: rgba(255,255,255,0.08); border: none; border-radius: 4px;
+  padding: 0.2rem 0.5rem; font-size: 0.58rem; color: #8fa4b8; width: 120px;
+  font-family: inherit; outline: none;
+}
+.bm-topbar-icons { display: flex; gap: 0.4rem; align-items: center; }
+.bm-topbar-icon { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+.bm-topbar-avatar { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg,#6c47ff,#3899ec); }
+
+/* Main content */
+.bm-main { flex: 1; display: flex; flex-direction: column; }
+.bm-content { padding: 1rem 1.75rem 1.5rem; background: var(--wix-bg); flex: 1; }
+.bm-breadcrumb { font-size: 0.65rem; color: var(--wix-text3); margin-bottom: 0.5rem; }
+.bm-breadcrumb a { color: var(--wix-blue); text-decoration: none; cursor: pointer; }
+.bm-breadcrumb .sep { margin: 0 0.2rem; color: #b6c1cd; }
+.bm-page-title {
+  font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--wix-text);
+  display: flex; align-items: center; gap: 0.35rem;
+}
+.bm-back { color: var(--wix-blue); cursor: pointer; font-size: 1.15rem; text-decoration: none; font-weight: 400; }
+
+/* Cards */
+.bm-card {
+  background: white; border: 1px solid var(--wix-border); border-radius: 8px;
+  margin-bottom: 0.55rem;
+}
+.bm-card-row { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.15rem; min-height: 56px; }
+.bm-card-left { flex: 1; min-width: 0; }
+.bm-card-title { font-size: 0.82rem; font-weight: 600; color: var(--wix-text); display: flex; align-items: center; gap: 0.4rem; line-height: 1.3; }
+.bm-card-sub { font-size: 0.7rem; color: var(--wix-text2); margin-top: 0.2rem; line-height: 1.45; }
+.bm-card-sub a { color: var(--wix-blue); text-decoration: none; cursor: pointer; }
+.bm-card-right { display: flex; align-items: center; gap: 0.65rem; flex-shrink: 0; margin-left: 1rem; }
+
+/* Tags */
+.bm-tag { display: inline-flex; align-items: center; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.62rem; font-weight: 600; white-space: nowrap; }
+.bm-tag-green { background: #e0f5e0; color: #2b5a2b; }
+.bm-tag-gray { background: #edf1f5; color: var(--wix-text2); }
+.bm-new-badge { display: inline-flex; align-items: center; padding: 0.1rem 0.45rem; border-radius: 3px; background: #f3e8fd; color: #8e21e0; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+
+/* Text buttons (like "Edit", "Deactivate") */
+.bm-text-btn { background: none; border: none; color: var(--wix-blue); font-size: 0.75rem; font-weight: 500; cursor: pointer; font-family: inherit; padding: 0; }
+.bm-text-btn:hover { text-decoration: underline; }
+
+/* Toggle */
+.bm-toggle-area { flex-shrink: 0; }
+.bm-toggle { position: relative; display: inline-block; width: 36px; height: 20px; }
+.bm-toggle input { opacity: 0; width: 0; height: 0; }
+.bm-toggle-slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background: #b6c1cd; border-radius: 20px; transition: 0.2s;
+}
+.bm-toggle-slider:before {
+  content: ""; position: absolute; height: 16px; width: 16px;
+  left: 2px; bottom: 2px; background: white; border-radius: 50%;
+  transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+.bm-toggle input:checked + .bm-toggle-slider { background: var(--wix-blue); }
+.bm-toggle input:checked + .bm-toggle-slider:before { transform: translateX(16px); }
+
+/* Banners */
+.bm-banner { border-radius: 8px; padding: 0.8rem 1.15rem; margin-bottom: 0.55rem; font-size: 0.75rem; line-height: 1.55; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.bm-banner-info { background: #eaf7ff; border: 1px solid #b6d4fe; }
+.bm-banner-warning { background: #fef4e5; border: 1px solid #fdb44b; }
+.bm-banner-purple { background: #f5f3ff; border: 1px solid #ddd6fe; }
+.bm-banner-text { flex: 1; color: var(--wix-text2); }
+.bm-banner-text strong { color: var(--wix-text); }
+.bm-banner-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+.bm-banner-btn { padding: 0.32rem 0.8rem; border-radius: 18px; font-size: 0.68rem; font-weight: 600; border: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.bm-banner-btn:hover { opacity: 0.85; }
+.bm-banner-btn-primary { background: var(--wix-blue); color: white; }
+.bm-banner-btn-secondary { background: transparent; color: var(--wix-text2); border: 1px solid var(--wix-border); }
+
+/* CTA button */
+.bm-cta-btn { padding: 0.28rem 0.7rem; border-radius: 18px; font-size: 0.65rem; font-weight: 600; background: transparent; color: var(--wix-blue); border: 1px solid var(--wix-blue); cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.15s; }
+.bm-cta-btn:hover { background: #eaf7ff; }
+
+/* Preset tabs */
+.bm-tabs { display: flex; gap: 0.35rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.bm-tab { padding: 0.4rem 0.85rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--white); font-size: 0.7rem; font-weight: 600; color: var(--ink3); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.bm-tab.active { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.bm-tab:hover:not(.active) { border-color: var(--teal); color: var(--teal); }
+
+/* Site mockup */
+.site-mock { max-width: 520px; }
+.site-nav { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1rem; border-bottom: 1px solid var(--rule); font-size: 0.75rem; }
+.site-logo { font-weight: 800; font-size: 0.85rem; }
+.site-nav-links { display: flex; gap: 0.85rem; color: var(--ink2); font-weight: 500; font-size: 0.72rem; }
+.site-products { display: grid; grid-template-columns: 1fr 1fr; }
+.site-product { padding: 1rem; border-bottom: 1px solid var(--rule); border-right: 1px solid var(--rule); }
+.site-product:nth-child(2n) { border-right: none; }
+.site-product-img { width: 100%; aspect-ratio: 1; border-radius: 8px; margin-bottom: 0.5rem; }
+.img-bag { background: linear-gradient(135deg, #f0e6d3, #d4c4a8); }
+.img-shoe { background: linear-gradient(135deg, #e8e0f0, #c8b8e0); }
+.site-product-name { font-size: 0.72rem; font-weight: 600; margin-bottom: 0.15rem; }
+.site-price { font-size: 0.82rem; font-weight: 800; }
+.site-price-green { color: var(--green); }
+
+.notification-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1rem; background: #f0fdfa; border-top: 1px solid #99f6e4; font-size: 0.72rem; }
+.notification-text { color: var(--ink2); }
+.notification-text strong { color: var(--ink); }
+.notification-actions { display: flex; gap: 0.5rem; }
+.notif-btn { padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.65rem; font-weight: 600; border: none; cursor: pointer; font-family: inherit; }
+.notif-btn-keep { background: var(--teal); color: white; }
+.notif-btn-undo { background: transparent; color: var(--ink3); border: 1px solid var(--rule); }
+
+
+.branch { display: flex; gap: 0.75rem; max-width: 600px; margin-top: 0.5rem; }
+.branch-option { flex: 1; background: var(--white); border-radius: 10px; padding: 1rem; border: 1px solid; text-align: center; }
+.branch-option-title { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.25rem; }
+.branch-option-desc { font-size: 0.72rem; color: var(--ink2); line-height: 1.45; }
+
+.anno { display: flex; align-items: flex-start; gap: 0.5rem; margin-top: 0.75rem; max-width: 640px; }
+.anno-arrow { font-size: 0.85rem; color: var(--ink3); flex-shrink: 0; margin-top: 0.1rem; }
+.anno-text { font-size: 0.78rem; color: var(--ink2); line-height: 1.55; }
+.anno-text strong { color: var(--ink); }
+
+/* Card divider for grouped cards */
+.bm-card-divider { height: 1px; background: var(--wix-border); margin: 0 1rem; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header">
+    <div class="eyebrow">Default ON — E2E Flow</div>
+    <h1>From email to <em>live experience</em></h1>
+    <p>The complete merchant journey for a merchant who doesn't have Multi Currency today, through the Default ON activation.</p>
+  </div>
+
+  <!-- Target audience -->
+  <div style="margin-bottom:2.5rem;">
+    <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink3); margin-bottom:0.75rem;">Target Audience — Phase I</div>
+    <div style="font-size:0.88rem; color:var(--ink2); line-height:1.65; margin-bottom:1rem; max-width:600px;">Existing <strong style="color:var(--ink);">Stripe Cashier</strong>, <strong style="color:var(--ink);">PayPal Cashier</strong>, and <strong style="color:var(--ink);">Wix Payments</strong> merchants — <strong style="color:var(--ink);">Stores vertical only</strong>.</div>
+    <div class="pop-stats">
+      <div class="pop-stat">
+        <div class="pop-stat-val" style="color:var(--purple);">$722M</div>
+        <div class="pop-stat-label">Cross-border GPV<br>11% of total PbW GPV</div>
+      </div>
+      <div class="pop-stat">
+        <div class="pop-stat-val" style="color:var(--teal);">190K</div>
+        <div class="pop-stat-label">Merchants with<br>cross-border volume</div>
+      </div>
+      <div class="pop-stat">
+        <div class="pop-stat-val" style="color:var(--blue);">~65K</div>
+        <div class="pop-stat-label">Phase I estimate<br>(Stores + Stripe/PP/WP)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow">
+
+    <!-- ═══════ STEP 1: Pre-notice email ═══════ -->
+    <div class="step">
+      <div class="step-dot" style="background:var(--blue);">1</div>
+      <div class="step-label" style="color:var(--blue);">Step 1 — Pre-Notice Email</div>
+      <div class="step-title">Merchant receives advance notice</div>
+      <div class="step-desc">~2 weeks before activation, the merchant receives an email explaining that Multi Currency with auto display will be enabled on their site.</div>
+
+      <div class="visual-block email-mock">
+        <div class="email-header">
+          <strong>Multi Currency is coming to your site</strong>
+          <div class="email-from">From: Wix Payments &lt;noreply@wix.com&gt;</div>
+        </div>
+        <div class="email-body">
+          <h3>We're enabling Multi Currency on your site</h3>
+          <p>Starting <strong>[date]</strong>, your cross-border visitors will automatically see prices in their local currency. This has been shown to <strong>increase checkout conversion by up to 9%</strong>.</p>
+          <p>A currency conversion fee may apply on converted transactions, depending on your payment provider.</p>
+          <div class="email-divider"></div>
+          <p style="margin-bottom:0.5rem;"><strong style="color:var(--ink);">Want to enable it now?</strong> Go to your Multi-Currency settings and turn it on today.</p>
+          <p style="margin-bottom:0.5rem;"><strong style="color:var(--ink);">Prefer to opt out?</strong> You can opt out anytime from your Multi-Currency settings page. If you opt out before [date], it won't be enabled on your site.</p>
+          <div class="email-divider"></div>
+          <a class="email-cta email-cta-primary" href="#">Go to Multi-Currency settings</a>
+          <div style="margin-top:1rem;">
+            <div class="email-small">You can always change this in Settings → Accept Payments → Multi-Currency.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="branch" style="margin-top:1rem;">
+        <div class="branch-option" style="border-color:var(--teal-b); background:var(--teal-bg);">
+          <div class="branch-option-title" style="color:var(--teal);">Goes to BM → enables</div>
+          <div class="branch-option-desc">Merchant enables MC + auto display on the settings page.</div>
+        </div>
+        <div class="branch-option" style="border-color:var(--rule);">
+          <div class="branch-option-title">Does nothing</div>
+          <div class="branch-option-desc">Wait for flip day. Auto-enabled on the date.</div>
+        </div>
+        <div class="branch-option" style="border-color:var(--amber-b); background:var(--amber-bg);">
+          <div class="branch-option-title" style="color:var(--amber);">Goes to BM → opts out</div>
+          <div class="branch-option-desc">Merchant opts out on the settings page. Can enable later.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 2: BM Settings (interactive) ═══════ -->
+    <div class="step">
+      <div class="step-dot" style="background:var(--teal);">2</div>
+      <div class="step-label" style="color:var(--teal);">Step 2 — BM Settings Experience (Interactive)</div>
+      <div class="step-title">Multi-Currency settings page</div>
+      <div class="step-desc">This is a working demo — click the toggles and buttons to see how the page behaves. Use the presets to jump to a specific state.</div>
+
+      <div class="bm-tabs">
+        <button class="bm-tab active" onclick="applyPreset('prenotice')">Before flip (pre-notice)</button>
+        <button class="bm-tab" onclick="applyPreset('on')">After flip — ON</button>
+        <button class="bm-tab" onclick="applyPreset('off-converter')">MC off + Converter</button>
+        <button class="bm-tab" onclick="applyPreset('off-no-converter')">MC off + No Converter</button>
+      </div>
+
+      <div class="visual-block bm-mock" id="interactive-bm">
+        <div class="bm-topbar">
+          <div class="bm-topbar-left">
+            <div class="bm-topbar-logo"><div class="wix-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>WIX <span>STUDIO</span></div>
+            <div class="bm-topbar-nav"><span>Supreme Inc ▾</span><span>Resources ▾</span><span>Community ▾</span><span>Help ▾</span></div>
+          </div>
+          <div class="bm-topbar-right">
+            <input class="bm-topbar-search" placeholder="Search for tools, apps & more…" readonly>
+            <div class="bm-topbar-icons"><div class="bm-topbar-icon"></div><div class="bm-topbar-icon"></div><div class="bm-topbar-icon"></div></div>
+            <div class="bm-topbar-avatar"></div>
+          </div>
+        </div>
+        <div class="bm-shell">
+          <div class="bm-sidebar">
+            <div class="bm-sidebar-top">
+              <div class="bm-sidebar-setup">Let's set up your business →</div>
+              <div class="bm-sidebar-progress">0/4 completed</div>
+            </div>
+            <div class="bm-sidebar-item">Setup</div>
+            <div class="bm-sidebar-item">Home</div>
+            <div class="bm-sidebar-item">Getting Paid</div>
+            <div class="bm-sidebar-item">All Payments</div>
+            <div class="bm-sidebar-item">Apps</div>
+            <div class="bm-sidebar-item">Site & Mobile App ›</div>
+            <div class="bm-sidebar-item">Inbox</div>
+            <div class="bm-sidebar-item">Customers & Leads ›</div>
+            <div class="bm-sidebar-item">Marketing ›</div>
+            <div class="bm-sidebar-item">Analytics ›</div>
+            <div class="bm-sidebar-item">Automations</div>
+            <div class="bm-sidebar-item active">Settings</div>
+            <div class="bm-sidebar-item">CMS</div>
+            <div class="bm-sidebar-item">Developer Tools ›</div>
+            <div class="bm-sidebar-bottom">✦ Quick Actions</div>
+          </div>
+          <div class="bm-main">
+        <div class="bm-content">
+          <div class="bm-breadcrumb"><a href="#">Settings</a><span class="sep">›</span><a href="#">Accept Payments</a><span class="sep">›</span>Multi-Currency</div>
+          <div class="bm-page-title"><a class="bm-back">‹</a> Multi-Currency</div>
+
+          <!-- Pre-notice banner -->
+          <div class="bm-banner bm-banner-info" id="prenotice-banner">
+            <div class="bm-banner-text">
+              <strong>Multi Currency with auto display will be enabled on [date].</strong>
+              Your cross-border visitors will automatically see prices in their local currency.
+            </div>
+            <div class="bm-banner-actions">
+              <button class="bm-banner-btn bm-banner-btn-primary" onclick="bannerEnableNow()">Enable now</button>
+              <button class="bm-banner-btn bm-banner-btn-secondary" onclick="bannerOptOut()">Opt out</button>
+            </div>
+          </div>
+
+          <!-- MC toggle -->
+          <div class="bm-card" id="card-mc">
+            <div class="bm-card-row">
+              <div class="bm-card-left">
+                <div class="bm-card-title">Accept multiple currencies</div>
+                <div class="bm-card-sub">Let your customers view prices and pay with their local currency at checkout. <a>Learn more</a></div>
+              </div>
+              <div class="bm-card-right">
+                <div class="bm-toggle-area">
+                  <label class="bm-toggle"><input type="checkbox" id="toggle-mc" onchange="onMcToggle()"><span class="bm-toggle-slider"></span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Auto display toggle -->
+          <div class="bm-card" id="card-ad">
+            <div class="bm-card-row">
+              <div class="bm-card-left">
+                <div class="bm-card-title">Auto display customer currency <span class="bm-new-badge">New</span></div>
+                <div class="bm-card-sub">Automatically display prices in your buyer's local currency based on their location.</div>
+              </div>
+              <div class="bm-card-right">
+                <div class="bm-toggle-area">
+                  <label class="bm-toggle"><input type="checkbox" id="toggle-ad" onchange="onAdToggle()"><span class="bm-toggle-slider"></span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main currency -->
+          <div class="bm-card">
+            <div class="bm-card-row">
+              <div class="bm-card-left">
+                <div class="bm-card-title">Main currency</div>
+                <div class="bm-card-sub">This is the currency customers see by default on your site.</div>
+              </div>
+              <div class="bm-card-right">
+                <span style="font-size:0.75rem; color:var(--wix-text2);">US Dollar · USD ($)</span>
+                <button class="bm-text-btn">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional currencies -->
+          <div class="bm-card" id="card-currencies" style="display:none;">
+            <div class="bm-card-row">
+              <div class="bm-card-left">
+                <div class="bm-card-title">Additional currencies · 45</div>
+                <div class="bm-card-sub">Currencies displayed to your cross-border customers. <a>Learn more</a></div>
+              </div>
+              <div class="bm-card-right">
+                <button class="bm-text-btn">Manage Currencies ↗</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Converter widget -->
+          <div class="bm-card" id="card-converter">
+            <div class="bm-card-row">
+              <div class="bm-card-left">
+                <div class="bm-card-title">Currency converter widget</div>
+                <div class="bm-card-sub" id="converter-sub">Optional — add a converter so buyers can manually browse currencies.</div>
+              </div>
+              <div class="bm-card-right" id="converter-suffix">
+                <span class="bm-tag bm-tag-gray" id="converter-tag">Not installed</span>
+                <button class="bm-cta-btn" id="converter-cta" onclick="toggleConverter()">Add Converter ↗</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Display-only mode banner (MC off + converter installed) -->
+          <div class="bm-banner bm-banner-purple" id="display-only-banner" style="display:none;">
+            <div class="bm-banner-text">
+              <strong>Display-only mode.</strong> The converter is showing local currency prices on your site, but Multi Currency is off — checkout will use your site currency. Turn on Multi Currency to let buyers pay in their local currency.
+            </div>
+        </div><!-- /bm-content -->
+          </div><!-- /bm-main -->
+        </div><!-- /bm-shell -->
+      </div><!-- /bm-mock -->
+
+      <div id="state-readout" style="margin-top:0.75rem; padding:0.65rem 0.85rem; background:var(--white); border:1px solid var(--rule); border-radius:8px; max-width:640px; font-size:0.72rem; color:var(--ink2); line-height:1.6;">
+        <strong style="color:var(--ink);">Current state:</strong> <span id="state-text">Pre-notice — MC off, Auto Display off, Converter not installed</span>
+      </div>
+
+    </div>
+
+    <!-- ═══════ STEP 3: Buyer experience ═══════ -->
+    <div class="step">
+      <div class="step-dot" style="background:var(--green);">3</div>
+      <div class="step-label" style="color:var(--green);">Step 3 — Buyer Experience (Live)</div>
+      <div class="step-title">Cross-border buyer sees local currency</div>
+      <div class="step-desc">A US buyer visits the same Israeli store. The page loads in ₪, then after ~5 seconds a notification appears and prices switch to $USD. The buyer can keep or revert.</div>
+
+      <div class="visual-block site-mock">
+        <div class="site-nav">
+          <div class="site-logo">ARTISAN</div>
+          <div class="site-nav-links"><span>Shop</span><span>About</span><span>Contact</span></div>
+          <div style="font-size:0.72rem; color:var(--ink3);">Cart (0)</div>
+        </div>
+        <div class="site-products">
+          <div class="site-product"><div class="site-product-img img-bag"></div><div class="site-product-name">Leather Weekender</div><div class="site-price site-price-green">$339.00</div></div>
+          <div class="site-product"><div class="site-product-img img-shoe"></div><div class="site-product-name">Classic Oxford</div><div class="site-price site-price-green">$187.00</div></div>
+        </div>
+        <div class="notification-bar">
+          <div class="notification-text">We detected your location is <strong>United States</strong>. Prices switched to <strong>USD</strong>.</div>
+          <div class="notification-actions">
+            <button class="notif-btn notif-btn-keep">Keep</button>
+            <button class="notif-btn notif-btn-undo">Undo</button>
+          </div>
+        </div>
+      </div>
+      <div class="anno">
+        <div class="anno-arrow">↑</div>
+        <div class="anno-text">Prices in <strong>$USD</strong> — the buyer's local currency. Notification gives transparency and control. <strong>Only 1.18% of buyers chose to switch back</strong> in our experiment.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let state = { mc: false, ad: false, converter: false, prenotice: true };
+
+function render() {
+  $('toggle-mc').checked = state.mc;
+  $('toggle-ad').checked = state.ad;
+
+  $('prenotice-banner').style.display = state.prenotice ? 'flex' : 'none';
+  $('card-currencies').style.display = state.mc ? 'block' : 'none';
+
+  if (state.converter) {
+    $('converter-tag').textContent = 'Installed';
+    $('converter-tag').className = 'bm-tag bm-tag-green';
+    $('converter-cta').textContent = 'Remove Converter';
+    $('converter-sub').textContent = 'Buyers can manually browse and switch currencies on your site.';
+  } else {
+    $('converter-tag').textContent = 'Not installed';
+    $('converter-tag').className = 'bm-tag bm-tag-gray';
+    $('converter-cta').textContent = 'Add Converter ↗';
+    $('converter-sub').textContent = 'Optional — add a converter so buyers can manually browse currencies.';
+  }
+
+  const displayOnly = !state.mc && state.converter;
+  $('display-only-banner').style.display = displayOnly ? 'flex' : 'none';
+
+  let desc = '';
+  if (state.prenotice && !state.mc) {
+    desc = 'Pre-notice — MC off, Auto Display off, Converter ' + (state.converter ? 'installed (display-only)' : 'not installed');
+  } else if (state.mc && state.ad && state.converter) {
+    desc = 'MC on, Auto Display on, Converter installed — full setup';
+  } else if (state.mc && state.ad && !state.converter) {
+    desc = 'MC on, Auto Display on, Converter not installed — default ON state';
+  } else if (state.mc && !state.ad && state.converter) {
+    desc = 'MC on, Auto Display off, Converter installed — converter is the display method';
+  } else if (!state.mc && state.converter) {
+    desc = 'MC off, Converter installed — display-only mode (checkout uses site currency)';
+  } else if (!state.mc && !state.converter) {
+    desc = 'MC off, Auto Display off, Converter not installed';
+  }
+  $('state-text').textContent = desc;
+}
+
+function bannerEnableNow() {
+  state.prenotice = false;
+  state.mc = true;
+  state.ad = true;
+  render();
+}
+
+function bannerOptOut() {
+  state.prenotice = false;
+  render();
+}
+
+function onAdToggle() {
+  state.ad = $('toggle-ad').checked;
+  if (state.ad) {
+    state.mc = true;
+    state.prenotice = false;
+  } else if (!state.converter) {
+    state.mc = false;
+  }
+  render();
+}
+
+function onMcToggle() {
+  state.mc = $('toggle-mc').checked;
+  if (state.mc) {
+    if (!state.ad && !state.converter) {
+      state.ad = true;
+    }
+  } else {
+    state.ad = false;
+  }
+  render();
+}
+
+function toggleConverter() {
+  state.converter = !state.converter;
+  if (state.converter) {
+    state.mc = true;
+    state.prenotice = false;
+  } else if (!state.ad) {
+    state.mc = false;
+  }
+  render();
+}
+
+function applyPreset(preset) {
+  document.querySelectorAll('.bm-tab').forEach(t => t.classList.remove('active'));
+  if (preset === 'prenotice') {
+    state = { mc: false, ad: false, converter: false, prenotice: true };
+    document.querySelectorAll('.bm-tab')[0].classList.add('active');
+  } else if (preset === 'on') {
+    state = { mc: true, ad: true, converter: false, prenotice: false };
+    document.querySelectorAll('.bm-tab')[1].classList.add('active');
+  } else if (preset === 'off-converter') {
+    state = { mc: false, ad: false, converter: true, prenotice: false };
+    document.querySelectorAll('.bm-tab')[2].classList.add('active');
+  } else if (preset === 'off-no-converter') {
+    state = { mc: false, ad: false, converter: false, prenotice: false };
+    document.querySelectorAll('.bm-tab')[3].classList.add('active');
+  }
+  render();
+}
+
+render();
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.step').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
