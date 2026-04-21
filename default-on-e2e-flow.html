@@ -172,6 +172,13 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 .bm-cta-btn { padding: 0.28rem 0.7rem; border-radius: 18px; font-size: 0.65rem; font-weight: 600; background: transparent; color: var(--wix-blue); border: 1px solid var(--wix-blue); cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.15s; }
 .bm-cta-btn:hover { background: #eaf7ff; }
 
+/* Tooltip */
+.bm-tooltip-wrap { position: relative; display: inline-flex; align-items: center; }
+.bm-tooltip-icon { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; background: #edf1f5; color: var(--wix-text3); font-size: 0.55rem; font-weight: 700; cursor: help; flex-shrink: 0; line-height: 1; }
+.bm-tooltip-bubble { display: none; position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--wix-text); color: #fff; padding: 0.5rem 0.65rem; border-radius: 6px; font-size: 0.62rem; line-height: 1.5; width: 220px; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none; }
+.bm-tooltip-bubble::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:var(--wix-text); }
+.bm-tooltip-wrap:hover .bm-tooltip-bubble { display: block; }
+
 /* Preset tabs */
 .bm-tabs { display: flex; gap: 0.35rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
 .bm-tab { padding: 0.4rem 0.85rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--white); font-size: 0.7rem; font-weight: 600; color: var(--ink3); cursor: pointer; font-family: inherit; transition: all 0.15s; }
@@ -364,7 +371,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
             <div class="bm-card-row">
               <div class="bm-card-left">
                 <div class="bm-card-title">Auto display customer currency <span class="bm-new-badge">New</span></div>
-                <div class="bm-card-sub">Automatically display prices in your buyer's local currency based on their location.</div>
+                <div class="bm-card-sub">Automatically display prices in your buyer's local currency based on their location. Supported currencies are based on your payment provider and top currencies for your region.&nbsp;<span class="bm-tooltip-wrap"><span class="bm-tooltip-icon">?</span><span class="bm-tooltip-bubble">Want to customize? Add the currency converter widget to choose which currencies are displayed on your site.</span></span>&nbsp;<a>Learn more</a></div>
               </div>
               <div class="bm-card-right">
                 <div class="bm-toggle-area">
