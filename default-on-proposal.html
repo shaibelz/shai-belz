@@ -275,15 +275,18 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
     var iframe = document.getElementById('e2e-frame');
     function resizeIframe() {
       try {
-        iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
-      } catch(e) { iframe.style.height = '2400px'; }
+        var h = iframe.contentWindow.document.documentElement.scrollHeight;
+        iframe.style.height = (h + 40) + 'px';
+      } catch(e) { iframe.style.height = '3600px'; }
     }
     iframe.onload = function() {
       resizeIframe();
-      setTimeout(resizeIframe, 500);
-      setTimeout(resizeIframe, 2000);
+      setTimeout(resizeIframe, 300);
+      setTimeout(resizeIframe, 1000);
+      setTimeout(resizeIframe, 3000);
+      setTimeout(resizeIframe, 5000);
     };
-    iframe.style.height = '2400px';
+    iframe.style.height = '3600px';
   })();
   </script>
   </div>
