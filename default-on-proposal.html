@@ -26,6 +26,32 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 .fi-d3 { transition-delay: 0.24s; } .fi-d4 { transition-delay: 0.32s; }
 .fi-d5 { transition-delay: 0.40s; }
 
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(13,148,136,0.25); } 50% { box-shadow: 0 0 0 10px rgba(13,148,136,0); } }
+@keyframes count-pop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(180deg); } }
+@keyframes line-grow { 0% { height: 0; } 100% { height: 100%; } }
+@keyframes hero-glow { 0%, 100% { box-shadow: 0 4px 20px rgba(13,148,136,0.15), 0 0 40px rgba(13,148,136,0.05); } 50% { box-shadow: 0 4px 30px rgba(13,148,136,0.25), 0 0 60px rgba(13,148,136,0.1); } }
+
+.funnel-step { opacity: 0; transform: translateX(-20px); }
+.fi.vis .funnel-step { opacity: 1; transform: none; transition: all 0.5s cubic-bezier(0.16,1,0.3,1); }
+.fi.vis .funnel-step:nth-child(1) { transition-delay: 0.1s; }
+.fi.vis .funnel-step:nth-child(2) { transition-delay: 0.3s; }
+.fi.vis .funnel-step:nth-child(3) { transition-delay: 0.5s; }
+.fi.vis .funnel-step:nth-child(4) { transition-delay: 0.7s; }
+.fi.vis .funnel-num { animation: count-pop 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+.fi.vis .funnel-step:nth-child(1) .funnel-num { animation-delay: 0.2s; }
+.fi.vis .funnel-step:nth-child(2) .funnel-num { animation-delay: 0.4s; }
+.fi.vis .funnel-step:nth-child(3) .funnel-num { animation-delay: 0.6s; }
+.fi.vis .funnel-step:nth-child(4) .funnel-num { animation-delay: 0.8s; }
+.funnel-num { opacity: 0; }
+.funnel-hero-card { animation: hero-glow 3s ease-in-out infinite; }
+.funnel-dot-pulse { animation: pulse-glow 2s ease-in-out infinite; }
+.funnel-line { animation: line-grow 1.2s ease-out 0.2s forwards; height: 0 !important; }
+.fi.vis .funnel-line { height: 100% !important; }
+.funnel-sparkle { position: absolute; width: 6px; height: 6px; border-radius: 50%; pointer-events: none; }
+.fi.vis .funnel-sparkle { animation: sparkle 2s ease-in-out infinite; }
+
 .hero { min-height: 100vh; display: flex; align-items: center; padding: 4rem; max-width: 1100px; margin: 0 auto; }
 .hero-inner { max-width: 720px; }
 .hero h1 { font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 900; line-height: 1.06; letter-spacing: -0.04em; margin-bottom: 1.25rem; }
@@ -136,7 +162,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
     <div class="mc"><div class="mc-val">~400</div><div class="mc-title">Merchant Sites</div><div class="mc-desc">28 alpha + 274 ENG + 105 non-ENG</div></div>
     <div class="mc"><div class="mc-val">345K</div><div class="mc-title">Cross-Border Visitors</div><div class="mc-desc">179K control &bull; 166K treatment</div></div>
     <div class="mc"><div class="mc-val">12 wks</div><div class="mc-title">Test Duration</div><div class="mc-desc">Running since Feb 5, 2026 &bull; Data as of Apr 28</div></div>
-    <div class="mc"><div class="mc-val">94K/84K</div><div class="mc-title">Mature Cohorts / Group</div><div class="mc-desc">1st batch + 2nd non-ENG &mdash; significant results</div></div>
+    <div class="mc"><div class="mc-val">50/50</div><div class="mc-title">A/B Split</div><div class="mc-desc">Group A: site currency &bull; Group B: auto-display local</div></div>
   </div>
 </div>
 
@@ -146,76 +172,88 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   <div class="sect-title fi fi-d1">Significant Uplift Across the Entire Funnel</div>
   <div class="sect-sub fi fi-d2">345K cross-border visitors (179K/166K) on ~400 sites. All population. Significant improvement at every step of the Stores funnel.</div>
 
-  <div class="fi fi-d3" style="max-width:600px;">
-    <div style="position:relative; display:flex; flex-direction:column; gap:1.25rem; padding-left:3rem;">
-      <!-- Connecting line -->
-      <div style="position:absolute; left:14px; top:20px; bottom:20px; width:3px; background:linear-gradient(to bottom, #99f6e4, #0d9488); border-radius:2px;"></div>
+  <div class="fi fi-d3" style="max-width:620px;">
+    <div style="position:relative; display:flex; flex-direction:column; gap:1.4rem; padding-left:3.5rem;">
+      <!-- Animated connecting line -->
+      <div class="funnel-line" style="position:absolute; left:15px; top:24px; bottom:24px; width:3px; background:linear-gradient(to bottom, #99f6e4, #5eead4, #2dd4bf, #0d9488); border-radius:2px; overflow:hidden;">
+        <div style="position:absolute; inset:0; background:linear-gradient(to bottom, transparent, rgba(255,255,255,0.6), transparent); background-size:100% 200%; animation:shimmer 3s linear infinite;"></div>
+      </div>
 
-      <!-- Step 1 -->
-      <div style="position:relative; display:flex; align-items:center; gap:1.25rem;">
-        <div style="position:absolute; left:-3rem; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg, #f0fdfa, #ccfbf1); border:2.5px solid #99f6e4; display:flex; align-items:center; justify-content:center; z-index:1;">
-          <div style="width:8px; height:8px; border-radius:50%; background:var(--teal);"></div>
+      <!-- Sparkles around the hero -->
+      <div class="funnel-sparkle" style="right:-8px; bottom:60px; background:#5eead4; animation-delay:0.5s;"></div>
+      <div class="funnel-sparkle" style="right:40px; bottom:30px; background:#99f6e4; animation-delay:1.2s; width:4px; height:4px;"></div>
+      <div class="funnel-sparkle" style="right:-15px; bottom:90px; background:#2dd4bf; animation-delay:2s; width:5px; height:5px;"></div>
+      <div class="funnel-sparkle" style="left:60px; bottom:10px; background:#0d9488; animation-delay:1.7s; width:4px; height:4px;"></div>
+
+      <!-- Step 1: View Gallery -->
+      <div class="funnel-step" style="position:relative; display:flex; align-items:center; gap:1.25rem;">
+        <div style="position:absolute; left:-3.5rem; width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg, #f0fdfa, #ccfbf1); border:2.5px solid #99f6e4; display:flex; align-items:center; justify-content:center; z-index:1;">
+          <div style="width:8px; height:8px; border-radius:50%; background:#5eead4;"></div>
         </div>
-        <div style="flex:1; background:var(--white); border-radius:14px; padding:1rem 1.5rem; box-shadow:0 2px 12px rgba(13,148,136,0.08); border:1px solid #e0f7f5;">
+        <div style="flex:1; background:var(--white); border-radius:14px; padding:1.05rem 1.4rem; box-shadow:0 2px 12px rgba(13,148,136,0.06); border:1px solid #e0f7f5; transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 4px 20px rgba(13,148,136,0.12)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 12px rgba(13,148,136,0.06)'">
           <div style="font-size:0.62rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink3);">View Gallery</div>
         </div>
-        <div style="min-width:90px; text-align:right;">
-          <div style="font-size:1.5rem; font-weight:900; color:var(--teal); letter-spacing:-0.03em;">+2.8%</div>
-          <div style="font-size:0.55rem; font-weight:600; color:#99f6e4; text-transform:uppercase; letter-spacing:0.06em;">significant</div>
+        <div class="funnel-num" style="min-width:90px; text-align:right;">
+          <div style="font-size:1.6rem; font-weight:900; color:var(--teal); letter-spacing:-0.03em;">+2.8%</div>
+          <div style="font-size:0.52rem; font-weight:700; color:#5eead4; text-transform:uppercase; letter-spacing:0.08em;">significant</div>
         </div>
       </div>
 
-      <!-- Step 2 -->
-      <div style="position:relative; display:flex; align-items:center; gap:1.25rem;">
-        <div style="position:absolute; left:-3rem; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg, #f0fdfa, #ccfbf1); border:2.5px solid #5eead4; display:flex; align-items:center; justify-content:center; z-index:1;">
-          <div style="width:8px; height:8px; border-radius:50%; background:var(--teal);"></div>
+      <!-- Step 2: View Product Page -->
+      <div class="funnel-step" style="position:relative; display:flex; align-items:center; gap:1.25rem;">
+        <div style="position:absolute; left:-3.5rem; width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg, #f0fdfa, #ccfbf1); border:2.5px solid #5eead4; display:flex; align-items:center; justify-content:center; z-index:1;">
+          <div style="width:8px; height:8px; border-radius:50%; background:#2dd4bf;"></div>
         </div>
-        <div style="flex:1; background:var(--white); border-radius:14px; padding:1rem 1.5rem; box-shadow:0 2px 12px rgba(13,148,136,0.1); border:1px solid #d0f0ed;">
+        <div style="flex:1; background:var(--white); border-radius:14px; padding:1.05rem 1.4rem; box-shadow:0 2px 12px rgba(13,148,136,0.08); border:1px solid #d0f0ed; transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 4px 20px rgba(13,148,136,0.14)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 12px rgba(13,148,136,0.08)'">
           <div style="font-size:0.62rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink3);">View Product Page</div>
         </div>
-        <div style="min-width:90px; text-align:right;">
-          <div style="font-size:1.5rem; font-weight:900; color:var(--teal); letter-spacing:-0.03em;">+2.1%</div>
-          <div style="font-size:0.55rem; font-weight:600; color:#99f6e4; text-transform:uppercase; letter-spacing:0.06em;">significant</div>
+        <div class="funnel-num" style="min-width:90px; text-align:right;">
+          <div style="font-size:1.6rem; font-weight:900; color:var(--teal); letter-spacing:-0.03em;">+2.1%</div>
+          <div style="font-size:0.52rem; font-weight:700; color:#5eead4; text-transform:uppercase; letter-spacing:0.08em;">significant</div>
         </div>
       </div>
 
-      <!-- Step 3 -->
-      <div style="position:relative; display:flex; align-items:center; gap:1.25rem;">
-        <div style="position:absolute; left:-3rem; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg, #f0fdfa, #ccfbf1); border:2.5px solid #2dd4bf; display:flex; align-items:center; justify-content:center; z-index:1;">
+      <!-- Step 3: Add to Cart -->
+      <div class="funnel-step" style="position:relative; display:flex; align-items:center; gap:1.25rem;">
+        <div style="position:absolute; left:-3.5rem; width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg, #f0fdfa, #ccfbf1); border:2.5px solid #2dd4bf; display:flex; align-items:center; justify-content:center; z-index:1;">
           <div style="width:8px; height:8px; border-radius:50%; background:var(--teal);"></div>
         </div>
-        <div style="flex:1; background:var(--white); border-radius:14px; padding:1rem 1.5rem; box-shadow:0 2px 12px rgba(13,148,136,0.12); border:1px solid #b2f0e8;">
+        <div style="flex:1; background:var(--white); border-radius:14px; padding:1.05rem 1.4rem; box-shadow:0 2px 12px rgba(13,148,136,0.1); border:1px solid #b2f0e8; transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 4px 20px rgba(13,148,136,0.16)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 12px rgba(13,148,136,0.1)'">
           <div style="font-size:0.62rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink3);">Add to Cart</div>
         </div>
-        <div style="min-width:90px; text-align:right;">
-          <div style="font-size:1.5rem; font-weight:900; color:var(--teal); letter-spacing:-0.03em;">+2.8%</div>
-          <div style="font-size:0.55rem; font-weight:600; color:#99f6e4; text-transform:uppercase; letter-spacing:0.06em;">significant</div>
+        <div class="funnel-num" style="min-width:90px; text-align:right;">
+          <div style="font-size:1.6rem; font-weight:900; color:var(--teal); letter-spacing:-0.03em;">+2.8%</div>
+          <div style="font-size:0.52rem; font-weight:700; color:#5eead4; text-transform:uppercase; letter-spacing:0.08em;">significant</div>
         </div>
       </div>
 
-      <!-- Step 4 — Hero -->
-      <div style="position:relative; display:flex; align-items:center; gap:1.25rem;">
-        <div style="position:absolute; left:-3rem; width:30px; height:30px; border-radius:50%; background:var(--teal); border:2.5px solid var(--teal); display:flex; align-items:center; justify-content:center; z-index:1; box-shadow:0 0 0 5px rgba(13,148,136,0.15);">
+      <!-- Step 4: ORDER PLACED — the hero -->
+      <div class="funnel-step" style="position:relative; display:flex; align-items:center; gap:1.25rem;">
+        <div class="funnel-dot-pulse" style="position:absolute; left:-3.5rem; width:32px; height:32px; border-radius:50%; background:var(--teal); display:flex; align-items:center; justify-content:center; z-index:1;">
           <div style="width:8px; height:8px; border-radius:50%; background:white;"></div>
         </div>
-        <div style="flex:1; background:linear-gradient(135deg, #f0fdfa, #ccfbf1); border-radius:14px; padding:1.15rem 1.5rem; box-shadow:0 4px 20px rgba(13,148,136,0.15); border:2px solid var(--teal);">
-          <div style="font-size:0.62rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--teal);">Order Placed</div>
+        <div class="funnel-hero-card" style="flex:1; background:linear-gradient(135deg, #f0fdfa, #ccfbf1); border-radius:14px; padding:1.25rem 1.4rem; border:2px solid var(--teal); position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); background-size:200% 100%; animation:shimmer 4s ease-in-out infinite;"></div>
+          <div style="position:relative; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--teal);">Order Placed</div>
         </div>
-        <div style="min-width:90px; text-align:right;">
-          <div style="font-size:2rem; font-weight:900; color:var(--teal); letter-spacing:-0.03em;">+7.3%</div>
-          <div style="font-size:0.55rem; font-weight:700; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em;">significant</div>
+        <div class="funnel-num" style="min-width:100px; text-align:right;">
+          <div style="font-size:2.4rem; font-weight:900; color:var(--teal); letter-spacing:-0.04em; line-height:1;">+7.3%</div>
+          <div style="font-size:0.55rem; font-weight:700; color:var(--teal); text-transform:uppercase; letter-spacing:0.08em; margin-top:0.2rem;">significant</div>
         </div>
       </div>
     </div>
 
     <!-- Switch-back stat -->
-    <div style="margin-top:1.75rem; padding:1rem 1.5rem; background:linear-gradient(135deg, #fafafa, #f5f5f5); border-radius:14px; display:flex; align-items:center; gap:1rem; border:1px solid var(--rule);">
-      <div style="width:44px; height:44px; border-radius:50%; background:var(--white); border:2px solid var(--rule); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-        <span style="font-size:1.1rem;">↩</span>
+    <div style="margin-top:2rem; padding:1.1rem 1.5rem; background:var(--white); border-radius:14px; display:flex; align-items:center; gap:1.1rem; border:1px solid var(--rule); box-shadow:0 1px 6px rgba(0,0,0,0.03);">
+      <div style="width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg, #f0fdfa, #ccfbf1); border:2px solid #99f6e4; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <span style="font-size:1.2rem;">↩</span>
       </div>
       <div>
-        <div style="font-size:0.62rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink3); margin-bottom:0.15rem;">Buyer switch-back rate</div>
-        <div><span style="font-size:1.35rem; font-weight:900; color:var(--ink); letter-spacing:-0.03em;">1.18%</span> <span style="font-size:0.8rem; color:var(--ink2);">chose to revert to site currency</span></div>
+        <div style="font-size:0.58rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink3); margin-bottom:0.2rem;">Buyers who switched back</div>
+        <div style="display:flex; align-items:baseline; gap:0.5rem;">
+          <span style="font-size:1.6rem; font-weight:900; color:var(--ink); letter-spacing:-0.03em;">1.18%</span>
+          <span style="font-size:0.82rem; color:var(--ink2);">chose to revert to site currency</span>
+        </div>
       </div>
     </div>
   </div>
