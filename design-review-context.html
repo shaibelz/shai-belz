@@ -149,8 +149,8 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 <!-- ═══════ SLIDE 1: Without Multi Currency ═══════ -->
 <section class="slide" id="s0">
   <div class="eyebrow">Multi Currency &mdash; The Problem</div>
-  <h2>A US buyer on an Israeli site.<br><em>Without Multi Currency.</em></h2>
-  <p class="lead">A US buyer lands on an Israeli merchant's store. Prices in Israeli shekels (₪). No context. No way to understand how much things actually cost. Trust breaks immediately.</p>
+  <h2>An Israeli buyer on a Swiss site.<br><em>Without Multi Currency.</em></h2>
+  <p class="lead">An Israeli buyer lands on a Swiss merchant's store. Prices in Swiss francs (CHF). No context. No way to understand how much things actually cost. Trust breaks immediately.</p>
 
   <div class="mock-store">
     <div class="mock-nav">
@@ -159,15 +159,15 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       <div class="mock-nav-cart">Cart (0)</div>
     </div>
     <div class="mock-products">
-      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price">₪ 1,249.00</div></div>
-      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price">₪ 689.00</div></div>
-      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price">₪ 459.00</div></div>
-      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price">₪ 219.00</div></div>
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price">CHF 299.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price">CHF 165.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price">CHF 110.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price">CHF 52.00</div></div>
     </div>
   </div>
 
   <div class="quote">
-    "Client sees my shop currency… for a customer from USA, for example, <strong style="color:var(--red);">it looks like a scam</strong>. They are afraid to buy, and we are losing…"
+    "Client sees my shop currency… for a customer from another country, <strong style="color:var(--red);">it looks like a scam</strong>. They are afraid to buy, and we are losing…"
     <div class="quote-attr">&mdash; Merchant interview, June 2024</div>
   </div>
 
@@ -191,19 +191,19 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       <div class="mock-nav-cart">Cart (0)</div>
     </div>
     <div class="mock-products">
-      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" data-ils="₪ 1,249.00" data-usd="$339.00">₪ 1,249.00</div></div>
-      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" data-ils="₪ 689.00" data-usd="$187.00">₪ 689.00</div></div>
-      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" data-ils="₪ 459.00" data-usd="$125.00">₪ 459.00</div></div>
-      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" data-ils="₪ 219.00" data-usd="$59.00">₪ 219.00</div></div>
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" data-chf="CHF 299.00" data-ils="₪ 1,249.00">CHF 299.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" data-chf="CHF 165.00" data-ils="₪ 689.00">CHF 165.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" data-chf="CHF 110.00" data-ils="₪ 459.00">CHF 110.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" data-chf="CHF 52.00" data-ils="₪ 219.00">CHF 52.00</div></div>
     </div>
 
     <div class="converter-widget">
       <span style="font-size:0.7rem;">🌐</span>
       <select id="converter-select">
-        <option value="ils" selected>₪ ILS</option>
+        <option value="chf" selected>CHF</option>
+        <option value="ils">₪ ILS</option>
         <option value="usd">$ USD</option>
         <option value="eur">€ EUR</option>
-        <option value="gbp">£ GBP</option>
       </select>
     </div>
   </div>
@@ -226,10 +226,10 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       <div class="mock-nav-cart">Cart (0)</div>
     </div>
     <div class="mock-products">
-      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" style="color:var(--green);">$339.00</div></div>
-      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" style="color:var(--green);">$187.00</div></div>
-      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" style="color:var(--green);">$125.00</div></div>
-      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" style="color:var(--green);">$59.00</div></div>
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" style="color:var(--green);">₪ 1,249.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" style="color:var(--green);">₪ 689.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" style="color:var(--green);">₪ 459.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" style="color:var(--green);">₪ 219.00</div></div>
     </div>
   </div>
 
@@ -345,11 +345,11 @@ select.addEventListener('change', function() {
   const prices = store.querySelectorAll('.mock-price');
   const currency = this.value;
   prices.forEach(p => {
-    if (currency === 'usd') {
-      p.textContent = p.dataset.usd;
+    if (currency === 'ils') {
+      p.textContent = p.dataset.ils;
       p.style.color = 'var(--green)';
     } else {
-      p.textContent = p.dataset.ils;
+      p.textContent = p.dataset.chf;
       p.style.color = '';
     }
   });
