@@ -169,6 +169,56 @@ h3{font-size:18px;font-weight:600;color:var(--bright);margin-bottom:8px}
 .roadmap .step .step-num{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:8px;font-weight:600}
 .roadmap .step h4{font-size:14px;color:var(--bright);margin-bottom:6px}
 .roadmap .step p{font-size:12px;color:var(--dim)}
+
+/* PROTOTYPE STYLES */
+.proto-btn{padding:8px 18px;font-size:13px;font-weight:600;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--dim);font-family:inherit;transition:all .2s}
+.proto-btn.active{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.proto-device-label{font-size:12px;color:var(--dim);margin-top:12px;transition:all .3s}
+.proto-device-label.highlight{color:var(--green);font-weight:600}
+
+/* PHONE FRAME */
+.phone-frame{width:280px;height:560px;background:#1a1a1a;border-radius:36px;padding:8px;box-shadow:0 20px 60px rgba(0,0,0,.18);position:relative}
+.phone-notch{width:100px;height:22px;background:#1a1a1a;border-radius:0 0 14px 14px;position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:2}
+.phone-screen{width:100%;height:100%;background:#fff;border-radius:28px;overflow-y:auto;overflow-x:hidden;padding:36px 14px 14px;scrollbar-width:none}
+.phone-screen::-webkit-scrollbar{display:none}
+
+/* BROWSER FRAME */
+.browser-frame{width:480px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.1);overflow:hidden}
+.browser-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.browser-dots{display:flex;gap:5px}
+.browser-dots span{width:10px;height:10px;border-radius:50%;background:#ddd}
+.browser-dots span:first-child{background:#ff5f57}
+.browser-dots span:nth-child(2){background:#febc2e}
+.browser-dots span:last-child{background:#28c840}
+.browser-url{flex:1;text-align:center;font-size:11px;color:#888;background:#fff;padding:4px 12px;border-radius:6px;border:1px solid var(--border)}
+.browser-content{padding:20px}
+
+/* CHECKOUT ELEMENTS */
+.ck-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f0f0f0}
+.ck-back{font-size:18px;color:#333;width:28px}
+.ck-title{font-size:15px;font-weight:700;color:#111}
+.ck-secure{font-size:12px;color:#888}
+.ck-order-summary{background:#f8f8f8;border-radius:8px;padding:10px 12px;margin-bottom:16px}
+.ck-section-title{font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1px;margin:12px 0 10px}
+.ck-method{display:flex;align-items:center;gap:10px;padding:10px 11px;border:1.5px solid #e8e8e8;border-radius:9px;margin-bottom:7px;cursor:default;transition:all .35s ease;overflow:hidden}
+.ck-method.ck-selected{border-color:var(--accent);background:rgba(79,70,229,.03)}
+.ck-method.mob-extra{max-height:60px;opacity:1}
+.ck-method.mob-extra.collapsed{max-height:0;padding-top:0;padding-bottom:0;margin-bottom:0;border-width:0;opacity:0}
+.ck-radio{width:16px;height:16px;border-radius:50%;border:2px solid #d0d0d0;flex-shrink:0}
+.ck-radio.checked{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px #fff}
+.ck-pm-icon{width:36px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0}
+.cc-icon{background:linear-gradient(135deg,#1a1f71,#4f46e5)}
+.pp-icon{background:#ffc439;color:#003087!important}
+.ap-icon{background:#000;font-size:9px!important}
+.gp-icon{background:#fff;border:1px solid #ddd;color:#333!important}
+.bnpl-icon{background:linear-gradient(135deg,#b2fce4,#0070ba);color:#003087!important}
+.off-icon{background:#e5e7eb;color:#9ca3af!important;font-size:12px!important}
+.ck-pm-info{flex:1;min-width:0}
+.ck-pm-name{font-size:12px;font-weight:600;color:#222}
+.ck-pm-sub{font-size:10px;color:#888;margin-top:1px}
+.ck-showmore{text-align:center;padding:10px;font-size:12px;color:var(--accent);font-weight:600;cursor:pointer;border:1.5px dashed rgba(79,70,229,.25);border-radius:9px;margin-bottom:7px;transition:all .2s}
+.ck-showmore:hover{background:rgba(79,70,229,.03);border-color:var(--accent)}
+.ck-pay-btn{background:#111;color:#fff;text-align:center;padding:13px;border-radius:10px;font-size:14px;font-weight:700;margin-top:8px;letter-spacing:-.2px}
 </style>
 </head>
 <body>
@@ -596,6 +646,118 @@ h3{font-size:18px;font-weight:600;color:var(--bright);margin-bottom:8px}
       <div style="font-size:12px;color:var(--dim)">$44-55M more revenue for merchants = more successful businesses on our platform. This drives SaaS retention, plan upgrades, and positions Wix checkout as best-in-class. These are bottom-up estimates backed by full-year 2025 data on 80.6M sessions, properly accounting for offline GPV at risk and overlap between rules. A/B tests will confirm the causal portion.</div>
     </div>
   </div>
+</div>
+</section>
+
+<!-- PROTOTYPE: Mobile vs Desktop -->
+<section>
+<div class="container">
+  <div class="section-label">Prototype</div>
+  <h2>What Dynamic Checkout Looks Like</h2>
+  <div class="desc">First rule to A/B test: device-aware method count. Mobile shows top 3 methods with "Show more." Desktop shows all. Toggle between current and proposed to see the difference.</div>
+
+  <div style="display:flex;justify-content:center;margin-bottom:24px">
+    <div id="proto-toggle" style="display:inline-flex;background:var(--surface2);border-radius:10px;padding:3px;gap:2px">
+      <button class="proto-btn active" onclick="protoSwitch('current')">Today (same for both)</button>
+      <button class="proto-btn" onclick="protoSwitch('proposed')">Proposed (device-aware)</button>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:40px;justify-content:center;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- MOBILE PHONE FRAME -->
+    <div style="text-align:center">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--dim);margin-bottom:12px">Mobile</div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="ck-header">
+            <div class="ck-back">&#8592;</div>
+            <div class="ck-title">Checkout</div>
+            <div class="ck-secure">&#128274;</div>
+          </div>
+          <div class="ck-order-summary">
+            <div style="display:flex;justify-content:space-between;font-size:11px">
+              <span style="color:#888">Order summary</span>
+              <span style="font-weight:600">$89.00</span>
+            </div>
+          </div>
+          <div class="ck-section-title">Payment method</div>
+
+          <div id="mobile-methods">
+            <div class="ck-method ck-selected"><div class="ck-radio checked"></div><div class="ck-pm-icon cc-icon">VISA</div><div class="ck-pm-info"><div class="ck-pm-name">Credit / Debit Card</div></div></div>
+            <div class="ck-method"><div class="ck-radio"></div><div class="ck-pm-icon pp-icon"><span style="font-size:7px;font-weight:800">Pay<span style="color:#009cde">Pal</span></span></div><div class="ck-pm-info"><div class="ck-pm-name">PayPal</div></div></div>
+            <div class="ck-method"><div class="ck-radio"></div><div class="ck-pm-icon ap-icon">&#63743; Pay</div><div class="ck-pm-info"><div class="ck-pm-name">Apple Pay</div></div></div>
+            <div class="ck-method mob-extra"><div class="ck-radio"></div><div class="ck-pm-icon gp-icon"><span style="font-size:7px">G Pay</span></div><div class="ck-pm-info"><div class="ck-pm-name">Google Pay</div></div></div>
+            <div class="ck-method mob-extra"><div class="ck-radio"></div><div class="ck-pm-icon bnpl-icon"><span style="font-size:6px">Afterpay</span></div><div class="ck-pm-info"><div class="ck-pm-name">Afterpay</div><div class="ck-pm-sub">4 interest-free payments</div></div></div>
+            <div class="ck-method mob-extra"><div class="ck-radio"></div><div class="ck-pm-icon bnpl-icon"><span style="font-size:7px">K</span></div><div class="ck-pm-info"><div class="ck-pm-name">Klarna</div><div class="ck-pm-sub">Buy now, pay later</div></div></div>
+            <div class="ck-method mob-extra"><div class="ck-radio"></div><div class="ck-pm-icon off-icon">&#9679;</div><div class="ck-pm-info"><div class="ck-pm-name">Offline Payment</div><div class="ck-pm-sub">Pay later by cash or check</div></div></div>
+          </div>
+          <div id="mobile-showmore" class="ck-showmore" style="display:none" onclick="expandMobile()">
+            <span id="showmore-text">Show 4 more payment methods &#8595;</span>
+          </div>
+          <div class="ck-pay-btn">Pay $89.00</div>
+        </div>
+      </div>
+      <div id="mobile-label" class="proto-device-label">7 methods shown (same as desktop)</div>
+    </div>
+
+    <!-- DESKTOP BROWSER FRAME -->
+    <div style="text-align:center">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--dim);margin-bottom:12px">Desktop</div>
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots"><span></span><span></span><span></span></div>
+          <div class="browser-url">checkout.mystore.com</div>
+        </div>
+        <div class="browser-content">
+          <div style="display:flex;gap:24px">
+            <div style="flex:1.2">
+              <div class="ck-section-title" style="margin-top:0">Payment method</div>
+              <div id="desktop-methods">
+                <div class="ck-method ck-selected"><div class="ck-radio checked"></div><div class="ck-pm-icon cc-icon">VISA</div><div class="ck-pm-info"><div class="ck-pm-name">Credit / Debit Card</div></div></div>
+                <div class="ck-method"><div class="ck-radio"></div><div class="ck-pm-icon pp-icon"><span style="font-size:7px;font-weight:800">Pay<span style="color:#009cde">Pal</span></span></div><div class="ck-pm-info"><div class="ck-pm-name">PayPal</div></div></div>
+                <div class="ck-method"><div class="ck-radio"></div><div class="ck-pm-icon ap-icon">&#63743; Pay</div><div class="ck-pm-info"><div class="ck-pm-name">Apple Pay</div></div></div>
+                <div class="ck-method"><div class="ck-radio"></div><div class="ck-pm-icon gp-icon"><span style="font-size:7px">G Pay</span></div><div class="ck-pm-info"><div class="ck-pm-name">Google Pay</div></div></div>
+                <div class="ck-method"><div class="ck-radio"></div><div class="ck-pm-icon bnpl-icon"><span style="font-size:6px">Afterpay</span></div><div class="ck-pm-info"><div class="ck-pm-name">Afterpay</div><div class="ck-pm-sub">4 interest-free payments</div></div></div>
+                <div class="ck-method"><div class="ck-radio"></div><div class="ck-pm-icon bnpl-icon"><span style="font-size:7px">K</span></div><div class="ck-pm-info"><div class="ck-pm-name">Klarna</div><div class="ck-pm-sub">Buy now, pay later</div></div></div>
+                <div class="ck-method"><div class="ck-radio"></div><div class="ck-pm-icon off-icon">&#9679;</div><div class="ck-pm-info"><div class="ck-pm-name">Offline Payment</div><div class="ck-pm-sub">Pay later by cash or check</div></div></div>
+              </div>
+            </div>
+            <div style="flex:0.8;padding-top:8px">
+              <div style="background:var(--surface2);border-radius:10px;padding:16px">
+                <div style="font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Order Summary</div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span>Wireless Headphones</span><span style="font-weight:600">$79.00</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span>Shipping</span><span style="font-weight:600">$10.00</span></div>
+                <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>Total</span><span>$89.00</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="ck-pay-btn" style="margin-top:16px;max-width:300px">Pay $89.00</div>
+        </div>
+      </div>
+      <div id="desktop-label" class="proto-device-label">7 methods shown (same as mobile)</div>
+    </div>
+  </div>
+
+  <div id="proto-impact" class="card" style="margin-top:32px;text-align:center;opacity:0;transition:opacity .5s">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:28px;font-weight:800;color:var(--accent)">3</div>
+        <div style="font-size:12px;color:var(--dim)">Methods on mobile<br>(was 7)</div>
+      </div>
+      <div>
+        <div style="font-size:28px;font-weight:800;color:var(--green)">7</div>
+        <div style="font-size:12px;color:var(--dim)">Methods on desktop<br>(unchanged)</div>
+      </div>
+      <div>
+        <div style="font-size:28px;font-weight:800;color:var(--green)">+1.4pp</div>
+        <div style="font-size:12px;color:var(--dim)">Expected mobile<br>conversion lift</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--dim);margin-top:14px">Mobile conversion peaks at 3 methods (74.0%) vs 72.6% at 5 and 73.6% at 4. Buyers who need other methods can tap "Show more." Desktop buyers see everything -- conversion keeps climbing with more options.</p>
+  </div>
+
 </div>
 </section>
 
@@ -1076,6 +1238,55 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', () => { targets=null; updateScatter(); });
   updateScatter();
 });
+
+/* Prototype toggle */
+let protoState = 'current';
+let mobileExpanded = false;
+
+function protoSwitch(mode) {
+  protoState = mode;
+  mobileExpanded = false;
+  document.querySelectorAll('.proto-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[onclick="protoSwitch(\'' + mode + '\')"]').classList.add('active');
+
+  const extras = document.querySelectorAll('#mobile-methods .mob-extra');
+  const showmore = document.getElementById('mobile-showmore');
+  const impact = document.getElementById('proto-impact');
+  const mLabel = document.getElementById('mobile-label');
+  const dLabel = document.getElementById('desktop-label');
+  const smText = document.getElementById('showmore-text');
+
+  if (mode === 'proposed') {
+    extras.forEach(el => el.classList.add('collapsed'));
+    showmore.style.display = 'block';
+    smText.innerHTML = 'Show 4 more payment methods &#8595;';
+    impact.style.opacity = '1';
+    mLabel.textContent = '3 methods shown (optimized for mobile)';
+    mLabel.classList.add('highlight');
+    dLabel.textContent = '7 methods shown (full list for desktop)';
+    dLabel.classList.add('highlight');
+  } else {
+    extras.forEach(el => el.classList.remove('collapsed'));
+    showmore.style.display = 'none';
+    impact.style.opacity = '0';
+    mLabel.textContent = '7 methods shown (same as desktop)';
+    mLabel.classList.remove('highlight');
+    dLabel.textContent = '7 methods shown (same as mobile)';
+    dLabel.classList.remove('highlight');
+  }
+}
+
+function expandMobile() {
+  if (mobileExpanded) {
+    document.querySelectorAll('#mobile-methods .mob-extra').forEach(el => el.classList.add('collapsed'));
+    document.getElementById('showmore-text').innerHTML = 'Show 4 more payment methods &#8595;';
+    mobileExpanded = false;
+  } else {
+    document.querySelectorAll('#mobile-methods .mob-extra').forEach(el => el.classList.remove('collapsed'));
+    document.getElementById('showmore-text').innerHTML = 'Show fewer &#8593;';
+    mobileExpanded = true;
+  }
+}
 </script>
 <!-- Password gate -->
 <div id="pw-gate" style="position:fixed;inset:0;z-index:9999;background:#fafbfc;display:flex;align-items:center;justify-content:center;">
