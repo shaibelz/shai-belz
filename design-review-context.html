@@ -507,7 +507,7 @@ document.querySelectorAll('.slide').forEach(s => observer.observe(s));
     running = true;
     hint.style.display = 'none';
     reset(); hint.style.display = 'none';
-    setTimeout(() => { p1.style.display = 'flex'; }, 1500);
+    setTimeout(() => { p1.style.display = 'flex'; }, 500);
     setTimeout(() => {
       p1.style.display = 'none';
       ntfPrices.forEach((p, i) => {
@@ -516,12 +516,12 @@ document.querySelectorAll('.slide').forEach(s => observer.observe(s));
         p.style.transition = 'all 0.4s';
       });
       p2.style.display = 'flex';
-    }, 5000);
+    }, 5500);
     setTimeout(() => {
       p2.style.display = 'none';
       running = false;
       hint.style.display = 'block';
-    }, 9000);
+    }, 10500);
   }
 
   if (ntfStore) {
