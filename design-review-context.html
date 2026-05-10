@@ -142,6 +142,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 @keyframes hero-glow { 0%, 100% { box-shadow: 0 4px 20px rgba(5,150,105,0.15); } 50% { box-shadow: 0 8px 40px rgba(5,150,105,0.3), 0 0 60px rgba(5,150,105,0.08); } }
 @keyframes shimmer-bar { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
 @keyframes confetti-fall { 0% { transform: translateY(-10px) rotate(0deg); opacity:1; } 100% { transform: translateY(60px) rotate(360deg); opacity:0; } }
+@keyframes ntf-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -316,14 +317,22 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 <section class="slide" id="s3">
   <div class="eyebrow">The Constraint &mdash; What We Landed On</div>
   <h2>SEO required a <span class="o">notification-based</span> approach</h2>
-  <p class="lead">To avoid cloaking risk, the SEO team required us not to auto-switch on page load. Instead, the page loads in the merchant's currency, then after <strong>~5 seconds</strong> a notification appears and switches to the buyer's local currency.</p>
+  <p class="lead">To avoid cloaking risk, the SEO team required us not to auto-switch on page load. Instead, the page loads in the merchant's currency, then after <strong>~5 seconds</strong> a notification appears and switches to the buyer's currency.</p>
 
-  <!-- Mini demo of the notification flow -->
+  <!-- Mini demo of the notification flow — 2 phases matching Kostia's design -->
   <div class="mock-store" id="store-notification" style="position:relative; cursor:pointer;">
     <div class="mock-nav">
       <div class="mock-logo">ARTISAN</div>
       <div class="mock-nav-links"><span>Shop</span><span>About</span><span>Contact</span></div>
       <div class="mock-nav-cart">Cart (0)</div>
+    </div>
+    <!-- Phase 1 banner — top -->
+    <div id="ntf-phase1" style="display:none; background:#1a1a1a; color:#fff; padding:0.6rem 1rem; font-size:0.75rem; font-weight:500; align-items:center; justify-content:space-between; z-index:5;">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span>🇺🇸</span>
+        <span>You're located in United States. Switching prices to USD.</span>
+      </div>
+      <div style="width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation:ntf-spin 0.8s linear infinite;"></div>
     </div>
     <div class="mock-products">
       <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price ntf-price">₪ 1,249.00</div></div>
@@ -331,35 +340,29 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price ntf-price">₪ 459.00</div></div>
       <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price ntf-price">₪ 219.00</div></div>
     </div>
-    <!-- Notification banner -->
-    <div id="ntf-banner" style="display:none; position:absolute; bottom:0; left:0; right:0; background:linear-gradient(135deg, #1a1a1a, #333); color:#fff; padding:0.85rem 1.2rem; font-size:0.78rem; display:none; align-items:center; justify-content:space-between; gap:0.75rem; z-index:5;">
-      <div>
-        <span id="ntf-text" style="font-weight:500;">We see you're from the US. Switching to USD...</span>
-      </div>
-      <div style="display:flex; gap:0.5rem; flex-shrink:0;">
-        <span style="padding:0.35rem 0.7rem; background:rgba(255,255,255,0.15); border-radius:6px; font-size:0.7rem; cursor:pointer; font-weight:600;">Keep ₪ ILS</span>
-      </div>
+    <!-- Phase 2 banner — bottom -->
+    <div id="ntf-phase2" style="display:none; position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:#1a1a1a; color:#fff; padding:0.55rem 1rem; font-size:0.75rem; font-weight:500; border-radius:8px; align-items:center; gap:0.6rem; z-index:5; box-shadow:0 4px 16px rgba(0,0,0,0.2); white-space:nowrap;">
+      <span>🇺🇸</span>
+      <span>Now showing prices in USD.</span>
+      <a href="#" onclick="return false" style="color:#fff; text-decoration:underline; font-weight:600; margin-left:0.2rem;">Undo</a>
+      <span style="margin-left:0.3rem; cursor:pointer; opacity:0.6;">&times;</span>
     </div>
     <!-- Click hint -->
-    <div id="ntf-hint" style="position:absolute; bottom:12px; right:12px; font-size:0.65rem; color:var(--ink3); background:rgba(255,255,255,0.9); padding:0.3rem 0.6rem; border-radius:6px; border:1px solid var(--rule);">Click to replay demo</div>
+    <div id="ntf-hint" style="position:absolute; bottom:12px; right:12px; font-size:0.65rem; color:var(--ink3); background:rgba(255,255,255,0.9); padding:0.3rem 0.6rem; border-radius:6px; border:1px solid var(--rule);">Click to replay</div>
   </div>
 
   <div style="max-width:560px; width:100%; margin-top:2rem;">
     <div style="font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--red); margin-bottom:1rem;">Why this concerns us</div>
-    <div style="display:flex; flex-direction:column; gap:1rem;">
-      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1rem 1.2rem; border:1px solid var(--rule); box-shadow:0 1px 4px rgba(0,0,0,0.04);">
-        <div style="width:36px; height:36px; border-radius:50%; background:#fef2f2; border:2px solid #fecaca; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">🔴</div>
-        <div>
-          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">Trust erosion</div>
-          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">The notification reveals the site isn't local &mdash; "we see you're from the US" tells the buyer this is a foreign site. Creates hesitation and undermines confidence.</div>
-        </div>
+    <div style="display:flex; gap:1rem;">
+      <div style="flex:1; background:var(--white); border-radius:12px; padding:1rem; border:1px solid var(--rule); box-shadow:0 1px 4px rgba(0,0,0,0.04); text-align:center;">
+        <div style="font-size:1.2rem; margin-bottom:0.4rem;">🔴</div>
+        <div style="font-size:0.82rem; font-weight:700; color:var(--ink); margin-bottom:0.2rem;">Trust erosion</div>
+        <div style="font-size:0.78rem; color:var(--ink2); line-height:1.5;">Notification reveals the site isn't local. Buyer hesitates.</div>
       </div>
-      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1rem 1.2rem; border:1px solid var(--rule); box-shadow:0 1px 4px rgba(0,0,0,0.04);">
-        <div style="width:36px; height:36px; border-radius:50%; background:#fef2f2; border:2px solid #fecaca; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">⏱</div>
-        <div>
-          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">5-second bounce risk</div>
-          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">Buyer sees prices in ₪ for the first 5 seconds. Many will bounce before the switch even happens &mdash; especially on mobile where attention spans are shortest.</div>
-        </div>
+      <div style="flex:1; background:var(--white); border-radius:12px; padding:1rem; border:1px solid var(--rule); box-shadow:0 1px 4px rgba(0,0,0,0.04); text-align:center;">
+        <div style="font-size:1.2rem; margin-bottom:0.4rem;">⏱</div>
+        <div style="font-size:0.82rem; font-weight:700; color:var(--ink); margin-bottom:0.2rem;">5-second bounce risk</div>
+        <div style="font-size:0.78rem; color:var(--ink2); line-height:1.5;">Buyer sees ₪ prices first. May leave before the switch.</div>
       </div>
     </div>
   </div>
@@ -369,65 +372,85 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   </div>
 </section>
 
-<!-- ═══════ SLIDE 5: The Proposal ═══════ -->
+<!-- ═══════ SLIDE 5: Two Approaches ═══════ -->
 <section class="slide" id="s4">
-  <div class="eyebrow">Our Proposal</div>
-  <h2>Start with <span class="g">real auto-display</span>.<br>Monitor. Roll back if needed.</h2>
-  <p class="lead">Auto display &mdash; instantly showing the buyer's local currency &mdash; is the standard at Shopify and across eCommerce. The notification approach weakens the very experience we're trying to improve.</p>
+  <div class="eyebrow">The Question</div>
+  <h2>Which approach should we <span class="b">ship</span>?</h2>
 
-  <div style="max-width:600px; width:100%;">
-    <!-- Argument 1: Industry standard -->
-    <div style="display:flex; flex-direction:column; gap:1.25rem;">
-      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1.1rem 1.3rem; border:1px solid #d1fae5; box-shadow:0 2px 8px rgba(5,150,105,0.06);">
-        <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:2px solid #a7f3d0; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">🛒</div>
-        <div>
-          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">Industry standard</div>
-          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">Shopify auto-displays local currency by default for cross-border buyers. Nike, Apple, and others do the same with no option to switch. We're <em>more</em> flexible &mdash; buyers can revert via the converter.</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; max-width:700px; width:100%; margin-top:0.5rem;">
+
+    <!-- Left: Notification approach -->
+    <div style="background:var(--white); border-radius:16px; padding:1.5rem; border:1px solid var(--rule); box-shadow:0 2px 8px rgba(0,0,0,0.04); display:flex; flex-direction:column; gap:0.75rem;">
+      <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--amber);">Option A &mdash; Notification</div>
+      <div style="font-size:1rem; font-weight:800; color:var(--ink); line-height:1.2;">Delayed switch<br>with notification</div>
+      <div style="font-size:0.78rem; color:var(--ink2); line-height:1.55;">Page loads in ₪. After ~5s, notification appears, prices switch to $.</div>
+      <div style="border-top:1px solid var(--rule); padding-top:0.75rem; margin-top:auto;">
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+          <span style="color:var(--green); font-weight:700; font-size:0.8rem;">✓</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">Zero SEO risk</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+          <span style="color:var(--red); font-weight:700; font-size:0.8rem;">✗</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">Trust erosion from notification</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+          <span style="color:var(--red); font-weight:700; font-size:0.8rem;">✗</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">5-second bounce window</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span style="color:var(--red); font-weight:700; font-size:0.8rem;">✗</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">Weakens the experience we're building</span>
         </div>
       </div>
+    </div>
 
-      <!-- Argument 2: Our experiment shows 0 SEO impact -->
-      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1.1rem 1.3rem; border:1px solid #d1fae5; box-shadow:0 2px 8px rgba(5,150,105,0.06);">
-        <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:2px solid #a7f3d0; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">📊</div>
-        <div>
-          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">Zero SEO impact observed</div>
-          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">We ran an experiment on Multi Currency merchants where &lt;20% of traffic comes from SEO. <strong>Zero impact on organic traffic</strong> was detected. SEO team warns it could take up to 6 months to appear &mdash; but we have a mitigation plan.</div>
+    <!-- Right: Real auto-display (recommended) -->
+    <div style="background:linear-gradient(135deg, #ecfdf5, #f0fdf4); border-radius:16px; padding:1.5rem; border:2px solid var(--green); box-shadow:0 4px 16px rgba(5,150,105,0.1); display:flex; flex-direction:column; gap:0.75rem; position:relative;">
+      <div style="position:absolute; top:-10px; right:16px; background:var(--green); color:#fff; font-size:0.55rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; padding:0.25rem 0.6rem; border-radius:6px;">Recommended</div>
+      <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green);">Option B &mdash; Real Auto-Display</div>
+      <div style="font-size:1rem; font-weight:800; color:var(--ink); line-height:1.2;">Instant local<br>currency on load</div>
+      <div style="font-size:0.78rem; color:var(--ink2); line-height:1.55;">Page loads in $. Buyer's currency from the first moment. Shopify standard.</div>
+      <div style="border-top:1px solid #a7f3d0; padding-top:0.75rem; margin-top:auto;">
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+          <span style="color:var(--green); font-weight:700; font-size:0.8rem;">✓</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">Seamless &mdash; no interruption</span>
         </div>
-      </div>
-
-      <!-- Argument 3: The alternative is worse -->
-      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1.1rem 1.3rem; border:1px solid #d1fae5; box-shadow:0 2px 8px rgba(5,150,105,0.06);">
-        <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:2px solid #a7f3d0; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">⚖️</div>
-        <div>
-          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">The alternative is worse</div>
-          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">Without auto-display, buyers see foreign currency with no way to change it. That's the current experience for 95% of cross-border visits. The notification approach is better than nothing &mdash; but it introduces new problems that real auto-display avoids entirely.</div>
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+          <span style="color:var(--green); font-weight:700; font-size:0.8rem;">✓</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">Industry standard (Shopify, Nike, Apple)</span>
         </div>
-      </div>
-
-      <!-- Argument 4: Rollback plan -->
-      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1.1rem 1.3rem; border:2px solid var(--green); box-shadow:0 2px 12px rgba(5,150,105,0.1);">
-        <div style="width:36px; height:36px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-          <span style="font-size:1rem; color:white;">✓</span>
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+          <span style="color:var(--green); font-weight:700; font-size:0.8rem;">✓</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">0 SEO impact in our experiment</span>
         </div>
-        <div>
-          <div style="font-size:0.85rem; font-weight:700; color:var(--green); margin-bottom:0.25rem;">Proposed approach</div>
-          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">Roll out <strong>real auto-display</strong> to eligible merchants. Monitor SEO continuously, site by site. If any impact is detected &mdash; <strong>roll back immediately</strong> for that site. Gradual rollout gives us control at every step.</div>
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span style="color:var(--amber); font-weight:700; font-size:0.8rem;">⚠</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">SEO risk &mdash; possible cloaking flag</span>
         </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ═══════ SLIDE 6: Your Input ═══════ -->
-<section class="slide" id="s5">
-  <div class="eyebrow">Your Input</div>
-  <h2>What do you <span class="b">think</span>?</h2>
-  <p class="lead">We want your perspective on the experience &mdash; and whether the notification approach is the right trade-off, or if we should push for real auto-display.</p>
-
-  <div class="cta-box">
-    <h3>See the notification demo</h3>
-    <p>Kostia's demo of the current notification-based approach.</p>
-    <a class="cta-link" href="https://kostiaantnko.github.io/sole-demo/index.html" target="_blank">Open Demo &rarr;</a>
+  <!-- SEO context -->
+  <div style="max-width:700px; width:100%; margin-top:2rem; background:var(--white); border-radius:14px; padding:1.3rem 1.5rem; border:1px solid var(--rule); box-shadow:0 1px 6px rgba(0,0,0,0.04);">
+    <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink3); margin-bottom:0.75rem;">The SEO Argument</div>
+    <div style="font-size:0.82rem; color:var(--ink2); line-height:1.6;">
+      Google may interpret auto-display as <strong>cloaking</strong> &mdash; showing different content based on location. This could hurt organic rankings. The SEO team says the impact might only appear <strong>after 6 months</strong>, so short experiments can't fully rule it out.
+    </div>
+    <div style="margin-top:1rem; border-top:1px solid var(--rule); padding-top:1rem;">
+      <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green); margin-bottom:0.5rem;">Our Mitigation</div>
+      <div style="display:flex; flex-direction:column; gap:0.4rem;">
+        <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
+          <span style="color:var(--green); font-weight:700;">1.</span> Ran experiment on MC merchants with &lt;20% SEO traffic &mdash; <strong>zero impact</strong> detected
+        </div>
+        <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
+          <span style="color:var(--green); font-weight:700;">2.</span> Gradual rollout &mdash; monitor each site's organic traffic continuously
+        </div>
+        <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
+          <span style="color:var(--green); font-weight:700;">3.</span> <strong>Instant rollback</strong> per site if any SEO degradation detected
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -455,50 +478,49 @@ document.querySelectorAll('.slide').forEach(s => observer.observe(s));
 
 (function() {
   const ntfStore = document.getElementById('store-notification');
-  const ntfBanner = document.getElementById('ntf-banner');
-  const ntfText = document.getElementById('ntf-text');
-  const ntfHint = document.getElementById('ntf-hint');
+  const p1 = document.getElementById('ntf-phase1');
+  const p2 = document.getElementById('ntf-phase2');
+  const hint = document.getElementById('ntf-hint');
   const ntfPrices = ntfStore ? ntfStore.querySelectorAll('.ntf-price') : [];
   const ilsPrices = ['₪ 1,249.00', '₪ 689.00', '₪ 459.00', '₪ 219.00'];
   const usdPrices = ['$339.00', '$187.00', '$125.00', '$59.00'];
-  let ntfRunning = false;
+  let running = false;
 
-  function resetNtf() {
+  function reset() {
     ntfPrices.forEach((p, i) => { p.textContent = ilsPrices[i]; p.style.color = ''; });
-    ntfBanner.style.display = 'none';
-    ntfHint.style.display = 'block';
+    p1.style.display = 'none';
+    p2.style.display = 'none';
+    hint.style.display = 'block';
   }
 
-  function runNtfDemo() {
-    if (ntfRunning) return;
-    ntfRunning = true;
-    ntfHint.style.display = 'none';
-    resetNtf();
+  function runDemo() {
+    if (running) return;
+    running = true;
+    hint.style.display = 'none';
+    reset(); hint.style.display = 'none';
+    setTimeout(() => { p1.style.display = 'flex'; }, 1500);
     setTimeout(() => {
-      ntfBanner.style.display = 'flex';
-      ntfText.textContent = "We see you're from the US. Switching to USD...";
-    }, 2000);
-    setTimeout(() => {
-      ntfText.textContent = "Prices switched to $ USD";
+      p1.style.display = 'none';
       ntfPrices.forEach((p, i) => {
         p.textContent = usdPrices[i];
         p.style.color = 'var(--green)';
         p.style.transition = 'all 0.4s';
       });
+      p2.style.display = 'flex';
     }, 5000);
     setTimeout(() => {
-      ntfBanner.style.display = 'none';
-      ntfRunning = false;
-      ntfHint.style.display = 'block';
-    }, 8000);
+      p2.style.display = 'none';
+      running = false;
+      hint.style.display = 'block';
+    }, 9000);
   }
 
   if (ntfStore) {
-    ntfStore.addEventListener('click', runNtfDemo);
-    const ntfObs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { runNtfDemo(); ntfObs.unobserve(e.target); } });
+    ntfStore.addEventListener('click', runDemo);
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { runDemo(); obs.unobserve(e.target); } });
     }, { threshold: 0.4 });
-    ntfObs.observe(ntfStore);
+    obs.observe(ntfStore);
   }
 })();
 
