@@ -149,8 +149,8 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 <!-- ═══════ SLIDE 1: Without Multi Currency ═══════ -->
 <section class="slide" id="s0">
   <div class="eyebrow">Multi Currency &mdash; The Problem</div>
-  <h2>An Israeli buyer on a Swiss site.<br><em>Without Multi Currency.</em></h2>
-  <p class="lead">An Israeli buyer lands on a Swiss merchant's store. Prices in Swiss francs (CHF). No context. No way to understand how much things actually cost. Trust breaks immediately.</p>
+  <h2>A US buyer on an Israeli site.<br><em>Without Multi Currency.</em></h2>
+  <p class="lead">A US buyer lands on an Israeli merchant's store. Prices in Israeli shekels (₪). No context. No way to understand how much things actually cost. Trust breaks immediately.</p>
 
   <div class="mock-store">
     <div class="mock-nav">
@@ -159,10 +159,10 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       <div class="mock-nav-cart">Cart (0)</div>
     </div>
     <div class="mock-products">
-      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price">CHF 299.00</div></div>
-      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price">CHF 165.00</div></div>
-      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price">CHF 110.00</div></div>
-      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price">CHF 52.00</div></div>
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price">₪ 1,249.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price">₪ 689.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price">₪ 459.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price">₪ 219.00</div></div>
     </div>
   </div>
 
@@ -182,7 +182,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 <section class="slide" id="s1">
   <div class="eyebrow">Current Solution &mdash; Currency Converter</div>
   <h2>We built Multi Currency with a converter widget.<br><span class="o">Merchants must install it. Buyers must find it.</span></h2>
-  <p class="lead">The merchant installs a currency converter widget on their site. It works &mdash; but it requires merchant setup, and most buyers never notice it. Try switching to USD below.</p>
+  <p class="lead">The merchant installs a currency converter widget on their site. It works &mdash; but it requires merchant setup, and most buyers never notice it. Try switching to $ USD below.</p>
 
   <div class="mock-store" id="store-converter">
     <div class="mock-nav">
@@ -191,19 +191,19 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       <div class="mock-nav-cart">Cart (0)</div>
     </div>
     <div class="mock-products">
-      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" data-chf="CHF 299.00" data-ils="₪ 1,249.00">CHF 299.00</div></div>
-      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" data-chf="CHF 165.00" data-ils="₪ 689.00">CHF 165.00</div></div>
-      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" data-chf="CHF 110.00" data-ils="₪ 459.00">CHF 110.00</div></div>
-      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" data-chf="CHF 52.00" data-ils="₪ 219.00">CHF 52.00</div></div>
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" data-ils="₪ 1,249.00" data-usd="$339.00">₪ 1,249.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" data-ils="₪ 689.00" data-usd="$187.00">₪ 689.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" data-ils="₪ 459.00" data-usd="$125.00">₪ 459.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" data-ils="₪ 219.00" data-usd="$59.00">₪ 219.00</div></div>
     </div>
 
     <div class="converter-widget">
       <span style="font-size:0.7rem;">🌐</span>
       <select id="converter-select">
-        <option value="chf" selected>CHF</option>
-        <option value="ils">₪ ILS</option>
+        <option value="ils" selected>₪ ILS</option>
         <option value="usd">$ USD</option>
         <option value="eur">€ EUR</option>
+        <option value="gbp">£ GBP</option>
       </select>
     </div>
   </div>
@@ -217,7 +217,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 <!-- ═══════ SLIDE 3: Auto Display ═══════ -->
 <section class="slide" id="s2">
   <h2>The Solution &mdash; Auto Display for the buyer.<br><span class="g">Zero setup for the merchant.</span></h2>
-  <p class="lead">Detect the buyer's location, display their local currency automatically. No merchant configuration needed &mdash; which means we can turn this on for everyone. Auto display is the standard on Shopify, WooCommerce, and many others.</p>
+  <p class="lead">Detect the buyer's location, display their local currency automatically. No merchant configuration needed &mdash; we can turn this on for everyone.</p>
 
   <div class="mock-store">
     <div class="mock-nav">
@@ -226,10 +226,10 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       <div class="mock-nav-cart">Cart (0)</div>
     </div>
     <div class="mock-products">
-      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" style="color:var(--green);">₪ 1,249.00</div></div>
-      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" style="color:var(--green);">₪ 689.00</div></div>
-      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" style="color:var(--green);">₪ 459.00</div></div>
-      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" style="color:var(--green);">₪ 219.00</div></div>
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price" style="color:var(--green);">$339.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price" style="color:var(--green);">$187.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price" style="color:var(--green);">$125.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price" style="color:var(--green);">$59.00</div></div>
     </div>
   </div>
 
@@ -312,30 +312,123 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   </div>
 </section>
 
-<!-- ═══════ SLIDE 4: SEO Constraint ═══════ -->
+<!-- ═══════ SLIDE 4: The Landed Solution ═══════ -->
 <section class="slide" id="s3">
-  <div class="eyebrow">The Constraint</div>
-  <h2>SEO won't allow <span class="o">silent auto-display</span></h2>
-  <p class="lead">We can't switch the currency instantly on page load &mdash; Google would see different content per location, which is a cloaking risk.</p>
+  <div class="eyebrow">The Constraint &mdash; What We Landed On</div>
+  <h2>SEO required a <span class="o">notification-based</span> approach</h2>
+  <p class="lead">To avoid cloaking risk, the SEO team required us not to auto-switch on page load. Instead, the page loads in the merchant's currency, then after <strong>~5 seconds</strong> a notification appears and switches to the buyer's local currency.</p>
 
-  <div class="seo-box">
-    <p>SEO requires a <strong>notification-based approach</strong>: the page loads in the merchant's currency, then after ~5 seconds, a notification informs the buyer and switches to their local currency. The buyer can keep or revert.</p>
+  <!-- Mini demo of the notification flow -->
+  <div class="mock-store" id="store-notification" style="position:relative; cursor:pointer;">
+    <div class="mock-nav">
+      <div class="mock-logo">ARTISAN</div>
+      <div class="mock-nav-links"><span>Shop</span><span>About</span><span>Contact</span></div>
+      <div class="mock-nav-cart">Cart (0)</div>
+    </div>
+    <div class="mock-products">
+      <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price ntf-price">₪ 1,249.00</div></div>
+      <div class="mock-product"><div class="mock-img shoe"></div><div class="mock-product-name">Classic Oxford</div><div class="mock-price ntf-price">₪ 689.00</div></div>
+      <div class="mock-product"><div class="mock-img watch"></div><div class="mock-product-name">Minimalist Watch</div><div class="mock-price ntf-price">₪ 459.00</div></div>
+      <div class="mock-product"><div class="mock-img hat"></div><div class="mock-product-name">Wool Fedora</div><div class="mock-price ntf-price">₪ 219.00</div></div>
+    </div>
+    <!-- Notification banner -->
+    <div id="ntf-banner" style="display:none; position:absolute; bottom:0; left:0; right:0; background:linear-gradient(135deg, #1a1a1a, #333); color:#fff; padding:0.85rem 1.2rem; font-size:0.78rem; display:none; align-items:center; justify-content:space-between; gap:0.75rem; z-index:5;">
+      <div>
+        <span id="ntf-text" style="font-weight:500;">We see you're from the US. Switching to USD...</span>
+      </div>
+      <div style="display:flex; gap:0.5rem; flex-shrink:0;">
+        <span style="padding:0.35rem 0.7rem; background:rgba(255,255,255,0.15); border-radius:6px; font-size:0.7rem; cursor:pointer; font-weight:600;">Keep ₪ ILS</span>
+      </div>
+    </div>
+    <!-- Click hint -->
+    <div id="ntf-hint" style="position:absolute; bottom:12px; right:12px; font-size:0.65rem; color:var(--ink3); background:rgba(255,255,255,0.9); padding:0.3rem 0.6rem; border-radius:6px; border:1px solid var(--rule);">Click to replay demo</div>
   </div>
 
+  <div style="max-width:560px; width:100%; margin-top:2rem;">
+    <div style="font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--red); margin-bottom:1rem;">Why this concerns us</div>
+    <div style="display:flex; flex-direction:column; gap:1rem;">
+      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1rem 1.2rem; border:1px solid var(--rule); box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+        <div style="width:36px; height:36px; border-radius:50%; background:#fef2f2; border:2px solid #fecaca; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">🔴</div>
+        <div>
+          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">Trust erosion</div>
+          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">The notification reveals the site isn't local &mdash; "we see you're from the US" tells the buyer this is a foreign site. Creates hesitation and undermines confidence.</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1rem 1.2rem; border:1px solid var(--rule); box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+        <div style="width:36px; height:36px; border-radius:50%; background:#fef2f2; border:2px solid #fecaca; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">⏱</div>
+        <div>
+          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">5-second bounce risk</div>
+          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">Buyer sees prices in ₪ for the first 5 seconds. Many will bounce before the switch even happens &mdash; especially on mobile where attention spans are shortest.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;">
+    <a class="cta-link" href="https://kostiaantnko.github.io/sole-demo/variant-c/" target="_blank" style="background:var(--ink);">See the full demo &rarr;</a>
+  </div>
 </section>
 
-<!-- ═══════ SLIDE 5: The Ask ═══════ -->
+<!-- ═══════ SLIDE 5: The Proposal ═══════ -->
 <section class="slide" id="s4">
+  <div class="eyebrow">Our Proposal</div>
+  <h2>Start with <span class="g">real auto-display</span>.<br>Monitor. Roll back if needed.</h2>
+  <p class="lead">Auto display &mdash; instantly showing the buyer's local currency &mdash; is the standard at Shopify and across eCommerce. The notification approach weakens the very experience we're trying to improve.</p>
+
+  <div style="max-width:600px; width:100%;">
+    <!-- Argument 1: Industry standard -->
+    <div style="display:flex; flex-direction:column; gap:1.25rem;">
+      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1.1rem 1.3rem; border:1px solid #d1fae5; box-shadow:0 2px 8px rgba(5,150,105,0.06);">
+        <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:2px solid #a7f3d0; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">🛒</div>
+        <div>
+          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">Industry standard</div>
+          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">Shopify auto-displays local currency by default for cross-border buyers. Nike, Apple, and others do the same with no option to switch. We're <em>more</em> flexible &mdash; buyers can revert via the converter.</div>
+        </div>
+      </div>
+
+      <!-- Argument 2: Our experiment shows 0 SEO impact -->
+      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1.1rem 1.3rem; border:1px solid #d1fae5; box-shadow:0 2px 8px rgba(5,150,105,0.06);">
+        <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:2px solid #a7f3d0; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">📊</div>
+        <div>
+          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">Zero SEO impact observed</div>
+          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">We ran an experiment on Multi Currency merchants where &lt;20% of traffic comes from SEO. <strong>Zero impact on organic traffic</strong> was detected. SEO team warns it could take up to 6 months to appear &mdash; but we have a mitigation plan.</div>
+        </div>
+      </div>
+
+      <!-- Argument 3: The alternative is worse -->
+      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1.1rem 1.3rem; border:1px solid #d1fae5; box-shadow:0 2px 8px rgba(5,150,105,0.06);">
+        <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:2px solid #a7f3d0; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem;">⚖️</div>
+        <div>
+          <div style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem;">The alternative is worse</div>
+          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">Without auto-display, buyers see foreign currency with no way to change it. That's the current experience for 95% of cross-border visits. The notification approach is better than nothing &mdash; but it introduces new problems that real auto-display avoids entirely.</div>
+        </div>
+      </div>
+
+      <!-- Argument 4: Rollback plan -->
+      <div style="display:flex; gap:1rem; align-items:flex-start; background:var(--white); border-radius:12px; padding:1.1rem 1.3rem; border:2px solid var(--green); box-shadow:0 2px 12px rgba(5,150,105,0.1);">
+        <div style="width:36px; height:36px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          <span style="font-size:1rem; color:white;">✓</span>
+        </div>
+        <div>
+          <div style="font-size:0.85rem; font-weight:700; color:var(--green); margin-bottom:0.25rem;">Proposed approach</div>
+          <div style="font-size:0.82rem; color:var(--ink2); line-height:1.55;">Roll out <strong>real auto-display</strong> to eligible merchants. Monitor SEO continuously, site by site. If any impact is detected &mdash; <strong>roll back immediately</strong> for that site. Gradual rollout gives us control at every step.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SLIDE 6: Your Input ═══════ -->
+<section class="slide" id="s5">
   <div class="eyebrow">Your Input</div>
-  <h2>This is the experience.<br>What do you <span class="b">think</span>?</h2>
-  <p class="lead">Kostia designed the notification experience. We'd love your perspective on whether this pattern is right.</p>
+  <h2>What do you <span class="b">think</span>?</h2>
+  <p class="lead">We want your perspective on the experience &mdash; and whether the notification approach is the right trade-off, or if we should push for real auto-display.</p>
 
   <div class="cta-box">
-    <h3>See the live demo</h3>
-    <p></p>
+    <h3>See the notification demo</h3>
+    <p>Kostia's demo of the current notification-based approach.</p>
     <a class="cta-link" href="https://kostiaantnko.github.io/sole-demo/index.html" target="_blank">Open Demo &rarr;</a>
   </div>
-
 </section>
 
 <script>
@@ -345,11 +438,11 @@ select.addEventListener('change', function() {
   const prices = store.querySelectorAll('.mock-price');
   const currency = this.value;
   prices.forEach(p => {
-    if (currency === 'ils') {
-      p.textContent = p.dataset.ils;
+    if (currency === 'usd') {
+      p.textContent = p.dataset.usd;
       p.style.color = 'var(--green)';
     } else {
-      p.textContent = p.dataset.chf;
+      p.textContent = p.dataset.ils;
       p.style.color = '';
     }
   });
@@ -359,6 +452,55 @@ const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
 }, { threshold: 0.2 });
 document.querySelectorAll('.slide').forEach(s => observer.observe(s));
+
+(function() {
+  const ntfStore = document.getElementById('store-notification');
+  const ntfBanner = document.getElementById('ntf-banner');
+  const ntfText = document.getElementById('ntf-text');
+  const ntfHint = document.getElementById('ntf-hint');
+  const ntfPrices = ntfStore ? ntfStore.querySelectorAll('.ntf-price') : [];
+  const ilsPrices = ['₪ 1,249.00', '₪ 689.00', '₪ 459.00', '₪ 219.00'];
+  const usdPrices = ['$339.00', '$187.00', '$125.00', '$59.00'];
+  let ntfRunning = false;
+
+  function resetNtf() {
+    ntfPrices.forEach((p, i) => { p.textContent = ilsPrices[i]; p.style.color = ''; });
+    ntfBanner.style.display = 'none';
+    ntfHint.style.display = 'block';
+  }
+
+  function runNtfDemo() {
+    if (ntfRunning) return;
+    ntfRunning = true;
+    ntfHint.style.display = 'none';
+    resetNtf();
+    setTimeout(() => {
+      ntfBanner.style.display = 'flex';
+      ntfText.textContent = "We see you're from the US. Switching to USD...";
+    }, 2000);
+    setTimeout(() => {
+      ntfText.textContent = "Prices switched to $ USD";
+      ntfPrices.forEach((p, i) => {
+        p.textContent = usdPrices[i];
+        p.style.color = 'var(--green)';
+        p.style.transition = 'all 0.4s';
+      });
+    }, 5000);
+    setTimeout(() => {
+      ntfBanner.style.display = 'none';
+      ntfRunning = false;
+      ntfHint.style.display = 'block';
+    }, 8000);
+  }
+
+  if (ntfStore) {
+    ntfStore.addEventListener('click', runNtfDemo);
+    const ntfObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { runNtfDemo(); ntfObs.unobserve(e.target); } });
+    }, { threshold: 0.4 });
+    ntfObs.observe(ntfStore);
+  }
+})();
 
 (function() {
   let fired = false;
