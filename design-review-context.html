@@ -313,11 +313,28 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   </div>
 </section>
 
-<!-- ═══════ SLIDE 4: The Landed Solution ═══════ -->
+<!-- ═══════ SLIDE 4: SEO Argument ═══════ -->
 <section class="slide" id="s3">
-  <div class="eyebrow">The Constraint &mdash; What We Landed On</div>
-  <h2>SEO required a <span class="o">notification-based</span> approach</h2>
-  <p class="lead">To avoid cloaking risk, the SEO team required us not to auto-switch on page load. Instead, the page loads in the merchant's currency, then after <strong>~5 seconds</strong> a notification appears and switches to the buyer's currency.</p>
+  <div class="eyebrow">The Constraint</div>
+  <h2>SEO says auto-display is <span class="o">cloaking</span></h2>
+  <p class="lead">The SEO team blocked real auto-display. Their concern: Google sees different content based on location, which could be flagged as cloaking and hurt organic rankings.</p>
+
+  <div style="max-width:600px; width:100%; background:var(--white); border-radius:14px; padding:1.3rem 1.5rem; border:1px solid var(--rule); box-shadow:0 1px 6px rgba(0,0,0,0.04);">
+    <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--amber); margin-bottom:0.75rem;">SEO Team Position</div>
+    <div style="font-size:0.82rem; color:var(--ink2); line-height:1.6;">
+      Auto-displaying currency based on GeoIP means Google's crawler and a local visitor see different prices. This is technically <strong>cloaking</strong>. Impact on rankings might only appear <strong>after 6 months</strong>, so short experiments can't fully rule it out. Once a site is hit, recovery is <strong>difficult</strong>.
+    </div>
+    <div style="margin-top:1rem; padding-top:0.75rem; border-top:1px solid var(--rule); font-size:0.82rem; color:var(--ink2); line-height:1.6;">
+      Their agreed solution: <strong>notification-based switch</strong> &mdash; page loads in the merchant's currency, then after ~5 seconds a notification appears and prices switch.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SLIDE 5: The Notification Experience ═══════ -->
+<section class="slide" id="s3b">
+  <div class="eyebrow">The Landed Experience</div>
+  <h2>This is what the buyer <span class="o">sees</span></h2>
+  <p class="lead">Page loads in ₪. After ~5 seconds, notification appears, then prices switch to $. Click to replay.</p>
 
   <!-- Mini demo of the notification flow — 2 phases matching Kostia's design -->
   <div class="mock-store" id="store-notification" style="position:relative; cursor:pointer;">
@@ -326,13 +343,11 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       <div class="mock-nav-links"><span>Shop</span><span>About</span><span>Contact</span></div>
       <div class="mock-nav-cart">Cart (0)</div>
     </div>
-    <!-- Phase 1 banner — top -->
-    <div id="ntf-phase1" style="display:none; background:#1a1a1a; color:#fff; padding:0.6rem 1rem; font-size:0.75rem; font-weight:500; align-items:center; justify-content:space-between; z-index:5;">
-      <div style="display:flex; align-items:center; gap:0.5rem;">
-        <span>🇺🇸</span>
-        <span>You're located in United States. Switching prices to USD.</span>
-      </div>
-      <div style="width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation:ntf-spin 0.8s linear infinite;"></div>
+    <!-- Phase 1 banner — floating pill (same style as phase 2) -->
+    <div id="ntf-phase1" style="display:none; position:absolute; top:50px; left:50%; transform:translateX(-50%); background:#1a1a1a; color:#fff; padding:0.55rem 1rem; font-size:0.75rem; font-weight:500; border-radius:8px; align-items:center; gap:0.6rem; z-index:5; box-shadow:0 4px 16px rgba(0,0,0,0.2); white-space:nowrap;">
+      <span>🇺🇸</span>
+      <span>You're located in United States. Switching prices to USD.</span>
+      <div style="width:14px; height:14px; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation:ntf-spin 0.8s linear infinite; flex-shrink:0;"></div>
     </div>
     <div class="mock-products">
       <div class="mock-product"><div class="mock-img bag"></div><div class="mock-product-name">Leather Weekender</div><div class="mock-price ntf-price">₪ 1,249.00</div></div>
@@ -367,12 +382,9 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
     </div>
   </div>
 
-  <div style="margin-top:1.5rem;">
-    <a class="cta-link" href="https://kostiaantnko.github.io/sole-demo/variant-c/" target="_blank" style="background:var(--ink);">See the full demo &rarr;</a>
-  </div>
 </section>
 
-<!-- ═══════ SLIDE 5: Two Approaches ═══════ -->
+<!-- ═══════ SLIDE 6: Two Approaches ═══════ -->
 <section class="slide" id="s4">
   <div class="eyebrow">The Question</div>
   <h2>Which approach should we <span class="b">ship</span>?</h2>
@@ -393,13 +405,9 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
           <span style="color:var(--red); font-weight:700; font-size:0.8rem;">✗</span>
           <span style="font-size:0.75rem; color:var(--ink2);">Trust erosion from notification</span>
         </div>
-        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
-          <span style="color:var(--red); font-weight:700; font-size:0.8rem;">✗</span>
-          <span style="font-size:0.75rem; color:var(--ink2);">5-second bounce window</span>
-        </div>
         <div style="display:flex; align-items:center; gap:0.4rem;">
           <span style="color:var(--red); font-weight:700; font-size:0.8rem;">✗</span>
-          <span style="font-size:0.75rem; color:var(--ink2);">Weakens the experience we're building</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">5-second bounce window</span>
         </div>
       </div>
     </div>
@@ -431,24 +439,18 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
     </div>
   </div>
 
-  <!-- SEO context -->
+  <!-- Mitigation -->
   <div style="max-width:700px; width:100%; margin-top:2rem; background:var(--white); border-radius:14px; padding:1.3rem 1.5rem; border:1px solid var(--rule); box-shadow:0 1px 6px rgba(0,0,0,0.04);">
-    <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink3); margin-bottom:0.75rem;">The SEO Argument</div>
-    <div style="font-size:0.82rem; color:var(--ink2); line-height:1.6;">
-      Google may interpret auto-display as <strong>cloaking</strong> &mdash; showing different content based on location. This could hurt organic rankings. The SEO team says the impact might only appear <strong>after 6 months</strong>, so short experiments can't fully rule it out.
-    </div>
-    <div style="margin-top:1rem; border-top:1px solid var(--rule); padding-top:1rem;">
-      <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green); margin-bottom:0.5rem;">Our Mitigation</div>
-      <div style="display:flex; flex-direction:column; gap:0.4rem;">
-        <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
-          <span style="color:var(--green); font-weight:700;">1.</span> Ran experiment on MC merchants with &lt;20% SEO traffic &mdash; <strong>zero impact</strong> detected
-        </div>
-        <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
-          <span style="color:var(--green); font-weight:700;">2.</span> Gradual rollout &mdash; monitor each site's organic traffic continuously
-        </div>
-        <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
-          <span style="color:var(--green); font-weight:700;">3.</span> <strong>Instant rollback</strong> per site if any SEO degradation detected
-        </div>
+    <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green); margin-bottom:0.5rem;">Why we believe auto-display is safe</div>
+    <div style="display:flex; flex-direction:column; gap:0.4rem;">
+      <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
+        <span style="color:var(--green); font-weight:700;">1.</span> Ran experiment on MC merchants with &lt;20% SEO traffic &mdash; <strong>zero impact</strong> detected
+      </div>
+      <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
+        <span style="color:var(--green); font-weight:700;">2.</span> Gradual rollout &mdash; monitor each site's organic traffic continuously
+      </div>
+      <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
+        <span style="color:var(--green); font-weight:700;">3.</span> Start small, expand only if SEO remains healthy &mdash; <strong>stop before damage occurs</strong>
       </div>
     </div>
   </div>
