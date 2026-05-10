@@ -167,9 +167,12 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
     </div>
   </div>
 
-  <div class="quote">
-    "Client sees my shop currency… for a customer from USA, for example, <strong style="color:var(--red);">it looks like a scam</strong>. They are afraid to buy, and we are losing…"
-    <div class="quote-attr">&mdash; Merchant interview, June 2024</div>
+  <div class="quote" style="display:flex; gap:1rem; align-items:flex-start;">
+    <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg, #e0e7ff, #c7d2fe); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.1rem;">👤</div>
+    <div>
+      "Client sees my shop currency… for a customer from USA, for example, <strong style="color:var(--red);">it looks like a scam</strong>. They are afraid to buy, and we are losing…"
+      <div class="quote-attr">&mdash; Merchant interview, June 2024</div>
+    </div>
   </div>
 
   <div class="stat-row">
@@ -182,7 +185,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 <!-- ═══════ SLIDE 2: The Converter ═══════ -->
 <section class="slide" id="s1">
   <div class="eyebrow">Current Solution &mdash; Currency Converter</div>
-  <h2>We built Multi Currency with a converter widget.<br><span class="o">Merchants must install it. Buyers must find it.</span></h2>
+  <h2>Multi Currency relies on a converter widget.<br><span class="o">Merchants must install it. Buyers must find it.</span></h2>
   <p class="lead">The merchant installs a currency converter widget on their site. It works &mdash; but it requires merchant setup, and most buyers never notice it. Try switching to $ USD below.</p>
 
   <div class="mock-store" id="store-converter">
@@ -317,15 +320,16 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 <section class="slide" id="s3">
   <div class="eyebrow">The Constraint</div>
   <h2>SEO says auto-display is <span class="o">cloaking</span></h2>
-  <p class="lead">The SEO team blocked real auto-display. Their concern: Google sees different content based on location, which could be flagged as cloaking and hurt organic rankings.</p>
+  <p class="lead">Different prices per location = cloaking risk for Google. SEO blocked real auto-display.</p>
 
-  <div style="max-width:600px; width:100%; background:var(--white); border-radius:14px; padding:1.3rem 1.5rem; border:1px solid var(--rule); box-shadow:0 1px 6px rgba(0,0,0,0.04);">
-    <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--amber); margin-bottom:0.75rem;">SEO Team Position</div>
-    <div style="font-size:0.82rem; color:var(--ink2); line-height:1.6;">
-      Auto-displaying currency based on GeoIP means Google's crawler and a local visitor see different prices. This is technically <strong>cloaking</strong>. Impact on rankings might only appear <strong>after 6 months</strong>, so short experiments can't fully rule it out. Once a site is hit, recovery is <strong>difficult</strong>.
+  <div style="max-width:560px; width:100%; display:flex; flex-direction:column; gap:0.75rem;">
+    <div style="display:flex; gap:0.75rem; align-items:center; background:var(--white); border-radius:10px; padding:0.85rem 1.1rem; border:1px solid var(--rule);">
+      <span style="font-size:1.1rem;">⚠️</span>
+      <span style="font-size:0.82rem; color:var(--ink2);">Impact may only appear <strong>after 6 months</strong> &mdash; hard to test, hard to recover</span>
     </div>
-    <div style="margin-top:1rem; padding-top:0.75rem; border-top:1px solid var(--rule); font-size:0.82rem; color:var(--ink2); line-height:1.6;">
-      Their agreed solution: <strong>notification-based switch</strong> &mdash; page loads in the merchant's currency, then after ~5 seconds a notification appears and prices switch.
+    <div style="display:flex; gap:0.75rem; align-items:center; background:var(--white); border-radius:10px; padding:0.85rem 1.1rem; border:1px solid var(--rule);">
+      <span style="font-size:1.1rem;">📋</span>
+      <span style="font-size:0.82rem; color:var(--ink2);">Agreed solution: <strong>notification-based switch</strong> &mdash; delay 5 seconds, then switch</span>
     </div>
   </div>
 </section>
@@ -389,21 +393,21 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   <div class="eyebrow">The Question</div>
   <h2>Which approach should we <span class="b">ship</span>?</h2>
 
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; max-width:700px; width:100%; margin-top:0.5rem;">
+  <!-- Scale comparison -->
+  <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:0; max-width:720px; width:100%; margin-top:0.5rem; align-items:stretch;">
 
     <!-- Left: Notification approach -->
-    <div style="background:var(--white); border-radius:16px; padding:1.5rem; border:1px solid var(--rule); box-shadow:0 2px 8px rgba(0,0,0,0.04); display:flex; flex-direction:column; gap:0.75rem;">
-      <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--amber);">Option A &mdash; Notification</div>
-      <div style="font-size:1rem; font-weight:800; color:var(--ink); line-height:1.2;">Delayed switch<br>with notification</div>
-      <div style="font-size:0.78rem; color:var(--ink2); line-height:1.55;">Page loads in ₪. After ~5s, notification appears, prices switch to $.</div>
-      <div style="border-top:1px solid var(--rule); padding-top:0.75rem; margin-top:auto;">
-        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+    <div style="background:var(--white); border-radius:16px 0 0 16px; padding:1.5rem; border:1px solid var(--rule); border-right:none; display:flex; flex-direction:column; gap:0.6rem;">
+      <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--amber);">Notification Switch</div>
+      <div style="font-size:0.92rem; font-weight:800; color:var(--ink); line-height:1.2;">Delayed switch<br>after ~5 seconds</div>
+      <div style="border-top:1px solid var(--rule); padding-top:0.6rem; margin-top:auto;">
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.45rem;">
           <span style="color:var(--green); font-weight:700; font-size:0.8rem;">✓</span>
           <span style="font-size:0.75rem; color:var(--ink2);">Zero SEO risk</span>
         </div>
-        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.45rem;">
           <span style="color:var(--red); font-weight:700; font-size:0.8rem;">✗</span>
-          <span style="font-size:0.75rem; color:var(--ink2);">Trust erosion from notification</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">Trust erosion</span>
         </div>
         <div style="display:flex; align-items:center; gap:0.4rem;">
           <span style="color:var(--red); font-weight:700; font-size:0.8rem;">✗</span>
@@ -412,45 +416,48 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       </div>
     </div>
 
-    <!-- Right: Real auto-display (recommended) -->
-    <div style="background:linear-gradient(135deg, #ecfdf5, #f0fdf4); border-radius:16px; padding:1.5rem; border:2px solid var(--green); box-shadow:0 4px 16px rgba(5,150,105,0.1); display:flex; flex-direction:column; gap:0.75rem; position:relative;">
-      <div style="position:absolute; top:-10px; right:16px; background:var(--green); color:#fff; font-size:0.55rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; padding:0.25rem 0.6rem; border-radius:6px;">Recommended</div>
-      <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green);">Option B &mdash; Real Auto-Display</div>
-      <div style="font-size:1rem; font-weight:800; color:var(--ink); line-height:1.2;">Instant local<br>currency on load</div>
-      <div style="font-size:0.78rem; color:var(--ink2); line-height:1.55;">Page loads in $. Buyer's currency from the first moment. Shopify standard.</div>
-      <div style="border-top:1px solid #a7f3d0; padding-top:0.75rem; margin-top:auto;">
-        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+    <!-- VS divider -->
+    <div style="display:flex; align-items:center; justify-content:center; background:var(--bg); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:0 0.6rem;">
+      <div style="width:36px; height:36px; border-radius:50%; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.6rem; font-weight:800; letter-spacing:0.05em;">VS</div>
+    </div>
+
+    <!-- Right: Real auto-display -->
+    <div style="background:linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius:0 16px 16px 0; padding:1.5rem; border:2px solid var(--green); border-left:2px solid var(--green); display:flex; flex-direction:column; gap:0.6rem;">
+      <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green);">Real Auto-Display</div>
+      <div style="font-size:0.92rem; font-weight:800; color:var(--ink); line-height:1.2;">Instant local<br>currency on load</div>
+      <div style="border-top:1px solid #a7f3d0; padding-top:0.6rem; margin-top:auto;">
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.45rem;">
           <span style="color:var(--green); font-weight:700; font-size:0.8rem;">✓</span>
           <span style="font-size:0.75rem; color:var(--ink2);">Seamless &mdash; no interruption</span>
         </div>
-        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.45rem;">
           <span style="color:var(--green); font-weight:700; font-size:0.8rem;">✓</span>
-          <span style="font-size:0.75rem; color:var(--ink2);">Industry standard (Shopify, Nike, Apple)</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">Shopify, Nike, Apple standard</span>
         </div>
-        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;">
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.45rem;">
           <span style="color:var(--green); font-weight:700; font-size:0.8rem;">✓</span>
-          <span style="font-size:0.75rem; color:var(--ink2);">0 SEO impact in our experiment</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">0 SEO impact in experiment</span>
         </div>
         <div style="display:flex; align-items:center; gap:0.4rem;">
           <span style="color:var(--amber); font-weight:700; font-size:0.8rem;">⚠</span>
-          <span style="font-size:0.75rem; color:var(--ink2);">SEO risk &mdash; possible cloaking flag</span>
+          <span style="font-size:0.75rem; color:var(--ink2);">SEO risk if deployed broadly</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Mitigation -->
-  <div style="max-width:700px; width:100%; margin-top:2rem; background:var(--white); border-radius:14px; padding:1.3rem 1.5rem; border:1px solid var(--rule); box-shadow:0 1px 6px rgba(0,0,0,0.04);">
-    <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green); margin-bottom:0.5rem;">Why we believe auto-display is safe</div>
-    <div style="display:flex; flex-direction:column; gap:0.4rem;">
+  <!-- Our position -->
+  <div style="max-width:720px; width:100%; margin-top:1.5rem; background:var(--white); border-radius:12px; padding:1rem 1.3rem; border:1px solid var(--rule); box-shadow:0 1px 6px rgba(0,0,0,0.04);">
+    <div style="font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green); margin-bottom:0.5rem;">Why we believe auto-display is safe to start with</div>
+    <div style="display:flex; flex-direction:column; gap:0.35rem;">
       <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
-        <span style="color:var(--green); font-weight:700;">1.</span> Ran experiment on MC merchants with &lt;20% SEO traffic &mdash; <strong>zero impact</strong> detected
+        <span style="color:var(--green); font-weight:700;">1.</span> Experiment on MC merchants (&lt;20% SEO traffic) &mdash; <strong>zero impact</strong>
       </div>
       <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
-        <span style="color:var(--green); font-weight:700;">2.</span> Gradual rollout &mdash; monitor each site's organic traffic continuously
+        <span style="color:var(--green); font-weight:700;">2.</span> Gradual rollout &mdash; monitor organic traffic per site
       </div>
       <div style="display:flex; align-items:baseline; gap:0.5rem; font-size:0.78rem; color:var(--ink2);">
-        <span style="color:var(--green); font-weight:700;">3.</span> Start small, expand only if SEO remains healthy &mdash; <strong>stop before damage occurs</strong>
+        <span style="color:var(--green); font-weight:700;">3.</span> Start small, expand only if SEO stays healthy &mdash; <strong>stop before damage</strong>
       </div>
     </div>
   </div>
